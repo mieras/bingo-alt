@@ -15,22 +15,28 @@ export const useBingoGame = () => {
     const drawDeckRef = useRef([]);
 
     // Generate unique random numbers
-    const generateNumbers = (count, max) => {
+    const generateNumbers = (count, max, min = 1) => {
         const nums = new Set();
         while (nums.size < count) {
-            nums.add(Math.floor(Math.random() * max) + 1);
+            nums.add(Math.floor(Math.random() * (max - min + 1)) + min);
         }
         return Array.from(nums);
     };
 
     const startGame = useCallback(() => {
-        // Generate Bingo Card (15 numbers for 4x4 grid with 1 empty)
-        const cardNumbers = generateNumbers(15, TOTAL_NUMBERS);
-        // Insert null at index 10 (or random?) for empty cell? 
-        // Prompt says "4 x 4 (minus 1 empty cell)". Usually center or random.
-        // Let's put it at index 11 (row 3, col 3) or just the last one?
-        // Standard bingo is 5x5 with center free. 4x4 doesn't have a center.
-        // Let's make the last cell empty or random. 
+        // For 50% win chance: only use numbers 1-18 for the card
+        // This way, when drawing all 36 numbers, there's a 50% chance all card numbers are drawn
+        const useFirstHalf = Math.random() < 0.5;
+
+        let cardNumbers;
+        if (useFirstHalf) {
+            // Generate 15 numbers from 1 to 18
+            cardNumbers = generateNumbers(15, 18, 1);
+        } else {
+            // Generate 15 numbers from 19 to 36
+            cardNumbers = generateNumbers(15, TOTAL_NUMBERS, 19);
+        }
+
         // Fixed empty slot at index 10 (Row 3, Col 3, 0-indexed)
         const emptyIndex = 10;
         const grid = [];
@@ -44,13 +50,7 @@ export const useBingoGame = () => {
         }
         setBingoCard(grid);
 
-        // Prepare Draw Deck
-        drawDeckRef.current = generateNumbers(TOTAL_NUMBERS, TOTAL_NUMBERS); // Shuffle 1-36
-        // Actually generateNumbers returns a set order? No, Set iteration order is insertion order.
-        // But Math.random inside loop makes it random.
-        // Wait, generateNumbers logic:
-        // while size < count, add random.
-        // If I want a shuffled array of 1..36:
+        // Prepare Draw Deck - all 36 numbers shuffled
         const deck = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
         for (let i = deck.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));

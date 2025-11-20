@@ -19,6 +19,8 @@ function App() {
     finishGame
   } = useBingoGame();
 
+  const progress = (drawnBalls.length / 36) * 100;
+
   return (
     <div className="App h-full w-full">
       {gameState === 'IDLE' && (
@@ -34,6 +36,7 @@ function App() {
           wigglingNumber={wigglingNumber}
           onCardClick={handleCardClick}
           onSkip={finishGame}
+          progress={progress}
         />
       )}
 

@@ -2,13 +2,13 @@ import React from 'react';
 
 const StartScreen = ({ onStart }) => {
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full p-8 text-center">
+    <div className="flex flex-col justify-center items-center p-8 w-full h-full text-center">
       <div className="max-w-2xl">
-        <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tighter text-bingo-text">
-          BINGO
+        <h1 className="mb-2 text-6xl font-black tracking-tighter md:text-8xl text-bingo-text">
+          Bingo
         </h1>
 
-        <div className="space-y-4 mb-12 text-bingo-text/70">
+        <div className="mb-4 text-bingo-text/70">
           <p className="text-lg">
             Get a full card to win prizes
           </p>

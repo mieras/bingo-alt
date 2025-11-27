@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GRID_SIZE } from '../utils/constants';
+import { GRID_SIZE, DRAW_INTERVAL } from '../utils/constants';
 
 const GameScreen = ({
     bingoCard,
@@ -9,19 +9,30 @@ const GameScreen = ({
     wigglingNumber,
     onCardClick,
     onSkip,
-    progress
+    progress,
+    panelColor
 }) => {
-    // Random background kleur voor het panel - consistent per sessie
-    const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
-    const [panelColor, setPanelColor] = useState(() => {
-        return panelColors[Math.floor(Math.random() * panelColors.length)];
-    });
-
     // Random kleur voor ballen (zelfde kleuren als background) - consistent per bal
+    const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
     const getBallColor = (ballNumber) => {
         // Gebruik het bal nummer als seed voor consistente kleur
         return panelColors[ballNumber % panelColors.length];
     };
+
+    // State voor hint timing (laatste 2 seconden voor nieuwe bal)
+    const [showHint, setShowHint] = useState(false);
+
+    // Timer voor hint: toon hint 2 seconden voordat nieuwe bal komt
+    useEffect(() => {
+        if (!currentBall) return;
+
+        setShowHint(false);
+        const hintTimer = setTimeout(() => {
+            setShowHint(true);
+        }, DRAW_INTERVAL - 2000); // 2 seconden voor nieuwe bal
+
+        return () => clearTimeout(hintTimer);
+    }, [currentBall]);
 
     return (
         <div className="flex overflow-hidden relative flex-col w-full h-full" style={{ backgroundColor: panelColor }}>
@@ -39,6 +50,7 @@ const GameScreen = ({
                                 const isCurrentMatch = num === currentBall && !isChecked;
                                 const isWiggling = wigglingNumber === num;
                                 const isEmpty = idx === 10;
+                                const showMatchHint = showHint && isCurrentMatch;
 
                                 return (
                                     <div
@@ -52,12 +64,15 @@ const GameScreen = ({
                                                 onClick={() => onCardClick(num)}
                                                 disabled={!num || isChecked}
                                                 className={`
-                          w-full h-full flex items-center justify-center text-2xl md:text-4xl font-bold transition-all duration-200 relative z-10
-                          ${isChecked ? 'text-bingo-number/40' : 'text-bingo-number hover:bg-gray-50'}
-                          ${isCurrentMatch ? 'bg-blue-50 animate-pulse-blue' : ''}
+                          w-full h-full flex items-center justify-center text-3xl md:text-5xl font-bold transition-all duration-200 relative z-10
+                          ${isChecked ? 'text-bingo-number opacity-70' : 'text-bingo-number hover:bg-gray-50'}
                           ${isWiggling ? 'text-red-500 animate-wiggle' : ''}`}
                                             >
                                                 <span className="relative z-10">{num}</span>
+                                                {showMatchHint && (
+                                                    <div className="absolute inset-0 z-0 flex items-center justify-center" style={{ backgroundColor: '#DDF5F7' }}>
+                                                    </div>
+                                                )}
                                                 {isChecked && (
                                                     <div className="flex absolute inset-0 z-0 justify-center items-center p-2">
                                                         <svg width="100%" height="100%" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="animate-pop" style={{ color: '#DDF5F7' }}>
@@ -76,10 +91,10 @@ const GameScreen = ({
 
                 {/* Current Ball */}
                 <div className="flex relative justify-center items-center py-4 bg-white border-b border-gray-200 md:border-b md:border-l md:border-gray-200 md:col-start-2 md:row-start-1 md:py-0">
-                    <div className="flex gap-4 justify-between items-center px-4 w-full md:flex-col md:justify-center">
-                        <h3 className="text-xs tracking-widest uppercase text-bingo-text/60 md:mb-4">Current</h3>
+                    <div className="grid grid-cols-3 items-center px-4 w-full md:flex md:flex-col md:justify-center md:gap-4">
+                        <h3 className="text-xs tracking-widest text-left uppercase text-bingo-text/60 md:text-center md:mb-4">Current</h3>
 
-                        <div key={currentBall} className="relative">
+                        <div key={currentBall} className="flex relative justify-center items-center">
                             <div
                                 className="flex justify-center items-center w-16 h-16 rounded-full md:w-32 md:h-32 animate-pop"
                                 style={{ backgroundColor: currentBall ? getBallColor(currentBall) : '#ccc' }}
@@ -92,9 +107,9 @@ const GameScreen = ({
 
                         <button
                             onClick={onSkip}
-                            className="px-4 py-2 text-xs tracking-wider uppercase border border-gray-300 transition-colors md:text-sm hover:bg-gray-50 text-bingo-text"
+                            className="px-6 py-2 text-xs tracking-wider uppercase border border-gray-300 transition-all duration-200 md:text-sm hover:bg-gray-50 hover:border-gray-400 text-bingo-text rounded-md relative active:translate-y-0 shadow-sm hover:shadow-md w-fit ml-auto md:mx-auto"
                         >
-                            skip to results
+                            Results
                         </button>
                     </div>
                 </div>

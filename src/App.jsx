@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useBingoGame } from './hooks/useBingoGame';
 import StartScreen from './components/StartScreen';
 import GameScreen from './components/GameScreen';
@@ -21,6 +21,12 @@ function App() {
 
   const progress = (drawnBalls.length / 36) * 100;
 
+  // Random background kleur voor het panel - consistent per sessie
+  const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
+  const panelColor = useMemo(() => {
+    return panelColors[Math.floor(Math.random() * panelColors.length)];
+  }, [gameState === 'IDLE']); // Reset bij nieuwe game
+
   return (
     <div className="App h-full w-full">
       {gameState === 'IDLE' && (
@@ -37,6 +43,7 @@ function App() {
           onCardClick={handleCardClick}
           onSkip={finishGame}
           progress={progress}
+          panelColor={panelColor}
         />
       )}
 
@@ -46,6 +53,7 @@ function App() {
           history={history}
           bingoCard={bingoCard}
           checkedNumbers={checkedNumbers}
+          panelColor={panelColor}
         />
       )}
     </div>

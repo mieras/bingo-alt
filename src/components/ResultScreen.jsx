@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { GRID_SIZE } from '../utils/constants';
 
-const ResultScreen = ({ prize, history, bingoCard, checkedNumbers }) => {
+const ResultScreen = ({ prize, history, bingoCard, checkedNumbers, panelColor }) => {
   useEffect(() => {
     if (prize) {
       const duration = 5 * 1000;
@@ -69,7 +69,7 @@ const ResultScreen = ({ prize, history, bingoCard, checkedNumbers }) => {
 
         {/* Right: Final Card */}
         <div className="flex-1 w-full max-w-sm">
-          <div className="border border-gray-200 p-4 bg-gray-50 rounded-lg">
+          <div className="border border-gray-200 p-4 rounded-lg" style={{ backgroundColor: panelColor || '#f9fafb' }}>
             <h3 className="text-xs uppercase tracking-widest text-bingo-text/60 mb-4 text-center">Final Card</h3>
             <div
               className="grid bg-white border-2 border-gray-200 rounded-lg p-2"
@@ -88,8 +88,8 @@ const ResultScreen = ({ prize, history, bingoCard, checkedNumbers }) => {
                       <div className="w-2 h-2 bg-bingo-text/20 rounded-full" />
                     ) : (
                       <div className={`
-                          w-full h-full flex items-center justify-center text-xl font-bold relative z-10
-                          ${isChecked ? 'text-bingo-number/40' : 'text-bingo-number'}
+                          w-full h-full flex items-center justify-center text-2xl md:text-3xl font-bold relative z-10
+                          ${isChecked ? 'text-bingo-number opacity-70' : 'text-bingo-number'}
                         `}
                       >
                         <span className="relative z-10">{num}</span>

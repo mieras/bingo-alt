@@ -1,0 +1,55 @@
+/* VL Loterij Kleuren - Geëxtraheerd uit vl.css */
+
+:root {
+  /* Primaire kleuren */
+  --vl-green: #009b00;
+  --vl-green-lime: #95c11f;
+  --vl-blue: #003884;
+  --vl-orange: #f39200;
+  --vl-yellow: #ffcd14;
+
+  /* Neutrale kleuren */
+  --vl-black: #111111;
+  --vl-charcoal: #333333;
+  --vl-text: #333333;
+  --vl-text-secondary: #7a7a7a;
+  --vl-grey: #c8c8c8;
+  --vl-grey-light: #e5e5e5;
+  --vl-grey-lightest: #f3f3f3;
+  --vl-bg: #f2f2f2;
+  --vl-white: #ffffff;
+
+  /* DS Core kleuren (uit vl.css :root) */
+  --ds-core-black: #111111;
+  --ds-core-charcoal-black: #333333;
+  --ds-core-dim-grey: #7a7a7a;
+  --ds-core-grey: #c8c8c8;
+  --ds-core-light-grey: #e5e5e5;
+  --ds-core-lightest-grey: #f3f3f3;
+  --ds-core-white: #ffffff;
+  --ds-core-dark-red: #bb0020;
+  --ds-core-red: #e30027;
+  --ds-core-light-red: #ffebef;
+  --ds-core-orange: #ff780a;
+  --ds-core-mustard-yellow: #ddb009;
+  --ds-core-yellow: #ffcd14;
+  --ds-core-light-yellow: #fff6d7;
+  --ds-core-dark-blue: #004577;
+  --ds-core-blue: #0069b4;
+  --ds-core-light-blue: #def3ff;
+  --ds-core-lightest-blue: #eaf7ff;
+  --ds-core-dense-green: #005e00;
+  --ds-core-dark-green: #007900;
+  --ds-core-green: #009b00;
+  --ds-core-light-green: #e7fbe5;
+
+  /* Bingo specifieke kleuren */
+  --bingo-bg-pink: #aa167c;
+  --bingo-bg-orange: #f39200;
+  --bingo-bg-red: #e73358;
+  --bingo-bg-green: #94c11f;
+  --bingo-bg-cyan: #009cbe;
+  --bingo-number-blue: #003884;
+  --bingo-text: #29313d;
+  --bingo-scribble: #ddf5f7;
+}

@@ -44,13 +44,12 @@
   --ds-core-light-green: #e7fbe5;
 
   /* Bingo specifieke kleuren */
-  --bingo-bg-pink: #AA167C;
-  --bingo-bg-orange: #F39200;
-  --bingo-bg-red: #E73358;
-  --bingo-bg-green: #94C11F;
-  --bingo-bg-cyan: #009CBE;
+  --bingo-bg-pink: #aa167c;
+  --bingo-bg-orange: #f39200;
+  --bingo-bg-red: #e73358;
+  --bingo-bg-green: #94c11f;
+  --bingo-bg-cyan: #009cbe;
   --bingo-number-blue: #003884;
-  --bingo-text: #29313D;
-  --bingo-scribble: #DDF5F7;
+  --bingo-text: #29313d;
+  --bingo-scribble: #ddf5f7;
 }
-

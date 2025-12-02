@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GRID_SIZE, DRAW_INTERVAL } from '../utils/constants';
+import logoImg from '../assets/vlb-logo.png';
 
 const GameScreen = ({
     bingoCard,
@@ -41,28 +42,43 @@ const GameScreen = ({
         }
     }, [history.length]);
 
+    // Datum formatteren voor display
+    const today = new Date().toLocaleDateString('nl-NL', { day: '2-digit', month: '2-digit', year: '2-digit' });
+
     return (
-        <div className="flex flex-col w-full h-screen overflow-hidden transition-colors duration-500" style={{ backgroundColor: panelColor }}>
+        <div className="flex flex-col w-full h-screen overflow-hidden transition-colors duration-500 relative" style={{ backgroundColor: panelColor }}>
+            {/* Close Button - Fixed Position: Top 160px, Right 16px */}
+            <button className="fixed top-[160px] right-4 z-50 w-10 h-10 bg-[#003884] rounded-full flex items-center justify-center text-white shadow-lg hover:bg-blue-800 transition-colors">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+            </button>
+
             {/* Bingo Hero Section - 60dvh */}
             <div className="flex-shrink-0 h-[60dvh] flex flex-col">
                 {/* Bingo Card Container - Flexibel en gecentreerd */}
-                <div className="flex-1 flex flex-col justify-center items-center px-4 pt-4">
-                    {/* Logo Placeholder */}
-                    <div className="flex justify-center mb-4 flex-shrink-0">
-                        <div className="h-12 flex items-center text-xs text-white/80 font-medium tracking-widest uppercase">
-                            Logo
+                <div className="flex-1 flex flex-col justify-center items-center px-4">
+
+                    {/* Header Info: Code - Logo - Datum (Over de hele breedte) */}
+                    {/* Tekst kleur aangepast naar wit/transparant omdat het nu op de achtergrond staat */}
+                    <div className="w-full max-w-[400px] flex justify-between items-center px-2 mb-2">
+                        <span className="text-white/90 text-sm font-bold tracking-wide">45854-AB</span>
+                        <div className="flex-1 flex justify-center px-2">
+                            <img src={logoImg} alt="VriendenLoterij Bingo" className="w-full max-w-[160px] object-contain drop-shadow-md" />
                         </div>
+                        <span className="text-white/90 text-sm font-bold tracking-wide">{today}</span>
                     </div>
 
-                    {/* Card - 80% breedte, extra ronde onderkant */}
-                    <div className="w-[95%] max-w-[360px] bg-white rounded-t-sm rounded-b-[40px] shadow-xl overflow-hidden flex-shrink-0">
+                    {/* Card - Alleen Grid */}
+                    <div className="w-[95%] max-w-[360px] bg-white rounded-[32px] shadow-xl overflow-hidden flex-shrink-0 flex flex-col">
+
                         {/* Grid - 4x4 met lijntjes alleen binnen */}
                         <div
                             className="grid bg-gray-100"
                             style={{
                                 gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
                                 gap: '1px',
-                                padding: '0 0 1px 0'
+                                padding: '1px 0 1px 0' // Top padding toegevoegd voor lijn boven grid
                             }}
                         >
                             {bingoCard.map((num, idx) => {
@@ -76,7 +92,7 @@ const GameScreen = ({
                                     <div
                                         key={idx}
                                         className="relative bg-white"
-                                        style={{ aspectRatio: '1/1' }}
+                                        style={{ aspectRatio: '5/4' }}
                                     >
                                         {isEmpty ? (
                                             <div className="flex items-center justify-center w-full h-full p-2">
@@ -121,7 +137,7 @@ const GameScreen = ({
                                             >
                                                 <span className={`relative z-10 ${isChecked ? 'text-[#1675A2]' : ''}`}>{num}</span>
                                                 {showMatchHint && (
-                                                    <div className="absolute inset-0 z-0 bg-cyan-100" />
+                                                    <div className="absolute inset-0 z-0 bg-[#DDF5F7] animate-hint-pulse" />
                                                 )}
                                                 {isChecked && (
                                                     <div className="absolute inset-0 z-0 flex items-center justify-center p-1">

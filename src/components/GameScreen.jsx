@@ -48,29 +48,29 @@ const GameScreen = ({
     return (
         <div className="flex flex-col w-full h-screen overflow-hidden transition-colors duration-500 relative" style={{ backgroundColor: panelColor }}>
             {/* Close Button - Fixed Position: Top 160px, Right 16px */}
-            <button className="fixed top-[160px] right-4 z-50 w-10 h-10 bg-[#003884] rounded-full flex items-center justify-center text-white shadow-lg hover:bg-blue-800 transition-colors">
+            <button className="fixed top-[16px] right-4 z-50 w-10 h-10 bg-[#003884] rounded-full flex items-center justify-center text-white shadow-lg hover:bg-blue-800 transition-colors">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
             </button>
 
-            {/* Bingo Hero Section - 60dvh */}
-            <div className="flex-shrink-0 h-[60dvh] flex flex-col">
+
+            <div className="flex-shrink-0  flex flex-col">
                 {/* Bingo Card Container - Flexibel en gecentreerd */}
-                <div className="flex-1 flex flex-col justify-center items-center px-4">
+                <div className="flex-1 flex flex-col justify-center items-center ">
 
                     {/* Header Info: Code - Logo - Datum (Over de hele breedte) */}
                     {/* Tekst kleur aangepast naar wit/transparant omdat het nu op de achtergrond staat */}
-                    <div className="w-full max-w-[400px] flex justify-between items-center px-2 mb-2">
-                        <span className="text-white/90 text-sm font-bold tracking-wide">45854-AB</span>
+                    <div className="w-full max-w-full flex justify-between items-center pt-12 px-2 bg-white">
+                        <span className="text-black/90 text-sm font-bold tracking-wide">45854-AB</span>
                         <div className="flex-1 flex justify-center px-2">
                             <img src={logoImg} alt="VriendenLoterij Bingo" className="w-full max-w-[160px] object-contain drop-shadow-md" />
                         </div>
-                        <span className="text-white/90 text-sm font-bold tracking-wide">{today}</span>
+                        <span className="text-black/90 text-sm font-bold tracking-wide">{today}</span>
                     </div>
 
                     {/* Card - Alleen Grid */}
-                    <div className="w-[95%] max-w-[360px] bg-white rounded-[32px] shadow-xl overflow-hidden flex-shrink-0 flex flex-col">
+                    <div className="w-[95%] max-w-[360px] mb-4 bg-white rounded-b-[32px] shadow-xl overflow-hidden flex-shrink-0 flex flex-col">
 
                         {/* Grid - 4x4 met lijntjes alleen binnen */}
                         <div
@@ -78,7 +78,7 @@ const GameScreen = ({
                             style={{
                                 gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
                                 gap: '1px',
-                                padding: '1px 0 1px 0' // Top padding toegevoegd voor lijn boven grid
+                                padding: '0 0 1px 0' // Top padding toegevoegd voor lijn boven grid
                             }}
                         >
                             {bingoCard.map((num, idx) => {
@@ -191,7 +191,7 @@ const GameScreen = ({
                                 key={item.timestamp}
                                 className={`
                                     flex gap-4 items-center px-4 transition-colors border-b border-gray-100
-                                    ${isNewest ? 'py-6 animate-bg-fade' : 'py-3'}
+                                    ${isNewest ? 'py-4 animate-bg-fade' : 'py-3'}
                                 `}
                             >
                                 {/* Info - Links */}
@@ -214,8 +214,8 @@ const GameScreen = ({
                                 <div className="w-16 flex justify-center flex-shrink-0">
                                     <div
                                         className={`
-                                            flex justify-center items-center font-bold rounded-full
-                                            ${isNewest ? 'w-16 h-16 text-3xl text-white shadow-md animate-enter-playful' : 'w-12 h-12 text-xl text-gray-500 bg-gray-100'}
+                                            flex justify-center items-center font-bold rounded-full leading-none text-box-trim
+                                            ${isNewest ? 'w-16 h-16 text-3xl text-white shadow-md animate-roll-in' : 'w-12 h-12 text-xl text-gray-500  bg-gray-100'}
                                         `}
                                         style={isNewest ? { backgroundColor: getBallColor(item.ball) } : {}}
                                     >

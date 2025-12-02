@@ -61,12 +61,12 @@ const GameScreen = ({
 
                     {/* Header Info: Code - Logo - Datum (Over de hele breedte) */}
                     {/* Tekst kleur aangepast naar wit/transparant omdat het nu op de achtergrond staat */}
-                    <div className="w-full max-w-full flex justify-between items-center pt-12 px-2 bg-white">
-                        <span className="text-black/90 text-sm font-bold tracking-wide">45854-AB</span>
+                    <div className="w-full max-w-full flex h-[96px] z-5 justify-between items-center pt-14 px-4 bg-white">
+                        <span className="text-black/70 text-sm font-medium tracking-wide">45854-AB</span>
                         <div className="flex-1 flex justify-center px-2">
                             <img src={logoImg} alt="VriendenLoterij Bingo" className="w-full max-w-[160px] object-contain drop-shadow-md" />
                         </div>
-                        <span className="text-black/90 text-sm font-bold tracking-wide">{today}</span>
+                        <span className="text-black/70 text-sm font-medium tracking-wide">{today}</span>
                     </div>
 
                     {/* Card - Alleen Grid */}
@@ -141,9 +141,28 @@ const GameScreen = ({
                                                 )}
                                                 {isChecked && (
                                                     <div className="absolute inset-0 z-0 flex items-center justify-center p-1">
-                                                        {/* Blauwe scribble achtergrond */}
-                                                        <svg width="100%" height="100%" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="animate-pop text-[#DDF5F7] w-[80%] h-[80%]">
-                                                            <path d="M27.0484 54.7643C23.8779 56.8627 19.4382 56.224 17.1325 53.3382C14.8271 50.4522 15.5288 46.4109 18.6991 44.3121L21.6121 42.3841L16.7797 43.0123C13.4444 43.446 10.233 41.685 9.09442 38.7986C7.9561 35.9124 9.20352 32.6956 12.0798 31.099L16.8429 28.4573L7.9129 29.3939C4.62947 29.7386 1.51845 27.9743 0.410901 25.1396C-0.696459 22.305 0.492529 19.1496 3.27768 17.5298L31.6713 1.01726C34.9749 -0.903967 39.364 -0.0238753 41.4747 2.98317C43.5853 5.9903 42.6185 9.98557 39.315 11.9069L36.841 13.347L47.2992 12.2476C50.6101 11.9 53.7418 13.6962 54.8258 16.565C55.9097 19.4341 54.6538 22.6037 51.8081 24.1833L48.8119 25.8477C51.7021 25.8132 54.3694 27.3891 55.479 29.8791C56.7048 32.63 55.7134 35.7878 53.0759 37.5338L27.0484 54.7643Z" fill="currentColor" />
+                                                        {/* Blauwe scribble achtergrond met mask animatie */}
+                                                        <svg width="100%" height="100%" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#DDF5F7] w-[80%] h-[80%]">
+                                                            <defs>
+                                                                <mask id={`scribble-mask-${idx}`}>
+                                                                    {/* Een dik zig-zag pad dat de vorm bedekt en geanimeerd wordt */}
+                                                                    <path
+                                                                        d="M10,50 L50,10 M10,10 L50,50 M28,0 L28,56 M0,28 L56,28"
+                                                                        stroke="white"
+                                                                        strokeWidth="24"
+                                                                        strokeLinecap="round"
+                                                                        pathLength="1"
+                                                                        strokeDasharray="1"
+                                                                        strokeDashoffset="1"
+                                                                        className="animate-scribble-draw"
+                                                                    />
+                                                                </mask>
+                                                            </defs>
+                                                            <path
+                                                                d="M27.0484 54.7643C23.8779 56.8627 19.4382 56.224 17.1325 53.3382C14.8271 50.4522 15.5288 46.4109 18.6991 44.3121L21.6121 42.3841L16.7797 43.0123C13.4444 43.446 10.233 41.685 9.09442 38.7986C7.9561 35.9124 9.20352 32.6956 12.0798 31.099L16.8429 28.4573L7.9129 29.3939C4.62947 29.7386 1.51845 27.9743 0.410901 25.1396C-0.696459 22.305 0.492529 19.1496 3.27768 17.5298L31.6713 1.01726C34.9749 -0.903967 39.364 -0.0238753 41.4747 2.98317C43.5853 5.9903 42.6185 9.98557 39.315 11.9069L36.841 13.347L47.2992 12.2476C50.6101 11.9 53.7418 13.6962 54.8258 16.565C55.9097 19.4341 54.6538 22.6037 51.8081 24.1833L48.8119 25.8477C51.7021 25.8132 54.3694 27.3891 55.479 29.8791C56.7048 32.63 55.7134 35.7878 53.0759 37.5338L27.0484 54.7643Z"
+                                                                fill="currentColor"
+                                                                mask={`url(#scribble-mask-${idx})`}
+                                                            />
                                                         </svg>
                                                     </div>
                                                 )}
@@ -211,16 +230,28 @@ const GameScreen = ({
                                 </div>
 
                                 {/* Ball Number - Rechts */}
+                                {/* Ball Number - Rechts */}
                                 <div className="w-16 flex justify-center flex-shrink-0">
-                                    <div
-                                        className={`
-                                            flex justify-center items-center font-bold rounded-full leading-none text-box-trim
-                                            ${isNewest ? 'w-16 h-16 text-3xl text-white shadow-md animate-roll-in' : 'w-12 h-12 text-xl text-gray-500  bg-gray-100'}
-                                        `}
-                                        style={isNewest ? { backgroundColor: getBallColor(item.ball) } : {}}
-                                    >
-                                        {item.ball}
-                                    </div>
+                                    {isNewest ? (
+                                        <div
+                                            className="w-16 h-16 rounded-full shadow-lg animate-roll-in flex items-center justify-center relative"
+                                            style={{
+                                                backgroundColor: getBallColor(item.ball),
+                                                backgroundImage: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.2) 100%)',
+                                                boxShadow: '0 4px 8px rgba(0,0,0,0.2), inset -2px -2px 6px rgba(0,0,0,0.2)'
+                                            }}
+                                        >
+                                            {/* White Badge Container */}
+                                            <div className="w-10 h-10 bg-white rounded-[12px] flex flex-col items-center justify-center shadow-[inset_0_1px_3px_rgba(0,0,0,0.1)] relative z-10">
+                                                <span className="text-2xl font-bold text-gray-800 leading-none pt-1 text-box-trim">{item.ball}</span>
+                                                <div className="w-3 h-[2px] bg-gray-800 mt-[px] rounded-full opacity-80"></div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="w-12 h-12 flex justify-center items-center font-bold rounded-full leading-none text-box-trim text-xl text-gray-500 bg-gray-100">
+                                            {item.ball}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         );

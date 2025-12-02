@@ -124,6 +124,20 @@
   animation: hint-pulse 1.5s ease-in-out infinite;
 }
 
+@keyframes draw-mask {
+  from {
+    stroke-dashoffset: 1;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-scribble-draw {
+  animation: draw-mask 2s ease-out forwards;
+}
+
 * {
   box-sizing: border-box;
 }

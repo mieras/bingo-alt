@@ -15,11 +15,11 @@ const GameHeader = () => {
 
             {/* Header Info: Code - Logo - Datum (Over de hele breedte) */}
             <div className="w-full max-w-full flex h-[96px] z-5 justify-between items-center pt-14 px-4 bg-white">
-                <span className="text-black/70 text-sm font-medium tracking-wide">45854-AB</span>
+                <span className="text-black/70 text-xs font-medium tracking-wide">45854-AB</span>
                 <div className="flex-1 flex justify-center px-2">
-                    <img src={logoImg} alt="VriendenLoterij Bingo" className="w-full max-w-[160px] object-contain drop-shadow-md" />
+                    <img src={logoImg} alt="VriendenLoterij Bingo" className="w-full max-w-[160px] translate-y-[-8px] object-contain drop-shadow-md" />
                 </div>
-                <span className="text-black/70 text-sm font-medium tracking-wide">{today}</span>
+                <span className="text-black/70 text-xs font-medium tracking-wide">{today}</span>
             </div>
         </>
     );

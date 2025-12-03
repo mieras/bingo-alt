@@ -156,9 +156,12 @@ export const useBingoGame = () => {
         return () => clearInterval(timerRef.current);
     }, [gameState, drawNextBall, drawnBalls.length]);
 
+    const [isSkipping, setIsSkipping] = useState(false);
+    const [skipTarget, setSkipTarget] = useState(null);
+
     // Check Win Effect
     useEffect(() => {
-        if (gameState !== 'PLAYING') return;
+        if (gameState !== 'PLAYING' || isSkipping) return;
 
         if (checkWin(checkedNumbers)) {
             // WIN!
@@ -170,10 +173,49 @@ export const useBingoGame = () => {
             const wonPrize = PRIZES.find(p => p.balls === lookupCount);
             setPrize(wonPrize);
         }
-    }, [checkedNumbers, gameState, checkWin, drawnBalls.length]);
+    }, [checkedNumbers, gameState, checkWin, drawnBalls.length, isSkipping]);
+
+    // Skipping Animation Effect
+    useEffect(() => {
+        if (!isSkipping || !skipTarget) return;
+
+        if (drawnBalls.length >= skipTarget.balls.length) {
+            setIsSkipping(false);
+            setPrize(skipTarget.prize);
+            setGameState(skipTarget.outcome);
+            setSkipTarget(null);
+            return;
+        }
+
+        const timeout = setTimeout(() => {
+            const nextBallIndex = drawnBalls.length;
+            const nextBall = skipTarget.balls[nextBallIndex];
+
+            setDrawnBalls(prev => [...prev, nextBall]);
+            setCurrentBall(nextBall);
+
+            // Auto-check card
+            if (bingoCard.includes(nextBall)) {
+                setCheckedNumbers(prev => new Set(prev).add(nextBall));
+            }
+
+            // Update history
+            const ballIndex = nextBallIndex + 1;
+            const prizeInfo = PRIZES.find(p => p.balls === ballIndex);
+            setHistory(prev => [{
+                ball: nextBall,
+                index: ballIndex,
+                prize: prizeInfo,
+                timestamp: Date.now()
+            }, ...prev]);
+
+        }, 50); // 50ms per ball (very fast)
+
+        return () => clearTimeout(timeout);
+    }, [isSkipping, skipTarget, drawnBalls, bingoCard]);
 
     const handleCardClick = (number) => {
-        if (gameState !== 'PLAYING') return;
+        if (gameState !== 'PLAYING' || isSkipping) return;
         if (!number) return;
 
         if (drawnBalls.includes(number)) {
@@ -202,7 +244,7 @@ export const useBingoGame = () => {
     };
 
     const finishGame = useCallback(() => {
-        if (gameState !== 'PLAYING') return;
+        if (gameState !== 'PLAYING' || isSkipping) return;
 
         clearInterval(timerRef.current);
 
@@ -235,34 +277,29 @@ export const useBingoGame = () => {
         const isWin = missingCount === 0;
 
         let finalDrawnBalls = allDrawn;
+        let outcome = 'FINISHED';
+        let wonPrize = null;
 
         if (isWin) {
             // If win, we stop at the winning ball
             finalDrawnBalls = allDrawn.slice(0, maxIndex + 1);
+            outcome = 'WON';
 
             // Calculate Prize
             const ballsCount = maxIndex + 1;
             const lookupCount = Math.max(ballsCount, 19);
-            const wonPrize = PRIZES.find(p => p.balls === lookupCount);
-            setPrize(wonPrize);
-            setGameState('WON');
-        } else {
-            setGameState('FINISHED');
+            wonPrize = PRIZES.find(p => p.balls === lookupCount);
         }
 
-        // Update checked numbers based on finalDrawnBalls
-        const newChecked = new Set(checkedNumbers);
-        bingoCard.forEach(num => {
-            if (num && finalDrawnBalls.includes(num)) {
-                newChecked.add(num);
-            }
+        // Start Skipping Animation
+        setSkipTarget({
+            balls: finalDrawnBalls,
+            outcome: outcome,
+            prize: wonPrize
         });
+        setIsSkipping(true);
 
-        setCheckedNumbers(newChecked);
-        setDrawnBalls(finalDrawnBalls);
-        setCurrentBall(finalDrawnBalls[finalDrawnBalls.length - 1]);
-
-    }, [gameState, drawnBalls, bingoCard, checkedNumbers, maxBalls]);
+    }, [gameState, drawnBalls, bingoCard, checkedNumbers, maxBalls, isSkipping]);
 
     return {
         gameState,
@@ -273,6 +310,7 @@ export const useBingoGame = () => {
         history,
         prize,
         wigglingNumber,
+        isSkipping,
         startGame,
         handleCardClick,
         finishGame

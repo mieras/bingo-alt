@@ -18,11 +18,11 @@
 @keyframes roll-in {
 
   0% {
-    transform: translateX(12rem) scale(1.25) rotate(180deg);
+    transform: translateX(12rem) translateY(-12rem) scale(1.25) rotate(180deg);
   }
 
   100% {
-    transform: translateX(0) scale(1) rotate(0deg);
+    transform: translateX(0) translateY(0) scale(1) rotate(0deg);
   }
 }
 

@@ -25,7 +25,7 @@ const GameResult = ({ prize }) => {
                 </>
             ) : (
                 <>
-                    <p className="text-gray-500 mb-8">Geen prijs deze keer. Volgende keer beter!</p>
+                    <p className="text-gray-500 mb-4">Geen prijs deze keer. Volgende keer beter!</p>
 
                     <button
                         onClick={() => window.location.reload()}

@@ -19,6 +19,7 @@ const GameScreen = ({
     wigglingNumber,
     onCardClick,
     onSkip,
+    isSkipping,
     progress,
     panelColor,
     gameState,
@@ -38,7 +39,7 @@ const GameScreen = ({
 
     // Timer voor hint: toon hint 2 seconden voordat nieuwe bal komt
     useEffect(() => {
-        if (!currentBall) return;
+        if (!currentBall || isSkipping) return; // Don't show hint during skip
 
         setShowHint(false);
         const hintTimer = setTimeout(() => {
@@ -46,7 +47,7 @@ const GameScreen = ({
         }, DRAW_INTERVAL - 2500);
 
         return () => clearTimeout(hintTimer);
-    }, [currentBall]);
+    }, [currentBall, isSkipping]);
 
     // Auto-scroll naar top bij nieuwe bal in history
     useEffect(() => {
@@ -125,6 +126,7 @@ const GameScreen = ({
             <GameControls
                 onSkip={onSkip}
                 isGameFinished={isGameFinished}
+                isSkipping={isSkipping}
             />
         </div>
     );

@@ -231,8 +231,8 @@ const GameScreen = ({
                 }}
             >
                 {isGameFinished ? (
-                    <div className="flex flex-col items-center justify-center h-full p-8 text-center animate-fade-in">
-                        <h2 className="text-4xl font-black text-[#003884] mt-2">
+                    <div className="flex flex-col items-center justify-center h-full p-2 text-center animate-fade-in">
+                        <h2 className="text-4xl font-black text-[#003884]">
                             {prize ? 'BINGO!' : 'HELAAS'}
                         </h2>
                         {prize ? (

@@ -216,41 +216,51 @@ export const useBingoGame = () => {
 
         const allDrawn = [...drawnBalls, ...remainingToDraw];
 
-        // Auto-check all numbers on card that are in allDrawn
+        // Check if won based on allDrawn
+        const numbersToWin = bingoCard.filter(n => n !== null);
+
+        // Find the index of the last number needed to complete the card
+        let maxIndex = -1;
+        let missingCount = 0;
+
+        numbersToWin.forEach(num => {
+            const idx = allDrawn.indexOf(num);
+            if (idx === -1) {
+                missingCount++;
+            } else {
+                if (idx > maxIndex) maxIndex = idx;
+            }
+        });
+
+        const isWin = missingCount === 0;
+
+        let finalDrawnBalls = allDrawn;
+
+        if (isWin) {
+            // If win, we stop at the winning ball
+            finalDrawnBalls = allDrawn.slice(0, maxIndex + 1);
+
+            // Calculate Prize
+            const ballsCount = maxIndex + 1;
+            const lookupCount = Math.max(ballsCount, 19);
+            const wonPrize = PRIZES.find(p => p.balls === lookupCount);
+            setPrize(wonPrize);
+            setGameState('WON');
+        } else {
+            setGameState('FINISHED');
+        }
+
+        // Update checked numbers based on finalDrawnBalls
         const newChecked = new Set(checkedNumbers);
         bingoCard.forEach(num => {
-            if (num && allDrawn.includes(num)) {
+            if (num && finalDrawnBalls.includes(num)) {
                 newChecked.add(num);
             }
         });
 
         setCheckedNumbers(newChecked);
-        setDrawnBalls(allDrawn);
-        setCurrentBall(allDrawn[allDrawn.length - 1]);
-
-        // Check if won
-        const numbersToWin = bingoCard.filter(n => n !== null);
-        const isWin = numbersToWin.every(n => newChecked.has(n));
-
-        if (isWin) {
-            // Calculate Prize
-            // Find the index of the last number needed to complete the card
-            let maxIndex = -1;
-            numbersToWin.forEach(num => {
-                const idx = allDrawn.indexOf(num);
-                if (idx > maxIndex) maxIndex = idx;
-            });
-
-            // Balls count = index + 1
-            const ballsCount = maxIndex + 1;
-            const lookupCount = Math.max(ballsCount, 19);
-            const wonPrize = PRIZES.find(p => p.balls === lookupCount);
-
-            setPrize(wonPrize);
-            setGameState('WON');
-        } else {
-            setGameState('FINISHED'); // No Win
-        }
+        setDrawnBalls(finalDrawnBalls);
+        setCurrentBall(finalDrawnBalls[finalDrawnBalls.length - 1]);
 
     }, [gameState, drawnBalls, bingoCard, checkedNumbers, maxBalls]);
 

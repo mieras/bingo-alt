@@ -82,7 +82,7 @@ const GameScreen = ({
     }, [prize, gameState]);
 
     return (
-        <div className="flex flex-col w-full h-screen overflow-hidden transition-colors duration-500 relative" style={{ backgroundColor: panelColor }}>
+        <div className="flex flex-col w-full h-dvh overflow-hidden transition-colors duration-500 relative" style={{ backgroundColor: panelColor }}>
 
             <GameHeader />
 

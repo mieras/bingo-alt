@@ -183,6 +183,7 @@ export const useBingoGame = () => {
             setIsSkipping(false);
             setPrize(skipTarget.prize);
             setGameState(skipTarget.outcome);
+            setCheckedNumbers(skipTarget.finalChecked);
             setSkipTarget(null);
             return;
         }
@@ -304,11 +305,20 @@ export const useBingoGame = () => {
             wonPrize = PRIZES.find(p => p.balls === lookupCount);
         }
 
+        // Calculate final checked numbers
+        const finalChecked = new Set(checkedNumbers);
+        bingoCard.forEach(num => {
+            if (num && finalDrawnBalls.includes(num)) {
+                finalChecked.add(num);
+            }
+        });
+
         // Start Skipping Animation
         setSkipTarget({
             balls: finalDrawnBalls,
             outcome: outcome,
-            prize: wonPrize
+            prize: wonPrize,
+            finalChecked: finalChecked
         });
         setIsSkipping(true);
 

@@ -19,8 +19,8 @@ export const PRIZES = [
   { balls: 36, prize: "Prijs naar keuze", label: "Bingo! U wint een Prijs naar keuze" },
 ];
 
-export const TOTAL_NUMBERS = 36;
+export const TOTAL_NUMBERS = 45; // Total balls in the machine
 export const GRID_SIZE = 4;
 export const DRAW_INTERVAL = 4000; // 4 seconds
 export const HIGHLIGHT_DURATION = 2000; // Last 2 seconds
-export const MAX_DRAWN_BALLS = 36; // Game ends after 33 balls
+export const MAX_DRAWN_BALLS = 36; // Maximum balls drawn per game

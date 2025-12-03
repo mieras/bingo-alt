@@ -34,10 +34,35 @@ export const useBingoGame = () => {
         const currentMaxBalls = MAX_DRAWN_BALLS;
         setMaxBalls(currentMaxBalls);
 
-        // Generate Bingo Card (15 numbers from 1-45)
-        const cardNumbers = generateNumbers(15, TOTAL_NUMBERS);
+        // Step 1: Generate a completely random deck of all 45 balls
+        const allNumbers = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
+        const deck = allNumbers.sort(() => Math.random() - 0.5);
 
-        // Fixed empty slot at index 10
+        // Step 2: The first 36 balls will be drawn
+        const drawnBalls = deck.slice(-36); // pop() takes from end, so last 36 will be drawn
+        const notDrawnBalls = deck.slice(0, 9); // first 9 won't be drawn
+
+        // Step 3: Generate the card based on win/loss
+        let cardNumbers;
+
+        if (isWinner) {
+            // Winner: All 15 card numbers come from the 36 balls that will be drawn
+            const shuffledDrawn = [...drawnBalls].sort(() => Math.random() - 0.5);
+            cardNumbers = shuffledDrawn.slice(0, 15);
+        } else {
+            // Loser: 14 numbers from drawn balls + 1-3 numbers from not-drawn balls
+            const numMissing = Math.floor(Math.random() * 3) + 1; // 1-3 missing
+
+            const shuffledDrawn = [...drawnBalls].sort(() => Math.random() - 0.5);
+            const shuffledNotDrawn = [...notDrawnBalls].sort(() => Math.random() - 0.5);
+
+            const presentNums = shuffledDrawn.slice(0, 15 - numMissing);
+            const missingNums = shuffledNotDrawn.slice(0, numMissing);
+
+            cardNumbers = [...presentNums, ...missingNums];
+        }
+
+        // Step 4: Create the 4x4 grid with empty slot at index 10
         const emptyIndex = 10;
         const grid = [];
         let numIdx = 0;
@@ -49,54 +74,6 @@ export const useBingoGame = () => {
             }
         }
         setBingoCard(grid);
-
-        // Prepare Draw Deck - all 45 numbers shuffled
-        const allNumbers = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
-
-        let deck = [];
-
-        if (isWinner) {
-            // Winner: Ensure all 15 card numbers appear in the first 36 balls
-            const cardSet = new Set(cardNumbers);
-            const nonCardNumbers = allNumbers.filter(n => !cardSet.has(n));
-
-            // Shuffle card numbers and non-card numbers separately
-            const shuffledCardNums = cardNumbers.sort(() => Math.random() - 0.5);
-            const shuffledNonCard = nonCardNumbers.sort(() => Math.random() - 0.5);
-
-            // First 36 balls must include all card numbers
-            // Take all 15 card numbers + 21 random non-card numbers
-            const first36 = [...shuffledCardNums, ...shuffledNonCard.slice(0, 21)];
-            const shuffledFirst36 = first36.sort(() => Math.random() - 0.5);
-
-            // Remaining 9 balls
-            const remaining = shuffledNonCard.slice(21);
-
-            deck = [...shuffledFirst36, ...remaining];
-        } else {
-            // Loser: Ensure at least 1 card number is NOT in the first 36 balls
-            const cardSet = new Set(cardNumbers);
-            const nonCardNumbers = allNumbers.filter(n => !cardSet.has(n));
-
-            const numMissing = Math.floor(Math.random() * 3) + 1; // 1-3 missing card numbers
-
-            const shuffledCardNums = cardNumbers.sort(() => Math.random() - 0.5);
-            const missingCardNums = shuffledCardNums.slice(0, numMissing); // These go in last 9
-            const presentCardNums = shuffledCardNums.slice(numMissing);    // These go in first 36
-
-            const shuffledNonCard = nonCardNumbers.sort(() => Math.random() - 0.5);
-
-            // First 36 balls: presentCardNums + enough non-card to make 36
-            const neededForFirst36 = 36 - presentCardNums.length;
-            const first36 = [...presentCardNums, ...shuffledNonCard.slice(0, neededForFirst36)];
-            const shuffledFirst36 = first36.sort(() => Math.random() - 0.5);
-
-            // Last 9 balls: missingCardNums + remaining non-card
-            const last9 = [...missingCardNums, ...shuffledNonCard.slice(neededForFirst36)];
-            const shuffledLast9 = last9.sort(() => Math.random() - 0.5);
-
-            deck = [...shuffledFirst36, ...shuffledLast9];
-        }
 
         drawDeckRef.current = deck;
 

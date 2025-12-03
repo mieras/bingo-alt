@@ -24,3 +24,8 @@ export const GRID_SIZE = 4;
 export const DRAW_INTERVAL = 4000; // 4 seconds
 export const HIGHLIGHT_DURATION = 2000; // Last 2 seconds
 export const MAX_DRAWN_BALLS = 36; // Maximum balls drawn per game
+
+// Skip animation settings
+export const SKIP_BALL_INTERVAL = 50; // Base interval in ms per ball during skip
+export const SKIP_USE_EASING = true; // Enable easing (starts fast, ends slower for suspense)
+export const SKIP_EASING_FACTOR = 5; // Higher = more dramatic slowdown at end

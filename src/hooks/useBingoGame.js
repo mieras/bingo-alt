@@ -29,14 +29,11 @@ export const useBingoGame = () => {
         // 50% chance to win
         const isWinner = Math.random() < 0.5;
 
-        // If winner, we go up to MAX_DRAWN_BALLS (36).
-        // If loser, we stop earlier (e.g. at 33) to ensure they don't get the last few balls needed.
-        // Since we rig the deck to put missing numbers in the last 3 spots (index 0-2),
-        // stopping at 33 (leaving 3 balls) guarantees a loss.
-        const currentMaxBalls = isWinner ? MAX_DRAWN_BALLS : 33;
+        // Always draw all 36 balls
+        const currentMaxBalls = MAX_DRAWN_BALLS;
         setMaxBalls(currentMaxBalls);
 
-        // Generate Bingo Card (15 numbers from 1-36)
+        // Generate Bingo Card (15 numbers from 1-45)
         const cardNumbers = generateNumbers(15, TOTAL_NUMBERS);
 
         // Fixed empty slot at index 10
@@ -52,52 +49,52 @@ export const useBingoGame = () => {
         }
         setBingoCard(grid);
 
-        // Prepare Draw Deck
+        // Prepare Draw Deck - all 45 numbers shuffled
         const allNumbers = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
-        const cardSet = new Set(cardNumbers);
-        const nonCardNumbers = allNumbers.filter(n => !cardSet.has(n));
 
         let deck = [];
 
         if (isWinner) {
-            // Winner: All 15 card numbers must be within the first 36 balls.
-            // Since we draw all 36 (if needed), and the card is a subset of 1-36,
-            // a simple shuffle of all numbers is sufficient to guarantee a win EVENTUALLY.
-            // However, to support prizes for specific ball counts, we might want to ensure
-            // they don't win TOO early or TOO late if we wanted to rig that.
-            // But for now, random shuffle is fine, as long as we draw enough balls.
+            // Winner: Ensure all 15 card numbers appear in the first 36 balls
+            const cardSet = new Set(cardNumbers);
+            const nonCardNumbers = allNumbers.filter(n => !cardSet.has(n));
 
-            // Actually, if we want to guarantee a win within 36 balls, just shuffling 1-36 is enough.
-            // But we need to make sure we don't accidentally put all card numbers in the first 18 balls
-            // if we want to avoid only high prizes? The user didn't ask for that.
-            // Just "50% chance to win".
+            // Shuffle card numbers and non-card numbers separately
+            const shuffledCardNums = cardNumbers.sort(() => Math.random() - 0.5);
+            const shuffledNonCard = nonCardNumbers.sort(() => Math.random() - 0.5);
 
-            deck = allNumbers.sort(() => Math.random() - 0.5);
+            // First 36 balls must include all card numbers
+            // Take all 15 card numbers + 21 random non-card numbers
+            const first36 = [...shuffledCardNums, ...shuffledNonCard.slice(0, 21)];
+            const shuffledFirst36 = first36.sort(() => Math.random() - 0.5);
 
+            // Remaining 9 balls
+            const remaining = shuffledNonCard.slice(21);
+
+            deck = [...shuffledFirst36, ...remaining];
         } else {
-            // Loser: At least 1 card number must be in the last 3 balls (which won't be drawn).
-            // We stop at 33. The last 3 balls (index 0-2) are never drawn.
+            // Loser: Ensure at least 1 card number is NOT in the first 36 balls
+            const cardSet = new Set(cardNumbers);
+            const nonCardNumbers = allNumbers.filter(n => !cardSet.has(n));
 
-            const numMissing = Math.floor(Math.random() * 3) + 1; // 1, 2, or 3 missing numbers
+            const numMissing = Math.floor(Math.random() * 3) + 1; // 1-3 missing card numbers
 
-            const shuffledCard = cardNumbers.sort(() => Math.random() - 0.5);
-            const missingCardNums = shuffledCard.slice(0, numMissing);
-            const presentCardNums = shuffledCard.slice(numMissing);
+            const shuffledCardNums = cardNumbers.sort(() => Math.random() - 0.5);
+            const missingCardNums = shuffledCardNums.slice(0, numMissing); // These go in last 9
+            const presentCardNums = shuffledCardNums.slice(numMissing);    // These go in first 36
 
             const shuffledNonCard = nonCardNumbers.sort(() => Math.random() - 0.5);
-            const extraMissing = shuffledNonCard.slice(0, 3 - numMissing);
-            const presentNonCard = shuffledNonCard.slice(3 - numMissing);
 
-            // Not drawn pool (size 3) - goes to index 0-2 (end of deck, last to be popped? No, wait.)
-            // pop() takes from the END.
-            // So "Last to be drawn" are at index 0.
-            // So index 0-2 are the ones remaining when we stop at 33.
+            // First 36 balls: presentCardNums + enough non-card to make 36
+            const neededForFirst36 = 36 - presentCardNums.length;
+            const first36 = [...presentCardNums, ...shuffledNonCard.slice(0, neededForFirst36)];
+            const shuffledFirst36 = first36.sort(() => Math.random() - 0.5);
 
-            const notDrawnPool = [...missingCardNums, ...extraMissing];
-            const drawnPool = [...presentCardNums, ...presentNonCard];
-            const shuffledDrawnPool = drawnPool.sort(() => Math.random() - 0.5);
+            // Last 9 balls: missingCardNums + remaining non-card
+            const last9 = [...missingCardNums, ...shuffledNonCard.slice(neededForFirst36)];
+            const shuffledLast9 = last9.sort(() => Math.random() - 0.5);
 
-            deck = [...notDrawnPool, ...shuffledDrawnPool];
+            deck = [...shuffledFirst36, ...shuffledLast9];
         }
 
         drawDeckRef.current = deck;

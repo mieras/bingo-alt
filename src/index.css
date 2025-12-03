@@ -148,7 +148,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: var(--vl-bg);
   color: var(--bingo-text);
-  overflow: hidden;
 }
 
 #root {

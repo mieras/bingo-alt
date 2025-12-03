@@ -2,7 +2,7 @@ import React from 'react';
 
 const GameHistory = ({ history, getBallColor }) => {
     return (
-        <div>
+        <div className="pb-24">
             {history.map((item, idx) => {
                 const isNewest = idx === 0;
 
@@ -31,7 +31,7 @@ const GameHistory = ({ history, getBallColor }) => {
                         </div>
 
                         {/* Ball Number - Rechts */}
-                        <div className="w-16 flex justify-center flex-shrink-0">
+                        <div className="w-16 flex justify-center flex-shrink-0 ">
                             {isNewest ? (
                                 <div
                                     className="w-16 h-16 rounded-full shadow-lg animate-roll-in flex items-center justify-center relative"

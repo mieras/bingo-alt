@@ -28,6 +28,7 @@ export const useBingoGame = () => {
     const startGame = useCallback(() => {
         // 50% chance to win
         const isWinner = Math.random() < 0.5;
+        console.log('🎲 Starting game - isWinner:', isWinner);
 
         // Always draw all 36 balls
         const currentMaxBalls = MAX_DRAWN_BALLS;

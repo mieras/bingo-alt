@@ -33,7 +33,7 @@ function App() {
         <StartScreen onStart={startGame} />
       )}
 
-      {gameState === 'PLAYING' && (
+      {(gameState === 'PLAYING' || gameState === 'WON' || gameState === 'FINISHED') && (
         <GameScreen
           bingoCard={bingoCard}
           currentBall={currentBall}
@@ -44,16 +44,8 @@ function App() {
           onSkip={finishGame}
           progress={progress}
           panelColor={panelColor}
-        />
-      )}
-
-      {(gameState === 'WON' || gameState === 'FINISHED') && (
-        <ResultScreen
+          gameState={gameState}
           prize={prize}
-          history={history}
-          bingoCard={bingoCard}
-          checkedNumbers={checkedNumbers}
-          panelColor={panelColor}
         />
       )}
     </div>

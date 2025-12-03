@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GRID_SIZE, DRAW_INTERVAL } from '../utils/constants';
 import logoImg from '../assets/vlb-logo.png';
+import confetti from 'canvas-confetti';
 
 const GameScreen = ({
     bingoCard,
@@ -11,8 +12,11 @@ const GameScreen = ({
     onCardClick,
     onSkip,
     progress,
-    panelColor
+    panelColor,
+    gameState,
+    prize
 }) => {
+    const isGameFinished = gameState === 'WON' || gameState === 'FINISHED';
     // Random kleur voor ballen (zelfde kleuren als background) - consistent per bal
     const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
     const getBallColor = (ballNumber) => {
@@ -44,6 +48,31 @@ const GameScreen = ({
 
     // Datum formatteren voor display
     const today = new Date().toLocaleDateString('nl-NL', { day: '2-digit', month: '2-digit', year: '2-digit' });
+
+    // Confetti effect bij winst
+    useEffect(() => {
+        if (prize && isGameFinished) {
+            const duration = 5 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+            const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+            const interval = setInterval(function () {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+
+            return () => clearInterval(interval);
+        }
+    }, [prize, isGameFinished]);
 
     return (
         <div className="flex flex-col w-full h-screen overflow-hidden transition-colors duration-500 relative" style={{ backgroundColor: panelColor }}>
@@ -179,7 +208,7 @@ const GameScreen = ({
                 <div className="flex justify-between items-end px-4 py-2 mt-auto max-w-full mx-auto w-full">
                     <h2 className="text-sm font-bold text-white uppercase tracking-wide">Bal</h2>
                     <span className="text-xs font-medium text-white/90">
-                        {String(history.length).padStart(2, '0')}/36
+                        {String(drawnBalls.length).padStart(2, '0')}/36
                     </span>
                 </div>
 
@@ -192,7 +221,7 @@ const GameScreen = ({
                 </div>
             </div>
 
-            {/* Draw History - Fluid Height */}
+            {/* Draw History OR Result - Fluid Height */}
             <div
                 ref={historyRef}
                 className="flex-1 overflow-y-auto bg-white pb-32"
@@ -200,81 +229,106 @@ const GameScreen = ({
                     WebkitOverflowScrolling: 'touch',
                 }}
             >
-                {/* History Items */}
-                <div>
-                    {history.map((item, idx) => {
-                        const isNewest = idx === 0;
+                {isGameFinished ? (
+                    <div className="flex flex-col items-center justify-center h-full p-8 text-center animate-fade-in">
+                        <h2 className="text-4xl font-black text-[#003884] mb-4">
+                            {prize ? 'BINGO!' : 'HELAAS'}
+                        </h2>
+                        {prize ? (
+                            <div className="mb-8">
+                                <p className="text-gray-500 mb-2 uppercase tracking-wide text-sm">Je hebt gewonnen</p>
+                                <p className="text-3xl font-bold text-[#AA167C]">{prize.prize}</p>
+                            </div>
+                        ) : (
+                            <p className="text-gray-500 mb-8">Geen prijs deze keer. Volgende keer beter!</p>
+                        )}
 
-                        return (
-                            <div
-                                key={item.timestamp}
-                                className={`
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="px-8 py-3 bg-[#003884] text-white font-bold rounded-full shadow-lg hover:bg-blue-800 transition-colors"
+                        >
+                            Nog een keer spelen
+                        </button>
+                    </div>
+                ) : (
+                    /* History Items */
+                    <div>
+                        {history.map((item, idx) => {
+                            const isNewest = idx === 0;
+
+                            return (
+                                <div
+                                    key={item.timestamp}
+                                    className={`
                                     flex gap-4 items-center px-4 transition-colors border-b border-gray-100
                                     ${isNewest ? 'py-4 animate-bg-fade' : 'py-3'}
                                 `}
-                            >
-                                {/* Info - Links */}
-                                <div className="flex-1 min-w-0">
-                                    <div className={`font-medium text-gray-700 ${isNewest ? 'text-sm' : 'text-xs'}`}>
-                                        {String(item.index)}e getrokken bal
-                                    </div>
-                                    {item.prize ? (
-                                        <div className="text-s  text-gray-800  mt-0.5">
-                                            {item.prize.label}
+                                >
+                                    {/* Info - Links */}
+                                    <div className="flex-1 min-w-0">
+                                        <div className={`font-medium text-gray-700 ${isNewest ? 'text-sm' : 'text-xs'}`}>
+                                            {String(item.index)}e getrokken bal
                                         </div>
-                                    ) : (
-                                        <div className="text-s text-gray-400 italic mt-0.5">
-                                            Nog geen bingo
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Ball Number - Rechts */}
-                                {/* Ball Number - Rechts */}
-                                <div className="w-16 flex justify-center flex-shrink-0">
-                                    {isNewest ? (
-                                        <div
-                                            className="w-16 h-16 rounded-full shadow-lg animate-roll-in flex items-center justify-center relative"
-                                            style={{
-                                                backgroundColor: getBallColor(item.ball),
-                                                backgroundImage: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.2) 100%)',
-                                                boxShadow: '0 4px 8px rgba(0,0,0,0.2), inset -2px -2px 6px rgba(0,0,0,0.2)'
-                                            }}
-                                        >
-                                            {/* White Badge Container */}
-                                            <div className="w-10 h-10 bg-white rounded-[12px] flex flex-col items-center justify-center shadow-[inset_0_1px_3px_rgba(0,0,0,0.1)] relative z-10">
-                                                <span className="text-2xl font-bold text-gray-800 leading-none pt-1 text-box-trim">{item.ball}</span>
-                                                <div className="w-3 h-[2px] bg-gray-800 mt-[px] rounded-full opacity-80"></div>
+                                        {item.prize ? (
+                                            <div className="text-s  text-gray-800  mt-0.5">
+                                                {item.prize.label}
                                             </div>
-                                        </div>
-                                    ) : (
-                                        <div className="w-12 h-12 flex justify-center items-center font-bold rounded-full leading-none text-box-trim text-xl text-gray-500 bg-gray-100">
-                                            {item.ball}
-                                        </div>
-                                    )}
+                                        ) : (
+                                            <div className="text-s text-gray-400 italic mt-0.5">
+                                                Nog geen bingo
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Ball Number - Rechts */}
+                                    {/* Ball Number - Rechts */}
+                                    <div className="w-16 flex justify-center flex-shrink-0">
+                                        {isNewest ? (
+                                            <div
+                                                className="w-16 h-16 rounded-full shadow-lg animate-roll-in flex items-center justify-center relative"
+                                                style={{
+                                                    backgroundColor: getBallColor(item.ball),
+                                                    backgroundImage: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.2) 100%)',
+                                                    boxShadow: '0 4px 8px rgba(0,0,0,0.2), inset -2px -2px 6px rgba(0,0,0,0.2)'
+                                                }}
+                                            >
+                                                {/* White Badge Container */}
+                                                <div className="w-10 h-10 bg-white rounded-[12px] flex flex-col items-center justify-center shadow-[inset_0_1px_3px_rgba(0,0,0,0.1)] relative z-10">
+                                                    <span className="text-2xl font-bold text-gray-800 leading-none pt-1 text-box-trim">{item.ball}</span>
+                                                    <div className="w-3 h-[2px] bg-gray-800 mt-[px] rounded-full opacity-80"></div>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="w-12 h-12 flex justify-center items-center font-bold rounded-full leading-none text-box-trim text-xl text-gray-500 bg-gray-100">
+                                                {item.ball}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
-                </div>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
 
             {/* Fixed CTA with Gradient Overlay */}
-            <div
-                className="fixed bottom-0 left-0 right-0 h-32 pointer-events-none"
-                style={{
-                    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 40%, rgba(255, 255, 255, 1) 70%)'
-                }}
-            >
-                <div className="flex items-end justify-center h-full px-3 pb-5 pointer-events-none">
-                    <button
-                        onClick={onSkip}
-                        className="w-full max-w-[351px] px-6 py-4 text-sm font-bold tracking-wide uppercase rounded-md bg-white text-[#003884] border-2 border-[#003884] shadow-lg transition-all duration-200 hover:bg-gray-50 hover:shadow-xl active:scale-[0.98] pointer-events-auto"
-                    >
-                        Skip naar uitslag
-                    </button>
+            {!isGameFinished && (
+                <div
+                    className="fixed bottom-0 left-0 right-0 h-32 pointer-events-none"
+                    style={{
+                        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 40%, rgba(255, 255, 255, 1) 70%)'
+                    }}
+                >
+                    <div className="flex items-end justify-center h-full px-3 pb-5 pointer-events-none">
+                        <button
+                            onClick={onSkip}
+                            className="w-full max-w-[351px] px-6 py-4 text-sm font-bold tracking-wide uppercase rounded-md bg-white text-[#003884] border-2 border-[#003884] shadow-lg transition-all duration-200 hover:bg-gray-50 hover:shadow-xl active:scale-[0.98] pointer-events-auto"
+                        >
+                            Skip naar uitslag
+                        </button>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };

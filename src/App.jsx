@@ -39,6 +39,7 @@ function App() {
           currentBall={currentBall}
           checkedNumbers={checkedNumbers}
           history={history}
+          drawnBalls={drawnBalls}
           wigglingNumber={wigglingNumber}
           onCardClick={handleCardClick}
           onSkip={finishGame}

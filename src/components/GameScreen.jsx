@@ -236,20 +236,35 @@ const GameScreen = ({
                             {prize ? 'BINGO!' : 'HELAAS'}
                         </h2>
                         {prize ? (
-                            <div className="mb-8">
-                                <p className="text-gray-500 mb-2 uppercase tracking-wide text-sm">Je hebt gewonnen</p>
-                                <p className="text-3xl font-bold text-[#AA167C]">{prize.prize}</p>
-                            </div>
-                        ) : (
-                            <p className="text-gray-500 mb-8">Geen prijs deze keer. Volgende keer beter!</p>
-                        )}
+                            <>
+                                <div className="mb-6">
+                                    <p className="text-gray-500 mb-2 uppercase tracking-wide text-sm">Je hebt gewonnen</p>
+                                    <p className="text-3xl font-bold text-[#AA167C]">{prize.prize}</p>
+                                </div>
 
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="px-8 py-3 bg-[#003884] text-white font-bold rounded-full shadow-lg hover:bg-blue-800 transition-colors"
-                        >
-                            Nog een keer spelen
-                        </button>
+                                <p className="text-xs text-gray-400 mb-6 max-w-md italic">
+                                    * Onder voorbehoud van een geslaagde toekomstige incasso
+                                </p>
+
+                                <button
+                                    onClick={() => window.location.reload()}
+                                    className="px-8 py-3 bg-[#003884] text-white font-bold rounded-full shadow-lg hover:bg-blue-800 transition-colors"
+                                >
+                                    Hoe ontvang ik mijn prijs?
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <p className="text-gray-500 mb-8">Geen prijs deze keer. Volgende keer beter!</p>
+
+                                <button
+                                    onClick={() => window.location.reload()}
+                                    className="px-8 py-3 bg-[#003884] text-white font-bold rounded-full shadow-lg hover:bg-blue-800 transition-colors"
+                                >
+                                    Nog een keer spelen
+                                </button>
+                            </>
+                        )}
                     </div>
                 ) : (
                     /* History Items */

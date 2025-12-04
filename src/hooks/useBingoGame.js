@@ -93,6 +93,11 @@ export const useBingoGame = () => {
     }, [bingoCard]);
 
     const drawNextBall = useCallback(() => {
+        // Auto-check previous ball if it was on card and not checked
+        if (currentBall && bingoCard.includes(currentBall) && !checkedNumbers.has(currentBall)) {
+            setCheckedNumbers(prev => new Set(prev).add(currentBall));
+        }
+
         // Stop if we reached max balls or deck is empty
         if (drawnBalls.length >= maxBalls || drawDeckRef.current.length === 0) {
             setGameState('FINISHED');
@@ -101,11 +106,6 @@ export const useBingoGame = () => {
 
         const nextBall = drawDeckRef.current.pop();
         const newDrawn = [...drawnBalls, nextBall];
-
-        // Auto-check previous ball if it was on card and not checked
-        if (currentBall && bingoCard.includes(currentBall) && !checkedNumbers.has(currentBall)) {
-            setCheckedNumbers(prev => new Set(prev).add(currentBall));
-        }
 
         setDrawnBalls(prev => [...prev, nextBall]);
         setCurrentBall(nextBall);

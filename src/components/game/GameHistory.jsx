@@ -44,7 +44,6 @@ const GameHistory = ({ history, getBallColor, isGameFinished }) => {
                                     {/* White Badge Container */}
                                     <div className="w-10 h-10 bg-white rounded-[12px] flex flex-col items-center justify-center shadow-[inset_0_1px_3px_rgba(0,0,0,0.1)] relative z-10">
                                         <span className="text-2xl font-bold text-gray-800 leading-none pt-1 text-box-trim">{item.ball}</span>
-                                        <div className="w-3 h-[2px] bg-gray-800 mt-[px] rounded-full opacity-80"></div>
                                     </div>
                                 </div>
                             ) : (

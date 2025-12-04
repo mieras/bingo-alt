@@ -124,6 +124,7 @@ const GameScreen = ({
                     <GameHistory
                         history={history}
                         getBallColor={getBallColor}
+                        isGameFinished={isGameFinished}
                     />
                 )}
             </div>

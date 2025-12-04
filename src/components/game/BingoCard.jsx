@@ -26,6 +26,22 @@ const BingoCard = ({
                     const isEmpty = idx === 10;
                     const showMatchHint = showHint && isCurrentMatch;
 
+                    // Determine classes based on state
+                    let buttonClass = "w-full h-full flex items-center justify-center text-3xl font-bold relative ";
+                    let textClass = "relative z-10 ";
+
+                    if (isWiggling) {
+                        buttonClass += "text-red-500 animate-wiggle";
+                        textClass += "text-red-500";
+                    } else if (isChecked) {
+                        buttonClass += "transition-colors duration-200";
+                        textClass += "text-[#014087]";
+                    } else {
+                        // Default / Hint state
+                        buttonClass += "transition-colors duration-200 hover:bg-gray-50 text-[#014087]";
+                        textClass += "text-[#014087]";
+                    }
+
                     return (
                         <div
                             key={idx}
@@ -36,7 +52,7 @@ const BingoCard = ({
                                 <div className="flex items-center justify-center w-full h-full p-2">
                                     <svg width="80%" height="80%" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g clipPath="url(#clip0_15_1098)">
-                                            <path d="M18.0487 31.9676C10.3202 31.9676 4.03295 25.6811 4.03295 17.9541C4.03295 14.6074 5.21378 11.5321 7.17896 9.11956L4.31891 6.26C1.62906 9.4123 0 13.4953 0 17.9541C0 27.9046 8.0967 36 18.0487 36C22.5083 36 26.5921 34.3709 29.7449 31.6815L26.8847 28.8218C24.4717 30.7868 21.3961 31.9676 18.0487 31.9676Z" fill="#014087" />
+                                            <path d="M18.0487 31.9676C10.3202 31.9676 4.03295 25.6811 4.03295 17.9541C4.03295 14.6074 5.21378 11.5321 7.17896 9.11956L4.31891 6.26C1.62906 9.4123 0 13.4953 0 17.9541C0 27.9046 8.0967 36 18.0487 36C22.5083 36 26.5921 34.3709 29.7449 31.9676L26.8847 28.8218C24.4717 30.7868 21.3961 31.9676 18.0487 31.9676Z" fill="#014087" />
                                             <path d="M18.0487 7.9729C12.5442 7.9729 8.06574 12.4504 8.06574 17.9541C8.06574 23.4577 12.5442 27.9352 18.0487 27.9352C20.2835 27.9352 22.349 27.1972 24.0145 25.9521L21.1099 23.0481C20.2148 23.587 19.1698 23.9029 18.0486 23.9029C14.7627 23.9029 12.0987 21.2394 12.0987 17.9541C12.0987 14.6686 14.7627 12.0051 18.0486 12.0051C20.7046 12.0051 22.9524 13.746 23.7174 16.148H14.2087L17.7132 19.652H27.8839C27.979 19.0997 28.0314 18.5331 28.0314 17.9541C28.0314 12.4504 23.5534 7.9729 18.0487 7.9729Z" fill="#014087" />
                                             <path d="M11.9869 2.44316C12.1805 2.89734 11.7249 3.14944 11.5199 3.23691L11.3119 3.32549L10.9153 2.39522L11.1692 2.28695C11.5915 2.10725 11.8664 2.15995 11.9869 2.44316ZM12.9721 2.01136C12.7881 1.57972 12.2632 0.947262 10.8185 1.56258L9.64653 2.06184L11.1227 5.52528L12.0763 5.11904L11.6162 4.03971L11.7716 3.97351L12.9699 4.73836L14.1194 4.24862L12.6608 3.41153C13.0718 3.00053 13.1827 2.50587 12.9721 2.01136Z" fill="#014087" />
                                             <path d="M9.99088 6.22167L9.29623 2.19514L8.40803 2.82411L8.81101 4.93929L6.93568 3.86741L6.05241 4.49304L9.61506 6.48487L9.99088 6.22167Z" fill="#014087" />
@@ -65,14 +81,9 @@ const BingoCard = ({
                                 <button
                                     onClick={() => onCardClick(num)}
                                     disabled={!num || isChecked}
-                                    className={`
-                                        w-full h-full flex items-center justify-center 
-                                        text-3xl font-bold transition-all duration-200 relative
-                                        ${isChecked ? '' : 'hover:bg-gray-50 text-[#014087]'}
-                                        ${isWiggling ? 'text-red-500 animate-wiggle' : ''}
-                                    `}
+                                    className={buttonClass}
                                 >
-                                    <span className={`relative z-10 ${isChecked ? 'text-[#014087]' : ''}`}>{num}</span>
+                                    <span className={textClass}>{num}</span>
                                     {showMatchHint && (
                                         <div className="absolute inset-0 z-0 bg-[#DDF5F7] animate-hint-pulse" />
                                     )}

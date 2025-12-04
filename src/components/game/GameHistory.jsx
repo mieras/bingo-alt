@@ -1,6 +1,6 @@
 import React from 'react';
 
-const GameHistory = ({ history, getBallColor }) => {
+const GameHistory = ({ history, getBallColor, isGameFinished }) => {
     return (
         <div className="pb-24">
             {history.map((item, idx) => {
@@ -10,16 +10,16 @@ const GameHistory = ({ history, getBallColor }) => {
                     <div
                         key={item.timestamp}
                         className={`
-                        flex gap-4 items-center px-4 transition-colors border-b border-gray-100
+                        flex gap-4 items-center px-4 transition-colors
                         ${isNewest ? 'py-4 animate-bg-fade' : 'py-3'}
-                    `}
+`}
                     >
                         {/* Info - Links */}
                         <div className="flex-1 min-w-0">
-                            <div className={`font-medium text-gray-700 ${isNewest ? 'text-sm' : 'text-xs'}`}>
+                            <div className={`font - medium text - gray - 700 ${isNewest ? 'text-sm' : 'text-xs'} `}>
                                 {String(item.index)}e getrokken bal
                             </div>
-                            {item.prize ? (
+                            {isGameFinished && item.prize ? (
                                 <div className="text-s  text-gray-800  mt-0.5">
                                     {item.prize.label}
                                 </div>

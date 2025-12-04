@@ -188,7 +188,7 @@ export const useBingoGame = () => {
             return;
         }
 
-        // Calculate delay with easing (starts fast, ends slower for suspense)
+        // Calculate delay with easing (starts slow, gets faster for acceleration)
         let delay = SKIP_BALL_INTERVAL;
 
         if (SKIP_USE_EASING) {
@@ -196,9 +196,9 @@ export const useBingoGame = () => {
             const currentIndex = drawnBalls.length;
             const progress = currentIndex / totalBalls; // 0 to 1
 
-            // Ease-out cubic: starts fast, ends slow
-            const easedProgress = 1 - Math.pow(1 - progress, 3);
-            delay = SKIP_BALL_INTERVAL * (1 + easedProgress * SKIP_EASING_FACTOR);
+            // Ease-in cubic: starts slow, gets faster
+            const easedProgress = Math.pow(progress, 3);
+            delay = SKIP_BALL_INTERVAL * (1 + (1 - easedProgress) * SKIP_EASING_FACTOR);
         }
 
         const timeout = setTimeout(() => {

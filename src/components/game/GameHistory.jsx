@@ -19,13 +19,13 @@ const GameHistory = ({ history, getBallColor, isGameFinished }) => {
                             <div className={`font - medium text - gray - 700 ${isNewest ? 'text-sm' : 'text-xs'} `}>
                                 {String(item.index)}e getrokken bal
                             </div>
-                            {isGameFinished && item.prize ? (
-                                <div className="text-s  text-gray-800  mt-0.5">
+                            {item.prize ? (
+                                <div className="text-s text-gray-800 mt-0.5 font-semibold">
                                     {item.prize.label}
                                 </div>
                             ) : (
                                 <div className="text-s text-gray-400 italic mt-0.5">
-                                    Nog geen bingo
+                                    De Bingo is nog niet gevallen
                                 </div>
                             )}
                         </div>

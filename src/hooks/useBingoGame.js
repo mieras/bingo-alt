@@ -94,10 +94,9 @@ export const useBingoGame = () => {
 
     const drawNextBall = useCallback(() => {
         // Auto-check previous ball if it was on card and not checked
-        let updatedChecked = checkedNumbers;
+        // This happens when a new ball is drawn - the previous one gets auto-checked if not manually checked
         if (currentBall && bingoCard.includes(currentBall) && !checkedNumbers.has(currentBall)) {
-            updatedChecked = new Set(checkedNumbers).add(currentBall);
-            setCheckedNumbers(updatedChecked);
+            setCheckedNumbers(prev => new Set(prev).add(currentBall));
         }
 
         // Stop if we reached max balls or deck is empty
@@ -112,12 +111,8 @@ export const useBingoGame = () => {
         setDrawnBalls(prev => [...prev, nextBall]);
         setCurrentBall(nextBall);
 
-        // Auto-check the new ball if it's on the card
-        let finalChecked = updatedChecked;
-        if (bingoCard.includes(nextBall) && !updatedChecked.has(nextBall)) {
-            finalChecked = new Set(updatedChecked).add(nextBall);
-            setCheckedNumbers(finalChecked);
-        }
+        // Do NOT auto-check the new ball - user must click it manually
+        // The new ball will only be auto-checked when the NEXT ball is drawn (if still not checked)
 
         // Add to history
         // Always show prize based on ball index (independent of whether current player has bingo)
@@ -232,16 +227,16 @@ export const useBingoGame = () => {
         const timeout = setTimeout(() => {
             const nextBallIndex = drawnBalls.length;
             const nextBall = skipTarget.balls[nextBallIndex];
+            const previousBall = currentBall;
 
             setDrawnBalls(prev => [...prev, nextBall]);
             setCurrentBall(nextBall);
 
-            // Auto-check card
-            let updatedChecked = checkedNumbers;
-            if (bingoCard.includes(nextBall)) {
-                updatedChecked = new Set(checkedNumbers).add(nextBall);
-                setCheckedNumbers(updatedChecked);
+            // Auto-check previous ball if it was on card and not checked
+            if (previousBall && bingoCard.includes(previousBall) && !checkedNumbers.has(previousBall)) {
+                setCheckedNumbers(prev => new Set(prev).add(previousBall));
             }
+            // Do NOT auto-check the new ball - it will be auto-checked when next ball is drawn if still not checked
 
             // Update history
             // Always show prize based on ball index (independent of whether current player has bingo)
@@ -271,25 +266,32 @@ export const useBingoGame = () => {
         if (!number) return;
 
         if (drawnBalls.includes(number)) {
-            // If the clicked number is the CURRENT ball, we can trigger a "fast forward" 
-            // to fill all other currently drawn numbers that are on the card.
-
+            // Number is drawn - toggle checked state
             const newChecked = new Set(checkedNumbers);
-            newChecked.add(number);
-
-            // Auto-fill other drawn numbers on the card
-            bingoCard.forEach(n => {
-                if (n && drawnBalls.includes(n) && !newChecked.has(n)) {
-                    newChecked.add(n);
+            const wasChecked = newChecked.has(number);
+            
+            if (wasChecked) {
+                // Already checked - uncheck it
+                newChecked.delete(number);
+                setCheckedNumbers(newChecked);
+            } else {
+                // Not checked - check it
+                newChecked.add(number);
+                setCheckedNumbers(newChecked);
+                
+                // If manually checked, immediately draw next ball
+                clearInterval(timerRef.current);
+                drawNextBall();
+                
+                // Restart the timer for the next ball
+                if (gameState === 'PLAYING') {
+                    timerRef.current = setInterval(() => {
+                        drawNextBall();
+                    }, DRAW_INTERVAL);
                 }
-            });
-
-            setCheckedNumbers(newChecked);
-
-            // Immediately draw the next ball to keep the pace
-            drawNextBall();
+            }
         } else {
-            // Wiggle
+            // Number not drawn yet - wiggle
             setWigglingNumber(number);
             setTimeout(() => setWigglingNumber(null), 500);
         }

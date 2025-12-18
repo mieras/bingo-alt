@@ -1,5 +1,45 @@
 import React from 'react';
 
+const highlightPrizeText = (labelText, prizeText) => {
+    if (!labelText) return null;
+
+    const bingoMatch = labelText.match(/bingo!?/i);
+
+    if (!bingoMatch) {
+        return labelText;
+    }
+
+    const beforeBingo = labelText.slice(0, bingoMatch.index);
+    const afterBingo = labelText.slice(bingoMatch.index + bingoMatch[0].length);
+    const normalizedAfter = afterBingo.toLowerCase();
+    const normalizedPrize = (prizeText || '').toLowerCase();
+    const prizeIndex = normalizedPrize ? normalizedAfter.indexOf(normalizedPrize) : -1;
+
+    if (prizeIndex === -1) {
+        return (
+            <>
+                {beforeBingo}
+                <span className="font-semibold text-gray-900">{bingoMatch[0]}</span>
+                {afterBingo}
+            </>
+        );
+    }
+
+    const beforePrize = afterBingo.slice(0, prizeIndex);
+    const afterPrize = afterBingo.slice(prizeIndex + prizeText.length);
+    const highlightedPrize = afterBingo.slice(prizeIndex, prizeIndex + prizeText.length);
+
+    return (
+        <>
+            {beforeBingo}
+            <span className="font-semibold text-gray-900">{bingoMatch[0]}</span>
+            {beforePrize}
+            <span className="font-semibold text-gray-900">{highlightedPrize}</span>
+            {afterPrize}
+        </>
+    );
+};
+
 const GameHistory = ({ history, getBallColor, isGameFinished }) => {
     return (
         <div className="pb-24">
@@ -10,7 +50,7 @@ const GameHistory = ({ history, getBallColor, isGameFinished }) => {
                     <div
                         key={item.timestamp}
                         className={`
-                        flex gap-4 items-center px-4 transition-colors
+                        flex gap-4 items-center px-4 transition-colors border-b border-gray-100
                         ${isNewest ? 'py-4 animate-bg-fade' : 'py-3'}
 `}
                     >
@@ -20,8 +60,8 @@ const GameHistory = ({ history, getBallColor, isGameFinished }) => {
                                 {String(item.index)}e getrokken bal
                             </div>
                             {item.prize ? (
-                                <div className="text-s text-gray-800 mt-0.5 font-semibold">
-                                    {item.prize.label}
+                                <div className="text-s text-gray-800 mt-0.5 leading-snug">
+                                    {highlightPrizeText(item.prize.label, item.prize.prize)}
                                 </div>
                             ) : (
                                 <div className="text-s text-gray-400 italic mt-0.5">

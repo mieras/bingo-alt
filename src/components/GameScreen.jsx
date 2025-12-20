@@ -44,7 +44,7 @@ const GameScreen = ({
         setShowHint(false);
         const hintTimer = setTimeout(() => {
             setShowHint(true);
-        }, DRAW_INTERVAL - 2500);
+        }, DRAW_INTERVAL - 2000); // 2 seconden voor nieuwe draw
 
         return () => clearTimeout(hintTimer);
     }, [currentBall, isSkipping]);

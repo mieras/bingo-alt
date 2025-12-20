@@ -88,12 +88,11 @@ export const useBingoGame = () => {
     const checkWin = useCallback((checked) => {
         // Win if all numbers in bingoCard (except null) are in checked
         const numbersToWin = bingoCard.filter(n => n !== null);
-        const isWin = numbersToWin.every(n => checked.has(n));
-        return isWin;
+        return numbersToWin.every(n => checked.has(n));
     }, [bingoCard]);
 
     const drawNextBall = useCallback(() => {
-        // Auto-check previous ball if it was on card and not checked
+        // Auto-check previous ball if it was on card and not checked (only when new ball is drawn)
         if (currentBall && bingoCard.includes(currentBall) && !checkedNumbers.has(currentBall)) {
             setCheckedNumbers(prev => new Set(prev).add(currentBall));
         }
@@ -109,6 +108,31 @@ export const useBingoGame = () => {
 
         setDrawnBalls(prev => [...prev, nextBall]);
         setCurrentBall(nextBall);
+
+        // Don't auto-check the new ball - user must check it manually
+        // It will be auto-checked when the next ball is drawn if user didn't check it
+        let updatedChecked = checkedNumbers;
+
+        // Check if this is the last ball and if we won
+        // Note: updatedChecked includes the auto-checked previous ball
+        const isLastBall = newDrawn.length >= maxBalls;
+        if (isLastBall) {
+            // Check win condition with the updated checked numbers (includes auto-checked previous ball)
+            const numbersToWin = bingoCard.filter(n => n !== null);
+            const isWin = numbersToWin.every(n => updatedChecked.has(n));
+            
+            if (isWin) {
+                // WIN!
+                clearInterval(timerRef.current);
+                setGameState('WON');
+                const lookupCount = Math.max(newDrawn.length, 19);
+                const wonPrize = PRIZES.find(p => p.balls === lookupCount);
+                setPrize(wonPrize);
+            } else {
+                // No win, game finished
+                setGameState('FINISHED');
+            }
+        }
 
         // Update History
         // Check if this ball causes a win (if we auto-checked it or user checked it)
@@ -307,8 +331,8 @@ export const useBingoGame = () => {
             const idx = allDrawn.indexOf(num);
             if (idx === -1) {
                 missingCount++;
-            } else {
-                if (idx > maxIndex) maxIndex = idx;
+            } else if (idx > maxIndex) {
+                maxIndex = idx;
             }
         });
 

@@ -7,10 +7,11 @@ import GameHeader from './game/GameHeader';
 import BingoCard from './game/BingoCard';
 import GameProgress from './game/GameProgress';
 import GameHistory from './game/GameHistory';
-import GameResult from './game/GameResult';
 import GameControls from './game/GameControls';
 import BouncingBall from './game/BouncingBall';
 import SkipTicker from './game/SkipTicker';
+import WonOverlay from './WonOverlay';
+import LostOverlay from './LostOverlay';
 
 const GameScreen = ({
     bingoCard,
@@ -25,7 +26,8 @@ const GameScreen = ({
     progress,
     panelColor,
     gameState,
-    prize
+    prize,
+    onBackToOverview
 }) => {
     const isGameFinished = gameState === 'WON' || gameState === 'FINISHED';
 
@@ -83,10 +85,63 @@ const GameScreen = ({
         }
     }, [prize, gameState]);
 
+    // Show overlay when game is finished
+    const showOverlay = gameState === 'WON' || gameState === 'FINISHED';
+    const [overlayClosed, setOverlayClosed] = useState(false);
+
+    // Reset overlay closed state when game state changes
+    useEffect(() => {
+        if (showOverlay) {
+            setOverlayClosed(false);
+        }
+    }, [showOverlay]);
+
+    const handleCloseOverlay = () => {
+        setOverlayClosed(true);
+    };
+
+    const handleBackToOverview = () => {
+        if (onBackToOverview) {
+            onBackToOverview();
+        } else {
+            // Fallback: reload page
+            window.location.reload();
+        }
+    };
+
+    // Header close button handler - does nothing when overlay is active
+    const handleHeaderClose = () => {
+        // Do nothing when overlay is active
+        if (showOverlay && !overlayClosed) {
+            return;
+        }
+        // Could add other functionality here if needed when no overlay is active
+    };
+
     return (
         <div className="flex overflow-hidden relative flex-col w-full transition-colors duration-500 h-dvh" style={{ backgroundColor: panelColor }}>
+            <GameHeader 
+                onClose={handleHeaderClose}
+            />
 
-            <GameHeader />
+            {/* Overlay for Won/Lost - Inside container, below header */}
+            {showOverlay && !overlayClosed && (
+                <>
+                    {gameState === 'WON' && prize ? (
+                        <WonOverlay
+                            prize={prize}
+                            drawnBalls={drawnBalls}
+                            onClose={handleCloseOverlay}
+                            onBackToOverview={handleBackToOverview}
+                        />
+                    ) : (
+                        <LostOverlay
+                            onClose={handleCloseOverlay}
+                            onBackToOverview={handleBackToOverview}
+                        />
+                    )}
+                </>
+            )}
 
             <div className="flex flex-col shrink-0">
                 {/* Bingo Card Container */}
@@ -107,7 +162,7 @@ const GameScreen = ({
                 />
             </div>
 
-            {/* Draw History OR Result - Fluid Height */}
+            {/* Draw History - Fluid Height */}
             <div
                 ref={historyRef}
                 className="overflow-y-auto flex-1 bg-white"
@@ -115,7 +170,7 @@ const GameScreen = ({
                     WebkitOverflowScrolling: 'touch',
                 }}
                 role="region"
-                aria-label="Spel geschiedenis en resultaten"
+                aria-label="Spel geschiedenis"
             >
                 {isSkipping ? (
                     <div className="flex flex-col justify-center items-center h-full">
@@ -127,8 +182,6 @@ const GameScreen = ({
                             <SkipTicker drawnBallsCount={drawnBalls.length} />
                         </div>
                     </div>
-                ) : isGameFinished ? (
-                    <GameResult prize={prize} />
                 ) : (
                     <GameHistory
                         history={history}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { getPrizeThumbnail } from '../../utils/constants';
 
 const highlightPrizeText = (labelText, prizeText) => {
     if (!labelText) return null;
@@ -50,13 +51,31 @@ const GameHistory = ({ history, getBallColor, isGameFinished }) => {
                     <li
                         key={item.timestamp}
                         className={`
-                        flex gap-4 items-center px-4 transition-colors border-b border-gray-100
+                        flex gap-3 items-center px-2 transition-colors border-b border-gray-100
                         ${isNewest ? 'py-4 animate-bg-fade' : 'py-3'}
 `}
                     >
-                        {/* Info - Links */}
+                        {/* Ball Number - Links (met originele vorm) */}
+                        <div className="flex justify-center w-14 shrink-0">
+                            <div
+                                className={`w-13 h-13 rounded-full shadow-lg flex items-center justify-center relative ${isNewest ? 'animate-slide-in-left' : ''}`}
+                                style={{
+                                    backgroundColor: getBallColor(item.ball),
+                                    backgroundImage: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.2) 100%)',
+                                    boxShadow: '0 4px 8px rgba(0,0,0,0.2), inset -2px -2px 6px rgba(0,0,0,0.2)'
+                                }}
+                            >
+                                {/* White Badge Container */}
+                                <div className="w-8 h-8 bg-white rounded-[12px] flex flex-col items-center justify-center shadow-[inset_1px_2px_1px_rgba(0,0,0,0.05)] relative z-0">
+                                    <span className="pt-0 font-bold leading-none text-gray-900 text-l text-box-trim">{item.ball}</span>
+                                    <div className="w-3 h-[2.5px] bg-gray-900 mt-[0px] rounded-full opacity-80"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Info - Midden */}
                         <div className="flex-1 min-w-0">
-                            <div className={`font - medium text - gray - 700 ${isNewest ? 'text-sm' : 'text-xs'} `}>
+                            <div className={`font-medium text-gray-700 ${isNewest ? 'text-xs' : 'text-xs'}`}>
                                 {String(item.index)}e getrokken bal
                             </div>
                             {item.prize ? (
@@ -64,35 +83,22 @@ const GameHistory = ({ history, getBallColor, isGameFinished }) => {
                                     {highlightPrizeText(item.prize.label, item.prize.prize)}
                                 </div>
                             ) : (
-                                <div className="text-s text-gray-600 italic mt-0.5">
+                                <div className="text-s text-gray-500 italic mt-0.5">
                                     De Bingo is nog niet gevallen
                                 </div>
                             )}
                         </div>
 
-                        {/* Ball Number - Rechts */}
-                        <div className="w-16 flex justify-center flex-shrink-0 ">
-                            {isNewest ? (
-                                <div
-                                    className="w-16 h-16 rounded-full shadow-lg animate-roll-in flex items-center justify-center relative"
-                                    style={{
-                                        backgroundColor: getBallColor(item.ball),
-                                        backgroundImage: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.2) 100%)',
-                                        boxShadow: '0 4px 8px rgba(0,0,0,0.2), inset -2px -2px 6px rgba(0,0,0,0.2)'
-                                    }}
-                                >
-                                    {/* White Badge Container */}
-                                    <div className="w-10 h-10 bg-white rounded-[12px] flex flex-col items-center justify-center shadow-[inset_0_1px_3px_rgba(0,0,0,0.1)] relative z-10">
-                                        <span className="text-2xl font-bold text-gray-800 leading-none pt-1 text-box-trim">{item.ball}</span>
-                                        <div className="w-3 h-[2px] bg-gray-800 mt-[px] rounded-full opacity-80"></div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="w-12 h-12 flex justify-center items-center font-bold rounded-full leading-none text-box-trim text-xl text-gray-500 bg-gray-100">
-                                    {item.ball}
-                                </div>
-                            )}
-                        </div>
+                        {/* Prize Thumbnail - Rechts (als prijs beschikbaar) */}
+                        {item.prize && (
+                            <div className="overflow-hidden w-16 h-16 bg-gray-100 rounded-lg shrink-0">
+                                <img
+                                    src={getPrizeThumbnail(item.prize.prize)}
+                                    alt={item.prize.prize}
+                                    className="object-cover w-full h-full"
+                                />
+                            </div>
+                        )}
                     </li>
                 );
             })}

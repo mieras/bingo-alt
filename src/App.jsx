@@ -31,29 +31,32 @@ function App() {
   }, [gameState === 'IDLE']); // Reset bij nieuwe game
 
   return (
-    <div className="App h-full w-full">
-      {gameState === 'IDLE' && (
-        <StartScreen onStart={startGame} onSkipToResult={skipToResult} />
-      )}
+    <div className="App h-full w-full flex items-center justify-center">
+      <div className="w-full max-w-[400px] h-full mx-auto">
+        {gameState === 'IDLE' && (
+          <StartScreen onStart={startGame} onSkipToResult={skipToResult} />
+        )}
 
-      {(gameState === 'PLAYING' || gameState === 'WON' || gameState === 'FINISHED') && (
-        <GameScreen
-          bingoCard={bingoCard}
-          currentBall={currentBall}
-          checkedNumbers={checkedNumbers}
-          history={history}
-          drawnBalls={drawnBalls}
-          wigglingNumber={wigglingNumber}
-          onCardClick={handleCardClick}
-          onSkip={finishGame}
-          isSkipping={isSkipping}
-          skipOutcome={skipOutcome}
-          progress={progress}
-          panelColor={panelColor}
-          gameState={gameState}
-          prize={prize}
-        />
-      )}
+        {(gameState === 'PLAYING' || gameState === 'WON' || gameState === 'FINISHED') && (
+          <GameScreen
+            bingoCard={bingoCard}
+            currentBall={currentBall}
+            checkedNumbers={checkedNumbers}
+            history={history}
+            drawnBalls={drawnBalls}
+            wigglingNumber={wigglingNumber}
+            onCardClick={handleCardClick}
+            onSkip={finishGame}
+            isSkipping={isSkipping}
+            skipOutcome={skipOutcome}
+            progress={progress}
+            panelColor={panelColor}
+            gameState={gameState}
+            prize={prize}
+            onBackToOverview={() => window.location.reload()}
+          />
+        )}
+      </div>
     </div>
   );
 }

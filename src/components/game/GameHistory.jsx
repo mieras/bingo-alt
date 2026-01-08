@@ -1,4 +1,5 @@
 import React from 'react';
+import { getPrizeThumbnail } from '../../utils/constants';
 
 const highlightPrizeText = (labelText, prizeText) => {
     if (!labelText) return null;
@@ -54,24 +55,8 @@ const GameHistory = ({ history, getBallColor, isGameFinished }) => {
                         ${isNewest ? 'py-4 animate-bg-fade' : 'py-3'}
 `}
                     >
-                        {/* Info - Links */}
-                        <div className="flex-1 min-w-0">
-                            <div className={`font - medium text - gray - 700 ${isNewest ? 'text-sm' : 'text-xs'} `}>
-                                {String(item.index)}e getrokken bal
-                            </div>
-                            {item.prize ? (
-                                <div className="text-s text-gray-800 mt-0.5 leading-snug">
-                                    {highlightPrizeText(item.prize.label, item.prize.prize)}
-                                </div>
-                            ) : (
-                                <div className="text-s text-gray-600 italic mt-0.5">
-                                    De Bingo is nog niet gevallen
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Ball Number - Rechts */}
-                        <div className="w-16 flex justify-center flex-shrink-0 ">
+                        {/* Ball Number - Links (met kleur behouden) */}
+                        <div className="w-16 flex justify-center shrink-0">
                             {isNewest ? (
                                 <div
                                     className="w-16 h-16 rounded-full shadow-lg animate-roll-in flex items-center justify-center relative"
@@ -88,11 +73,43 @@ const GameHistory = ({ history, getBallColor, isGameFinished }) => {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="w-12 h-12 flex justify-center items-center font-bold rounded-full leading-none text-box-trim text-xl text-gray-500 bg-gray-100">
+                                <div
+                                    className="w-12 h-12 flex justify-center items-center font-bold rounded-full leading-none text-box-trim text-xl text-white"
+                                    style={{
+                                        backgroundColor: getBallColor(item.ball),
+                                    }}
+                                >
                                     {item.ball}
                                 </div>
                             )}
                         </div>
+
+                        {/* Info - Midden */}
+                        <div className="flex-1 min-w-0">
+                            <div className={`font-medium text-gray-700 ${isNewest ? 'text-sm' : 'text-xs'}`}>
+                                {String(item.index)}e getrokken bal
+                            </div>
+                            {item.prize ? (
+                                <div className="text-s text-gray-800 mt-0.5 leading-snug">
+                                    {highlightPrizeText(item.prize.label, item.prize.prize)}
+                                </div>
+                            ) : (
+                                <div className="text-s text-gray-600 italic mt-0.5">
+                                    De Bingo is nog niet gevallen
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Prize Thumbnail - Rechts (als prijs beschikbaar) */}
+                        {item.prize && (
+                            <div className="w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                                <img
+                                    src={getPrizeThumbnail(item.prize.prize)}
+                                    alt={item.prize.prize}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        )}
                     </li>
                 );
             })}

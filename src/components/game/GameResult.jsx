@@ -61,24 +61,24 @@ const GameResult = ({ prize }) => {
     if (prize) {
         // WIN SCHERM - Simpel en duidelijk
         return (
-            <div className="flex flex-col items-center justify-center min-h-full p-6 py-8 text-center animate-fade-in max-w-md mx-auto w-full">
+            <div className="flex flex-col justify-center items-center p-6 py-8 mx-auto w-full max-w-md min-h-full text-center animate-fade-in">
                 <h2 className="text-5xl md:text-6xl font-black text-[#003884] mb-6">
                     BINGO!
                 </h2>
-                
+
                 <div className="mb-8 w-full">
                     <p className="text-xl md:text-2xl font-bold text-[#AA167C] mb-6 tracking-tight">
                         {prize.prize}
                     </p>
-                    
-                    <div className="bg-white/90 rounded-lg p-6 mb-6 shadow-lg">
+
+                    <div className="p-6 mb-6 rounded-lg shadow-lg bg-white/90">
                         <p className="text-[#29313d] text-base md:text-lg leading-relaxed mb-4">
                             Je ontvangt informatie over de ontvangst van je prijs in de mail en per post.
                         </p>
                         <p className="text-[#29313d] text-base md:text-lg leading-relaxed">
                             Je prijs is ook te zien op de pagina{' '}
-                            <a 
-                                href="/prijzen" 
+                            <a
+                                href="/prijzen"
                                 className="text-[#003884] font-bold underline hover:text-[#AA167C] transition-colors"
                             >
                                 'prijzen'
@@ -100,8 +100,8 @@ const GameResult = ({ prize }) => {
 
     // VERLIES SCHERM - Met carousel
     return (
-        <div className="flex flex-col min-h-full p-6 py-8 animate-fade-in overflow-hidden max-w-md mx-auto w-full">
-            <div className="text-center mb-8">
+        <div className="flex overflow-hidden flex-col p-6 py-8 mx-auto w-full max-w-md min-h-full animate-fade-in">
+            <div className="mb-8 text-center">
                 <h2 className="text-5xl md:text-6xl font-black text-[#003884] mb-2">
                     Helaas
                 </h2>
@@ -114,8 +114,8 @@ const GameResult = ({ prize }) => {
             </div>
 
             {/* Carousel Container */}
-            <div className="flex-1 flex flex-col min-h-0">
-                <div className="w-full overflow-hidden">
+            <div className="flex flex-col flex-1 min-h-0">
+                <div className="overflow-hidden w-full">
                     <Swiper
                         modules={[Autoplay, Pagination, Parallax]}
                         spaceBetween={16}
@@ -142,75 +142,75 @@ const GameResult = ({ prize }) => {
                         pagination={{
                             clickable: true,
                         }}
-                        className="swiper-initialized swiper-horizontal -mb-2 -mt-2 swiper-backface-hidden"
+                        className="-mt-2 -mb-2 swiper-initialized swiper-horizontal swiper-backface-hidden"
                         data-testid="Carousel"
                         aria-label="Carousel met informatie over extra mogelijkheden"
                     >
-                    {carouselCards.map((card) => (
-                        <SwiperSlide
-                            key={card.id}
-                            className="!h-auto pb-2 pt-2"
-                            data-testid="CarouselSlide"
-                            role="group"
-                            aria-label={`Slide ${card.id}: ${card.title}`}
-                        >
-                            <div className="h-full w-full">
-                                <div className="h-full w-full bg-white border border-[#e5e5e5] rounded-lg overflow-hidden shadow-[0px_2px_8px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_4px_12px_0px_rgba(0,0,0,0.15)] transition-shadow flex flex-col">
-                                    {/* Thumbnail with parallax */}
-                                    <div className="relative overflow-hidden shrink-0 h-[180px] md:h-[240px] w-full">
-                                        <div 
-                                            className="overflow-hidden absolute h-full w-full"
-                                            data-swiper-parallax="-23%"
-                                        >
-                                            <img
-                                                src={card.thumbnail}
-                                                alt={card.title}
-                                                className="h-full w-full object-cover"
-                                                data-swiper-parallax-scale="0.15"
-                                            />
-                                        </div>
-                                    </div>
-                                    
-                                    {/* Content */}
-                                    <div className="flex grow flex-col gap-5 px-5 py-5">
-                                        <div className="grow flex flex-col gap-2">
-                                            <div>
-                                                <h3 
-                                                    className="text-lg font-bold text-[#29313d] mb-2 break-words"
-                                                    data-swiper-parallax="-100"
-                                                >
-                                                    {card.title}
-                                                </h3>
-                                            </div>
-                                            <div className="flex flex-col items-start gap-2 text-left">
-                                                <p 
-                                                    className="text-sm text-[#7a7a7a] leading-relaxed break-words"
-                                                    data-swiper-parallax="-200"
-                                                    data-swiper-parallax-duration="600"
-                                                >
-                                                    {card.content}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        {card.isUpsell && (
-                                            <button 
-                                                className="mt-2 px-6 py-3 bg-[#003884] text-white font-bold rounded-md hover:bg-[#002a5f] transition-colors uppercase tracking-wide text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#003884]"
-                                                data-swiper-parallax="-300"
-                                                aria-label={`Extra kaart kopen voor ${card.title}`}
+                        {carouselCards.map((card) => (
+                            <SwiperSlide
+                                key={card.id}
+                                className="!h-auto pb-2 pt-2"
+                                data-testid="CarouselSlide"
+                                role="group"
+                                aria-label={`Slide ${card.id}: ${card.title}`}
+                            >
+                                <div className="w-full h-full">
+                                    <div className="h-full w-full bg-white border border-[#e5e5e5] rounded-lg overflow-hidden shadow-[0px_2px_8px_0px_rgba(0,0,0,0.1)] hover:shadow-[0px_4px_12px_0px_rgba(0,0,0,0.15)] transition-shadow flex flex-col">
+                                        {/* Thumbnail with parallax */}
+                                        <div className="relative overflow-hidden shrink-0 h-[180px] md:h-[240px] w-full">
+                                            <div
+                                                className="overflow-hidden absolute w-full h-full"
+                                                data-swiper-parallax="-23%"
                                             >
-                                                Extra kaart kopen
-                                            </button>
-                                        )}
+                                                <img
+                                                    src={card.thumbnail}
+                                                    alt={card.title}
+                                                    className="object-cover w-full h-full"
+                                                    data-swiper-parallax-scale="1.25"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Content */}
+                                        <div className="flex flex-col gap-5 px-5 py-5 grow">
+                                            <div className="flex flex-col gap-0 grow">
+                                                <div>
+                                                    <h3
+                                                        className="text-lg font-bold text-[#29313d] mb-0 break-words"
+                                                        data-swiper-parallax="-100"
+                                                    >
+                                                        {card.title}
+                                                    </h3>
+                                                </div>
+                                                <div className="flex flex-col gap-2 items-start text-left">
+                                                    <p
+                                                        className="text-sm text-[#7a7a7a] leading-relaxed break-words"
+                                                        data-swiper-parallax="-200"
+                                                        data-swiper-parallax-duration="600"
+                                                    >
+                                                        {card.content}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            {card.isUpsell && (
+                                                <button
+                                                    className="mt-2 px-6 py-3 bg-[#003884] text-white font-bold rounded-md hover:bg-[#002a5f] transition-colors uppercase tracking-wide text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#003884]"
+                                                    data-swiper-parallax="-300"
+                                                    aria-label={`Extra kaart kopen voor ${card.title}`}
+                                                >
+                                                    Extra kaart kopen
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </SwiperSlide>
-                    ))}
+                            </SwiperSlide>
+                        ))}
                     </Swiper>
                 </div>
 
                 {/* Play Again Button */}
-                <div className="text-center mt-6">
+                <div className="mt-6 text-center">
                     <button
                         onClick={() => window.location.reload()}
                         className="px-8 py-4 bg-[#003884] text-white font-bold rounded-md shadow-lg hover:bg-[#002a5f] transition-colors uppercase tracking-wide text-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#003884]"

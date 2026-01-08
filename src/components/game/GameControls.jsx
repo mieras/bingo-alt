@@ -18,8 +18,10 @@ const GameControls = ({ onSkip, isGameFinished, isSkipping }) => {
                         w-full max-w-[351px] px-6 py-4 text-sm font-bold tracking-wide uppercase rounded-md 
                         bg-white text-[#003884] border-2 border-[#003884] shadow-lg 
                         transition-all duration-200 pointer-events-auto
+                        focus:outline-none focus:ring-2 focus:ring-[#003884] focus:ring-offset-2
                         ${isSkipping ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50 hover:shadow-xl active:scale-[0.98]'}
                     `}
+                    aria-label={isSkipping ? 'Kaart wordt gecontroleerd' : 'Ga direct naar de uitslag'}
                 >
                     {isSkipping ? 'Kaart controleren...' : 'Direct naar uitslag'}
                 </button>

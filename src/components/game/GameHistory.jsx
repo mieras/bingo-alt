@@ -42,12 +42,12 @@ const highlightPrizeText = (labelText, prizeText) => {
 
 const GameHistory = ({ history, getBallColor, isGameFinished }) => {
     return (
-        <div className="pb-24">
+        <ol className="pb-24 list-none" aria-label="Geschiedenis van getrokken ballen">
             {history.map((item, idx) => {
                 const isNewest = idx === 0;
 
                 return (
-                    <div
+                    <li
                         key={item.timestamp}
                         className={`
                         flex gap-4 items-center px-4 transition-colors border-b border-gray-100
@@ -64,7 +64,7 @@ const GameHistory = ({ history, getBallColor, isGameFinished }) => {
                                     {highlightPrizeText(item.prize.label, item.prize.prize)}
                                 </div>
                             ) : (
-                                <div className="text-s text-gray-400 italic mt-0.5">
+                                <div className="text-s text-gray-600 italic mt-0.5">
                                     De Bingo is nog niet gevallen
                                 </div>
                             )}
@@ -93,10 +93,10 @@ const GameHistory = ({ history, getBallColor, isGameFinished }) => {
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </li>
                 );
             })}
-        </div>
+        </ol>
     );
 };
 

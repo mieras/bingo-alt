@@ -114,6 +114,8 @@ const GameScreen = ({
                 style={{
                     WebkitOverflowScrolling: 'touch',
                 }}
+                role="region"
+                aria-label="Spel geschiedenis en resultaten"
             >
                 {isSkipping ? (
                     <div className="flex flex-col justify-center items-center h-full">

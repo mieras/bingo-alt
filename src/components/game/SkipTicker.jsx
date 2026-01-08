@@ -44,7 +44,7 @@ const SkipTicker = ({ drawnBallsCount }) => {
   }, [messages.length]);
 
   return (
-    <div className="relative h-14 overflow-hidden flex items-center justify-center">
+    <div className="relative h-14 overflow-hidden flex items-center justify-center" role="status" aria-live="polite" aria-atomic="true">
       <div 
         className={`w-full text-center transition-opacity duration-500 ease-in-out ${
           isFading ? 'opacity-0' : 'opacity-100'

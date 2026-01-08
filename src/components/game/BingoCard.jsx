@@ -10,7 +10,7 @@ const BingoCard = ({
     onCardClick
 }) => {
     return (
-        <div className="w-[80%] max-w-[360px] mb-4 bg-white rounded-b-[32px] shadow-xl overflow-hidden flex-shrink-0 flex flex-col">
+        <div className="w-[80%] max-w-[360px] mb-4 bg-white rounded-b-[32px] shadow-xl overflow-hidden flex-shrink-0 flex flex-col" role="grid" aria-label="Bingo kaart">
             <div
                 className="grid bg-gray-100"
                 style={{
@@ -18,6 +18,7 @@ const BingoCard = ({
                     gap: '1px',
                     padding: '0 0 1px 0'
                 }}
+                role="rowgroup"
             >
                 {bingoCard.map((num, idx) => {
                     const isChecked = num && checkedNumbers.has(num);
@@ -31,8 +32,8 @@ const BingoCard = ({
                     let textClass = "relative z-10 ";
 
                     if (isWiggling) {
-                        buttonClass += "text-red-500 animate-wiggle";
-                        textClass += "text-red-500";
+                        buttonClass += "animate-wiggle";
+                        textClass += "text-[#014087]";
                     } else if (isChecked) {
                         buttonClass += "transition-colors duration-200";
                         textClass += "text-[#014087]";
@@ -47,10 +48,11 @@ const BingoCard = ({
                             key={idx}
                             className="relative bg-white"
                             style={{ aspectRatio: '5/4' }}
+                            role="gridcell"
                         >
                             {isEmpty ? (
-                                <div className="flex items-center justify-center w-full h-full p-2">
-                                    <svg width="80%" height="80%" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <div className="flex items-center justify-center w-full h-full p-2" aria-label="Vrije ruimte">
+                                    <svg width="80%" height="80%" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <g clipPath="url(#clip0_15_1098)">
                                             <path d="M18.0487 31.9676C10.3202 31.9676 4.03295 25.6811 4.03295 17.9541C4.03295 14.6074 5.21378 11.5321 7.17896 9.11956L4.31891 6.26C1.62906 9.4123 0 13.4953 0 17.9541C0 27.9046 8.0967 36 18.0487 36C22.5083 36 26.5921 34.3709 29.7449 31.9676L26.8847 28.8218C24.4717 30.7868 21.3961 31.9676 18.0487 31.9676Z" fill="#014087" />
                                             <path d="M18.0487 7.9729C12.5442 7.9729 8.06574 12.4504 8.06574 17.9541C8.06574 23.4577 12.5442 27.9352 18.0487 27.9352C20.2835 27.9352 22.349 27.1972 24.0145 25.9521L21.1099 23.0481C20.2148 23.587 19.1698 23.9029 18.0486 23.9029C14.7627 23.9029 12.0987 21.2394 12.0987 17.9541C12.0987 14.6686 14.7627 12.0051 18.0486 12.0051C20.7046 12.0051 22.9524 13.746 23.7174 16.148H14.2087L17.7132 19.652H27.8839C27.979 19.0997 28.0314 18.5331 28.0314 17.9541C28.0314 12.4504 23.5534 7.9729 18.0487 7.9729Z" fill="#014087" />
@@ -81,7 +83,15 @@ const BingoCard = ({
                                 <button
                                     onClick={() => onCardClick(num)}
                                     disabled={!num || isChecked}
-                                    className={buttonClass}
+                                    className={`${buttonClass} focus:outline-none`}
+                                    aria-label={
+                                        isChecked 
+                                            ? `Nummer ${num} is afgevinkt` 
+                                            : isCurrentMatch 
+                                                ? `Nummer ${num} komt overeen met de getrokken bal` 
+                                                : `Nummer ${num} op je bingo kaart`
+                                    }
+                                    aria-pressed={isChecked}
                                 >
                                     <span className={textClass}>{num}</span>
                                     {showMatchHint && (

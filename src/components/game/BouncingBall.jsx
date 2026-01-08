@@ -6,7 +6,7 @@ const BouncingBall = ({ ballNumber, ballColor }) => {
   const color = ballColor || '#AA167C';
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center" role="img" aria-label={`Bal nummer ${number} wordt getrokken`}>
       <div className="relative flex items-center justify-center" style={{ height: '7em' }}>
         {/* Bouncing Ball */}
         <div

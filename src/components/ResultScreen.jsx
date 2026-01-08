@@ -28,12 +28,12 @@ const ResultScreen = ({ prize, history, bingoCard, checkedNumbers, panelColor })
   }, [prize]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm md:p-4 animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm md:p-4 animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="result-title">
       <div className="bg-white border-2 border-gray-200 p-8 md:p-12 md:max-w-4xl w-full h-full md:h-auto md:max-h-[90vh] relative flex flex-col md:flex-row gap-8 items-center overflow-y-auto animate-scale-up shadow-2xl">
 
         {/* Left: Result Info */}
         <div className="flex-1 text-center md:text-left">
-          <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tighter text-center text-bingo-text">
+          <h1 id="result-title" className="text-6xl md:text-8xl font-black mb-8 tracking-tighter text-center text-bingo-text">
             {prize ? 'BINGO!' : 'NO WIN'}
           </h1>
 
@@ -58,7 +58,8 @@ const ResultScreen = ({ prize, history, bingoCard, checkedNumbers, panelColor })
 
           <button
             onClick={() => window.location.reload()}
-            className="mt-8 btn-primary w-full"
+            className="mt-8 btn-primary w-full focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#003884]"
+            aria-label="Start een nieuw Bingo spel"
           >
             Play Again
           </button>
@@ -71,6 +72,8 @@ const ResultScreen = ({ prize, history, bingoCard, checkedNumbers, panelColor })
             <div
               className="grid bg-white border-2 border-gray-200 rounded-lg p-2"
               style={{ gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)` }}
+              role="grid"
+              aria-label="Eindstand van je bingo kaart"
             >
               {bingoCard.map((num, idx) => {
                 const isChecked = num && checkedNumbers.has(num);
@@ -80,6 +83,7 @@ const ResultScreen = ({ prize, history, bingoCard, checkedNumbers, panelColor })
                   <div
                     key={idx}
                     className="border border-gray-200 aspect-square flex items-center justify-center relative bg-white"
+                    role="gridcell"
                   >
                     {isEmpty ? (
                       <div className="w-2 h-2 bg-bingo-text/20 rounded-full" />
@@ -91,8 +95,8 @@ const ResultScreen = ({ prize, history, bingoCard, checkedNumbers, panelColor })
                       >
                         <span className="relative z-10">{num}</span>
                         {isChecked && (
-                          <div className="absolute inset-0 flex items-center justify-center z-0 p-2">
-                            <svg width="100%" height="100%" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="animate-pop" style={{ color: '#DDF5F7' }}>
+                          <div className="absolute inset-0 flex items-center justify-center z-0 p-2" aria-hidden="true">
+                            <svg width="100%" height="100%" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" className="animate-pop" style={{ color: '#DDF5F7' }} aria-hidden="true">
                               <path d="M27.0484 54.7643C23.8779 56.8627 19.4382 56.224 17.1325 53.3382C14.8271 50.4522 15.5288 46.4109 18.6991 44.3121L21.6121 42.3841L16.7797 43.0123C13.4444 43.446 10.233 41.685 9.09442 38.7986C7.9561 35.9124 9.20352 32.6956 12.0798 31.099L16.8429 28.4573L7.9129 29.3939C4.62947 29.7386 1.51845 27.9743 0.410901 25.1396C-0.696459 22.305 0.492529 19.1496 3.27768 17.5298L31.6713 1.01726C34.9749 -0.903967 39.364 -0.0238753 41.4747 2.98317C43.5853 5.9903 42.6185 9.98557 39.315 11.9069L36.841 13.347L47.2992 12.2476C50.6101 11.9 53.7418 13.6962 54.8258 16.565C55.9097 19.4341 54.6538 22.6037 51.8081 24.1833L48.8119 25.8477C51.7021 25.8132 54.3694 27.3891 55.479 29.8791C56.7048 32.63 55.7134 35.7878 53.0759 37.5338L27.0484 54.7643Z" fill="currentColor" />
                             </svg>
                           </div>

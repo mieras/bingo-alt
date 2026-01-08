@@ -6,13 +6,13 @@ const GameProgress = ({ drawnBalls, progress }) => {
             {/* Info Bar - "Bal" en counter op achtergrondkleur */}
             <div className="flex justify-between items-end px-4 py-2 mt-auto max-w-full mx-auto w-full">
                 <h2 className="text-sm font-bold text-white uppercase tracking-wide">Bal</h2>
-                <span className="text-xs font-medium text-white/90">
+                <span className="text-xs font-medium text-white" aria-label={`${drawnBalls.length} van 36 ballen getrokken`}>
                     {String(drawnBalls.length).padStart(2, '0')}/36
                 </span>
             </div>
 
             {/* Progress Bar - op achtergrondkleur */}
-            <div className="relative w-full h-[6px] bg-black/10">
+            <div className="relative w-full h-[6px] bg-black/10" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin="0" aria-valuemax="100" aria-label="Voortgang van het spel">
                 <div
                     className="h-full transition-all duration-300 ease-out bg-[#003884]"
                     style={{ width: `${progress}%` }}

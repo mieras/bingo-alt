@@ -175,6 +175,37 @@ body {
   color: #fff;
 }
 
+.btn-primary:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: white;
+  ring-offset: 2px;
+  ring-offset-color: #003884;
+}
+
+/* Focus styles voor alle interactieve elementen */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #003884;
+  outline-offset: 2px;
+}
+
+/* Skip link voor toetsenbordgebruikers */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #003884;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
 @keyframes slideIn {
   from {
     opacity: 0;
@@ -300,4 +331,54 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Swiper Carousel Styling */
+.swiper {
+  width: 100%;
+  overflow: hidden !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.swiper-wrapper {
+  display: flex;
+  width: fit-content;
+}
+
+.swiper-slide {
+  height: auto;
+  display: flex;
+  flex-shrink: 0;
+}
+
+/* Swiper Pagination Styling */
+.swiper-pagination {
+  position: relative !important;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.swiper-pagination-bullet {
+  width: 8px !important;
+  height: 8px !important;
+  background: var(--ds-core-grey) !important;
+  opacity: 1 !important;
+  margin: 0 4px !important;
+}
+
+.swiper-pagination-bullet-active {
+  width: 32px !important;
+  background: var(--ds-core-blue) !important;
+  border-radius: 4px !important;
 }

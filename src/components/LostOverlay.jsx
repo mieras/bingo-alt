@@ -55,9 +55,9 @@ const LostOverlay = ({ onClose, onBackToOverview }) => {
 
         {/* Content Section - Scrollable */}
         <div className="overflow-y-auto flex-1">
-          <ContentWrapper className="flex flex-col px-4 pt-6 pb-8 bg-white">
+          <ContentWrapper className="flex flex-col px-4 pt-2 pb-4 bg-white">
             {/* Lost Message */}
-            <div className="p-6 mb-6 w-full text-center">
+            <div className="p-4 mb-2 w-full text-center">
               <h2 className="text-4xl font-black text-[#003884] mb-2">
                 Helaas!
               </h2>
@@ -71,7 +71,7 @@ const LostOverlay = ({ onClose, onBackToOverview }) => {
 
             {/* Carousel Section */}
             <div className="mb-6 w-full">
-              <h3 className="text-xl font-bold text-[#003884] mb-4 text-center">
+              <h3 className="text-xl font-bold text-[#003884] mb-2 text-center">
                 Haal alles uit je deelname
               </h3>
               <Swiper
@@ -140,7 +140,7 @@ const LostOverlay = ({ onClose, onBackToOverview }) => {
             {/* Back to Overview Button */}
             <button
               onClick={onBackToOverview}
-              className="w-full bg-white border-2 border-[#003884] text-[#003884] font-bold mt-4 py-4 px-6 rounded-lg hover:bg-[#003884] hover:text-white transition-colors uppercase tracking-wide text-base focus:outline-none focus:ring-2 focus:ring-[#003884] focus:ring-offset-2"
+              className="w-full bg-white border-2 border-[#003884] text-[#003884] font-bold mt-2 py-4 px-6 rounded-lg hover:bg-[#003884] hover:text-white transition-colors uppercase tracking-wide text-base focus:outline-none focus:ring-2 focus:ring-[#003884] focus:ring-offset-2"
               aria-label="Terug naar overzicht"
             >
               Terug naar overzicht

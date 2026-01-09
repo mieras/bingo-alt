@@ -5,13 +5,13 @@ import appBannerImage from '../assets/vl-bingo-app-banner.png';
 
 const MailScreen = ({ onNavigateToAccount, onNavigateToBingo }) => {
   return (
-    <div className="bg-white overflow-y-auto h-full w-full flex flex-col">
+    <div className="flex overflow-y-auto flex-col w-full h-full bg-white">
       {/* Hero Image Section */}
       <div className="relative w-full shrink-0">
-        <img 
-          src={mailHeaderImage} 
+        <img
+          src={mailHeaderImage}
           alt="VriendenLoterij Bingo prijzen"
-          className="w-full h-auto object-cover"
+          className="object-cover w-full h-auto"
         />
       </div>
 
@@ -20,7 +20,7 @@ const MailScreen = ({ onNavigateToAccount, onNavigateToBingo }) => {
         <h2 className="text-2xl font-bold text-[#003884] mb-4 text-center">
           Uitslagen VriendenLoterij Eredivisie Bingo
         </h2>
-        
+
         <p className="text-base text-[#111] mb-6 leading-relaxed">
           De VriendenLoterij Eredivisie Bingo uitslagen van maandag 29 december zijn bekend! Speel{' '}
           <button
@@ -48,11 +48,11 @@ const MailScreen = ({ onNavigateToAccount, onNavigateToBingo }) => {
       </ContentWrapper>
 
       {/* Onderste sectie - App Promotie Banner */}
-      <div className="w-full mt-auto">
-        <img 
-          src={appBannerImage} 
+      <div className="mt-auto w-full">
+        <img
+          src={appBannerImage}
           alt="VriendenLoterij app promotie"
-          className="w-full h-auto object-cover"
+          className="object-cover w-full h-auto"
         />
       </div>
     </div>

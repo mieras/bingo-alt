@@ -40,7 +40,7 @@ const LostScreen = ({ onBackToBingo, showHeader = false }) => {
       <div className="overflow-y-auto flex-1">
         {/* Hero Image Section - Scrolls with content */}
         <div
-          className="flex relative justify-center items-center w-full"
+          className="flex relative justify-center items-center w-full animate-fade-in"
           style={{
             background: 'linear-gradient(180deg, #F6E9E7 0%, #EAC7C7 100%)',
             borderRadius: '0px',
@@ -51,7 +51,8 @@ const LostScreen = ({ onBackToBingo, showHeader = false }) => {
             <img
               src={lostHeroImage}
               alt="Helaas geen Bingo"
-              className="w-full max-w-[250px] h-auto object-contain"
+              className="w-full max-w-[250px] h-auto object-contain opacity-0 animate-scale-up"
+              style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
             />
           </div>
         </div>
@@ -60,7 +61,10 @@ const LostScreen = ({ onBackToBingo, showHeader = false }) => {
         <ContentWrapper className="flex flex-col px-4 pt-2 pb-4 bg-white">
           {/* Lost Message */}
           <div className="p-4 mb-2 w-full text-center">
-            <h2 className="text-4xl font-black text-[#003884] mb-2">
+            <h2 
+              className="text-4xl font-black text-[#003884] mb-2 opacity-0 animate-fade-in"
+              style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
+            >
               Helaas!
             </h2>
             <p className="text-lg text-[#29313d] font-medium mb-2">

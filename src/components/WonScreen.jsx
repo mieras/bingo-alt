@@ -1,12 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ContentWrapper from './ContentWrapper';
 import { getPrizeThumbnail } from '../utils/constants';
 import confettiImage from '../assets/bingo-confetti-gold.png';
 import prizeImage from '../assets/bingo-prize.png';
 import GameHeader from './game/GameHeader';
+import confetti from 'canvas-confetti';
 
 const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false }) => {
   if (!prize) return null;
+
+  // Confetti effect bij won screen
+  useEffect(() => {
+    const duration = 3 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+    const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+    const interval = setInterval(function () {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+      confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+    }, 250);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const prizeThumbnail = getPrizeThumbnail(prize.prize);
   const winningBallIndex = drawnBalls.length;
@@ -20,7 +44,7 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false }) => 
       <div className="overflow-y-auto flex-1">
         {/* Hero Image Section - Scrolls with content */}
         <div
-          className="flex relative justify-center items-center w-full"
+          className="flex relative justify-center items-center w-full animate-fade-in"
           style={{
             background: 'radial-gradient(209.91% 178.12% at -12.83% -103.12%, #F1D168 0%, #FEF6C8 32%, #F2D064 68%, #FCF3C3 100%)',
             borderRadius: '0px',
@@ -32,13 +56,19 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false }) => 
             <img
               src={confettiImage}
               alt="Confetti"
-              className="object-contain absolute inset-0 w-full h-full opacity-80"
+              className="object-contain absolute inset-0 w-full h-full opacity-0"
+              style={{ 
+                animation: 'confetti-zoom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards'
+              }}
             />
             {/* Prize Image */}
             <img
               src={prizeImage}
               alt={prize.prize}
-              className="relative z-10 w-full max-w-[180px] h-auto object-contain"
+              className="relative z-10 w-full max-w-[180px] h-auto object-contain opacity-0"
+              style={{ 
+                animation: 'prize-bounce 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards'
+              }}
             />
           </div>
         </div>
@@ -47,7 +77,10 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false }) => 
         <ContentWrapper className="flex flex-col items-center px-4 pt-6 pb-8 bg-white">
           {/* Result Info */}
           <div className="p-6 mb-6 w-full bg-white rounded-lg">
-            <h2 className="text-5xl font-black text-[#003884] mb-2 text-center">
+            <h2 
+              className="text-5xl font-black text-[#003884] mb-2 text-center opacity-0 animate-fade-in"
+              style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
+            >
               Bingo!
             </h2>
             <p className="mb-4 text-sm text-center text-gray-600">

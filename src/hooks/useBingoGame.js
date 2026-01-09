@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { PRIZES, TOTAL_NUMBERS, GRID_SIZE, DRAW_INTERVAL, MAX_DRAWN_BALLS, SKIP_BALL_INTERVAL, SKIP_USE_EASING, SKIP_EASING_TYPE, SKIP_EASING_FACTOR } from '../utils/constants';
+import { PRIZES, TOTAL_NUMBERS, GRID_SIZE, DRAW_INTERVAL, MAX_DRAWN_BALLS, SKIP_BALL_INTERVAL, SKIP_USE_EASING, SKIP_EASING_TYPE, SKIP_EASING_FACTOR, MANUAL_CHECK_SPEED_BOOST, SKIP_RESULT_DELAY } from '../utils/constants';
 
 export const useBingoGame = () => {
     const [gameState, setGameState] = useState('IDLE'); // IDLE, PLAYING, WON, LOST, FINISHED
@@ -12,9 +12,14 @@ export const useBingoGame = () => {
     const [wigglingNumber, setWigglingNumber] = useState(null);
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [skipTransition, setSkipTransition] = useState(false);
+    const [isCelebrating, setIsCelebrating] = useState(false);
+    const [manualCheckBoost, setManualCheckBoost] = useState(false);
+    const [isSkipEnding, setIsSkipEnding] = useState(false); // Na skip animatie, kaart fade-out met bouncing ball
 
     const timerRef = useRef(null);
     const drawDeckRef = useRef([]);
+    const skipResultTimeoutRef = useRef(null);
+    const scheduleNextBallRef = useRef(null);
 
     // Generate unique random numbers
     const generateNumbers = (count, max, min = 1) => {
@@ -99,12 +104,31 @@ export const useBingoGame = () => {
             setCheckedNumbers(prev => new Set(prev).add(currentBall));
         }
 
-        // Stop if we reached max balls or deck is empty
-        if (drawnBalls.length >= maxBalls || drawDeckRef.current.length === 0) {
-            setGameState('FINISHED');
+        // Stop if deck is empty
+        if (drawDeckRef.current.length === 0) {
+            const numbersToWin = bingoCard.filter(n => n !== null);
+            const isWin = numbersToWin.every(n => checkedNumbers.has(n));
+            
+            if (isWin) {
+                if (timerRef.current) {
+                    clearTimeout(timerRef.current);
+                }
+                setGameState('WON');
+                const lookupCount = Math.max(drawnBalls.length, 19);
+                const wonPrize = PRIZES.find(p => p.balls === lookupCount);
+                setPrize(wonPrize);
+            } else {
+                if (timerRef.current) {
+                    clearTimeout(timerRef.current);
+                }
+                setTimeout(() => {
+                    setGameState('FINISHED');
+                }, DRAW_INTERVAL);
+            }
             return;
         }
 
+        // Trek de volgende bal (ook als dit de 36e is)
         const nextBall = drawDeckRef.current.pop();
         const newDrawn = [...drawnBalls, nextBall];
 
@@ -115,7 +139,7 @@ export const useBingoGame = () => {
         // It will be auto-checked when the next ball is drawn if user didn't check it
         let updatedChecked = checkedNumbers;
 
-        // Check if this is the last ball and if we won
+        // Check if this is the last ball (36/36) and if we won
         // Note: updatedChecked includes the auto-checked previous ball
         const isLastBall = newDrawn.length >= maxBalls;
         if (isLastBall) {
@@ -124,15 +148,22 @@ export const useBingoGame = () => {
             const isWin = numbersToWin.every(n => updatedChecked.has(n));
             
             if (isWin) {
-                // WIN!
-                clearInterval(timerRef.current);
+                // WIN! Direct naar won scherm
+                if (timerRef.current) {
+                    clearTimeout(timerRef.current);
+                }
                 setGameState('WON');
                 const lookupCount = Math.max(newDrawn.length, 19);
                 const wonPrize = PRIZES.find(p => p.balls === lookupCount);
                 setPrize(wonPrize);
             } else {
-                // No win, game finished
-                setGameState('FINISHED');
+                // No win, game finished - wacht DRAW_INTERVAL zodat gebruiker de laatste bal kan zien/afvinken
+                if (timerRef.current) {
+                    clearTimeout(timerRef.current);
+                }
+                setTimeout(() => {
+                    setGameState('FINISHED');
+                }, DRAW_INTERVAL);
             }
         }
 
@@ -161,7 +192,27 @@ export const useBingoGame = () => {
 
     }, [drawnBalls, currentBall, bingoCard, checkedNumbers, maxBalls]);
 
-    // Game Loop
+    // Functie om interval te berekenen voor normale trekking
+    // Ease-in: start langzaam, eindig snel (minder vakjes om te scannen naarmate je vordert)
+    const getInterval = useCallback((currentBallIndex, hasManualBoost = false) => {
+            const progress = currentBallIndex / maxBalls; // 0 tot 1
+            // Ease-in: start langzaam, eindig snel
+            // Gebruik quadratic ease-in: t^2
+            const easedProgress = Math.pow(progress, 2);
+            // Interval gaat van DRAW_INTERVAL (4000ms) naar DRAW_INTERVAL * 0.5 (2000ms)
+            const maxInterval = DRAW_INTERVAL; // Start interval
+            const minInterval = DRAW_INTERVAL * 0.95; // Eind interval (sneller)
+            let interval = maxInterval - (maxInterval - minInterval) * easedProgress;
+            
+            // Extra snelheidsverhoging bij handmatig afvinken
+            if (hasManualBoost) {
+                interval *= MANUAL_CHECK_SPEED_BOOST;
+            }
+            
+            return interval;
+    }, [maxBalls]);
+
+    // Game Loop met ease-out interval
     useEffect(() => {
         if (gameState !== 'PLAYING') return;
 
@@ -170,17 +221,42 @@ export const useBingoGame = () => {
             drawNextBall();
         }
 
-        timerRef.current = setInterval(() => {
-            // Check if we won with the *previous* state (including auto-check)
-            // Actually, we should check win condition continuously.
-            // If we win, we stop.
+        // Recursieve timeout functie in plaats van setInterval voor dynamische interval
+        const scheduleNextBall = () => {
+            if (gameState !== 'PLAYING') return;
+            
+            const currentIndex = drawnBalls.length;
+            
+            // Stop als we maxBalls hebben bereikt
+            if (currentIndex >= maxBalls) {
+                return;
+            }
+            
+            const interval = getInterval(currentIndex, manualCheckBoost);
+            
+            timerRef.current = setTimeout(() => {
+                // Reset manual boost na gebruik
+                setManualCheckBoost(false);
+                // Check opnieuw voordat we de bal trekken
+                if (gameState === 'PLAYING' && drawnBalls.length < maxBalls) {
+                    drawNextBall();
+                    // Schedule volgende bal (drawNextBall zal zelf stoppen als we op maxBalls zitten)
+                    scheduleNextBall();
+                }
+            }, interval);
+        };
+        
+        // Store scheduleNextBall in ref voor handleCardClick
+        scheduleNextBallRef.current = scheduleNextBall;
 
-            // But we need to draw the next ball.
-            drawNextBall();
-        }, DRAW_INTERVAL);
+        scheduleNextBall();
 
-        return () => clearInterval(timerRef.current);
-    }, [gameState, drawNextBall, drawnBalls.length]);
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, [gameState, drawNextBall, drawnBalls.length, maxBalls, manualCheckBoost, getInterval]);
 
     const [isSkipping, setIsSkipping] = useState(false);
     const [skipTarget, setSkipTarget] = useState(null);
@@ -190,14 +266,21 @@ export const useBingoGame = () => {
         if (gameState !== 'PLAYING' || isSkipping) return;
 
         if (checkWin(checkedNumbers)) {
-            // WIN!
+            // WIN! Start celebration met confetti, dan na delay naar won scherm
             clearInterval(timerRef.current);
-            setGameState('WON');
+            setIsCelebrating(true);
+            
             // Calculate prize based on drawnBalls count
             const count = drawnBalls.length;
             const lookupCount = Math.max(count, 19); // Minimum prize at 19 balls
             const wonPrize = PRIZES.find(p => p.balls === lookupCount);
             setPrize(wonPrize);
+            
+            // Na 2 seconden celebration, ga naar won screen
+            setTimeout(() => {
+                setIsCelebrating(false);
+                setGameState('WON');
+            }, 2000);
         }
     }, [checkedNumbers, gameState, checkWin, drawnBalls.length, isSkipping]);
 
@@ -208,9 +291,21 @@ export const useBingoGame = () => {
         if (drawnBalls.length >= skipTarget.balls.length) {
             setIsSkipping(false);
             setPrize(skipTarget.prize);
-            setGameState(skipTarget.outcome);
             setCheckedNumbers(skipTarget.finalChecked);
+            
+            // Bewaar outcome voordat skipTarget wordt gereset
+            const finalOutcome = skipTarget.outcome;
             setSkipTarget(null);
+            
+            // Toon bouncing ball met kaart fade-out voordat we naar result gaan
+            setIsSkipEnding(true);
+            
+            skipResultTimeoutRef.current = setTimeout(() => {
+                setIsSkipEnding(false);
+                setSkipTransition(true);
+                setGameState(finalOutcome);
+                skipResultTimeoutRef.current = null;
+            }, SKIP_RESULT_DELAY);
             return;
         }
 
@@ -275,17 +370,21 @@ export const useBingoGame = () => {
 
         }, delay);
 
-        return () => clearTimeout(timeout);
+        return () => {
+            clearTimeout(timeout);
+            if (skipResultTimeoutRef.current) {
+                clearTimeout(skipResultTimeoutRef.current);
+                skipResultTimeoutRef.current = null;
+            }
+        };
     }, [isSkipping, skipTarget, drawnBalls, bingoCard]);
 
-    const handleCardClick = (number) => {
+    const handleCardClick = useCallback((number) => {
         if (gameState !== 'PLAYING' || isSkipping) return;
         if (!number) return;
 
         if (drawnBalls.includes(number)) {
-            // If the clicked number is the CURRENT ball, we can trigger a "fast forward" 
-            // to fill all other currently drawn numbers that are on the card.
-
+            // If the clicked number is a drawn ball, check it and activate speed boost
             const newChecked = new Set(checkedNumbers);
             newChecked.add(number);
 
@@ -298,14 +397,25 @@ export const useBingoGame = () => {
 
             setCheckedNumbers(newChecked);
 
-            // Immediately draw the next ball to keep the pace
+            // Direct de volgende bal trekken als je handmatig afvinkt
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
             drawNextBall();
+            
+            // Activeer snelheidsboost voor de bal daarna
+            setManualCheckBoost(true);
+            
+            // Schedule de volgende bal met boost
+            if (scheduleNextBallRef.current) {
+                scheduleNextBallRef.current();
+            }
         } else {
             // Wiggle
             setWigglingNumber(number);
             setTimeout(() => setWigglingNumber(null), 500);
         }
-    };
+    }, [gameState, isSkipping, drawnBalls, checkedNumbers, bingoCard, getInterval, drawNextBall, maxBalls]);
 
     const finishGame = useCallback(() => {
         if (gameState !== 'PLAYING' || isSkipping) return;
@@ -481,7 +591,8 @@ export const useBingoGame = () => {
         setDrawnBalls(finalDrawnBalls);
         setCheckedNumbers(finalChecked);
         setPrize(wonPrize);
-        setSkipTransition(true); // Skip transition voor direct naar result
+        setSkipTransition(true); // Geen loading screen voor skipToResult
+        setIsTransitioning(false); // Geen loading screen
         setGameState(outcome);
 
         // Create history for all drawn balls (in reverse order, newest first)
@@ -499,30 +610,25 @@ export const useBingoGame = () => {
 
     }, [gameState]);
 
-    // Transition effect: wanneer game eindigt, start transition
+    // Transition effect: wanneer game eindigt, geen loading screen
     useEffect(() => {
         if (gameState === 'WON' || gameState === 'FINISHED') {
-            if (skipTransition) {
-                // Skip transition voor direct naar result
-                setIsTransitioning(false);
-                setSkipTransition(false);
-            } else {
-                setIsTransitioning(true);
-                // Na 1.5 seconden transition compleet
-                const timer = setTimeout(() => {
-                    setIsTransitioning(false);
-                }, 1500);
-                return () => clearTimeout(timer);
-            }
+            // Geen loading screen - direct naar result
+            setIsTransitioning(false);
+            setSkipTransition(false);
         } else {
             setIsTransitioning(false);
             setSkipTransition(false);
         }
-    }, [gameState, skipTransition]);
+    }, [gameState]);
 
     // Reset game naar IDLE state
     const resetGame = useCallback(() => {
         clearInterval(timerRef.current);
+        if (skipResultTimeoutRef.current) {
+            clearTimeout(skipResultTimeoutRef.current);
+            skipResultTimeoutRef.current = null;
+        }
         setGameState('IDLE');
         setBingoCard([]);
         setDrawnBalls([]);
@@ -535,6 +641,9 @@ export const useBingoGame = () => {
         setSkipTransition(false);
         setIsSkipping(false);
         setSkipTarget(null);
+        setIsCelebrating(false);
+        setManualCheckBoost(false);
+        setIsSkipEnding(false);
         drawDeckRef.current = [];
     }, []);
 
@@ -549,6 +658,8 @@ export const useBingoGame = () => {
         wigglingNumber,
         isSkipping,
         isTransitioning,
+        isCelebrating,
+        isSkipEnding,
         skipOutcome: skipTarget ? { outcome: skipTarget.outcome, prize: skipTarget.prize } : null,
         startGame,
         handleCardClick,

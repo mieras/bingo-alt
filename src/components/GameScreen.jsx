@@ -28,7 +28,9 @@ const GameScreen = ({
     prize,
     isOverlay = false,
     onClose,
-    isTransitioning = false
+    isTransitioning = false,
+    isCelebrating = false,
+    isSkipEnding = false
 }) => {
     const isGameFinished = gameState === 'WON' || gameState === 'FINISHED';
 
@@ -61,10 +63,10 @@ const GameScreen = ({
         }
     }, [history.length]);
 
-    // Confetti effect bij winst - Pas als het spel echt klaar is (na skippen)
+    // Confetti effect bij Bingo - tijdens celebration
     useEffect(() => {
-        if (prize && gameState === 'WON') {
-            const duration = 5 * 1000;
+        if (isCelebrating) {
+            const duration = 2 * 1000; // 2 seconden celebration
             const animationEnd = Date.now() + duration;
             const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
 
@@ -84,7 +86,7 @@ const GameScreen = ({
 
             return () => clearInterval(interval);
         }
-    }, [prize, gameState]);
+    }, [isCelebrating]);
 
     // Header close button handler
     const handleHeaderClose = () => {
@@ -109,7 +111,7 @@ const GameScreen = ({
 
     // Game content
     const gameContent = (
-        <div className="flex overflow-hidden relative flex-col w-full transition-colors duration-500 h-full" style={{ backgroundColor: panelColor }}>
+        <div className="flex overflow-hidden relative flex-col w-full h-full transition-colors duration-500" style={{ backgroundColor: panelColor }}>
             <GameHeader 
                 onClose={handleHeaderClose}
             />
@@ -119,10 +121,28 @@ const GameScreen = ({
                 <LoadingTransition />
             )}
 
+            {/* Celebration overlay - confetti tijdens Bingo */}
+            {isCelebrating && (
+                <div className="flex absolute inset-0 z-40 justify-center items-center pointer-events-none">
+                    <div 
+                        className="text-7xl font-black text-white drop-shadow-2xl"
+                        style={{
+                            textShadow: '0 0 20px rgba(255,255,255,0.8), 0 0 40px rgba(255,215,0,0.6)',
+                            animation: 'bingo-celebration 2s ease-out forwards'
+                        }}
+                    >
+                        BINGO!
+                    </div>
+                </div>
+            )}
+
             {/* Hide game content during transition */}
             {!isTransitioning && (
                 <>
-                    <div className="flex flex-col shrink-0">
+                    {/* Kaart met fade-out tijdens skip ending */}
+                    <div 
+                        className={`flex flex-col shrink-0 transition-opacity duration-500 ${isSkipEnding ? 'opacity-0' : 'opacity-100'}`}
+                    >
                         {/* Bingo Card Container */}
                         <div className="flex flex-col flex-1 justify-center items-center">
                             <BingoCard
@@ -141,7 +161,7 @@ const GameScreen = ({
                         />
                     </div>
 
-                    {/* Draw History - Fluid Height */}
+                    {/* Draw History / Skip Ending - Fluid Height */}
                     <div
                         ref={historyRef}
                         className="overflow-y-auto flex-1 bg-white"
@@ -151,15 +171,22 @@ const GameScreen = ({
                         role="region"
                         aria-label="Spel geschiedenis"
                     >
-                        {isSkipping ? (
+                        {(isSkipping || isSkipEnding) ? (
                             <div className="flex flex-col justify-center items-center h-full">
                                 <BouncingBall
                                     ballNumber={currentBall || drawnBalls[drawnBalls.length - 1] || 1}
                                     ballColor={currentBall ? getBallColor(currentBall) : getBallColor(drawnBalls[drawnBalls.length - 1] || 1)}
                                 />
-                                <div className="px-4 mt-8 w-full max-w-md">
-                                    <SkipTicker drawnBallsCount={drawnBalls.length} />
-                                </div>
+                                {isSkipping && (
+                                    <div className="px-4 mt-8 w-full max-w-md">
+                                        <SkipTicker drawnBallsCount={drawnBalls.length} />
+                                    </div>
+                                )}
+                                {isSkipEnding && (
+                                    <p className="mt-8 text-lg font-semibold text-white animate-pulse">
+                                        Resultaat ophalen...
+                                    </p>
+                                )}
                             </div>
                         ) : (
                             <GameHistory
@@ -170,11 +197,14 @@ const GameScreen = ({
                         )}
                     </div>
 
-                    <GameControls
-                        onSkip={onSkip}
-                        isGameFinished={isGameFinished || isSkipping}
-                        isSkipping={isSkipping}
-                    />
+                    {/* GameControls verborgen tijdens skip ending */}
+                    {!isSkipEnding && (
+                        <GameControls
+                            onSkip={onSkip}
+                            isGameFinished={isGameFinished || isSkipping}
+                            isSkipping={isSkipping}
+                        />
+                    )}
                 </>
             )}
         </div>
@@ -186,12 +216,12 @@ const GameScreen = ({
             <>
                 {/* Backdrop */}
                 <div 
-                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+                    className="fixed inset-0 z-40 backdrop-blur-sm bg-black/50"
                     onClick={onClose}
                     aria-hidden="true"
                 />
                 {/* Modal Container */}
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+                <div className="flex fixed inset-0 z-50 justify-center items-center p-4 pointer-events-none">
                     <div 
                         className="w-full max-w-[400px] h-full max-h-[90vh] bg-white rounded-lg shadow-2xl pointer-events-auto overflow-hidden"
                         onClick={(e) => e.stopPropagation()}

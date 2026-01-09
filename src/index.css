@@ -264,6 +264,16 @@ a:focus-visible {
   }
 }
 
+@keyframes fade-in-confetti {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 0.8;
+  }
+}
+
 @keyframes scale-up {
   from {
     transform: scale(0.9);
@@ -297,11 +307,11 @@ a:focus-visible {
 }
 
 .animate-fade-in {
-  animation: fade-in 0.3s ease-out forwards;
+  animation: fade-in 0.6s ease-out forwards;
 }
 
 .animate-scale-up {
-  animation: scale-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: scale-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes pulse-blue {

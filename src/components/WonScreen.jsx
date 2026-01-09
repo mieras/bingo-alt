@@ -20,7 +20,7 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false }) => 
       <div className="overflow-y-auto flex-1">
         {/* Hero Image Section - Scrolls with content */}
         <div
-          className="flex relative justify-center items-center w-full"
+          className="flex relative justify-center items-center w-full animate-fade-in"
           style={{
             background: 'radial-gradient(209.91% 178.12% at -12.83% -103.12%, #F1D168 0%, #FEF6C8 32%, #F2D064 68%, #FCF3C3 100%)',
             borderRadius: '0px',
@@ -32,13 +32,17 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false }) => 
             <img
               src={confettiImage}
               alt="Confetti"
-              className="object-contain absolute inset-0 w-full h-full opacity-80"
+              className="object-contain absolute inset-0 w-full h-full opacity-0"
+              style={{ 
+                animation: 'fade-in-confetti 0.6s ease-out 0.2s forwards'
+              }}
             />
             {/* Prize Image */}
             <img
               src={prizeImage}
               alt={prize.prize}
-              className="relative z-10 w-full max-w-[180px] h-auto object-contain"
+              className="relative z-10 w-full max-w-[180px] h-auto object-contain opacity-0 animate-scale-up"
+              style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
             />
           </div>
         </div>
@@ -47,7 +51,10 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false }) => 
         <ContentWrapper className="flex flex-col items-center px-4 pt-6 pb-8 bg-white">
           {/* Result Info */}
           <div className="p-6 mb-6 w-full bg-white rounded-lg">
-            <h2 className="text-5xl font-black text-[#003884] mb-2 text-center">
+            <h2 
+              className="text-5xl font-black text-[#003884] mb-2 text-center opacity-0 animate-fade-in"
+              style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
+            >
               Bingo!
             </h2>
             <p className="mb-4 text-sm text-center text-gray-600">

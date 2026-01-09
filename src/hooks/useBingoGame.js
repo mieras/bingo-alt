@@ -15,6 +15,7 @@ export const useBingoGame = () => {
 
     const timerRef = useRef(null);
     const drawDeckRef = useRef([]);
+    const skipResultTimeoutRef = useRef(null);
 
     // Generate unique random numbers
     const generateNumbers = (count, max, min = 1) => {
@@ -208,9 +209,16 @@ export const useBingoGame = () => {
         if (drawnBalls.length >= skipTarget.balls.length) {
             setIsSkipping(false);
             setPrize(skipTarget.prize);
-            setGameState(skipTarget.outcome);
             setCheckedNumbers(skipTarget.finalChecked);
+            
+            // Bewaar outcome voordat skipTarget wordt gereset
+            const finalOutcome = skipTarget.outcome;
             setSkipTarget(null);
+            
+            // Voor finishGame (tijdens spel): direct naar result na animatie (geen loading screen)
+            setIsTransitioning(false); // Zorg dat transition direct false is
+            setSkipTransition(true);
+            setGameState(finalOutcome);
             return;
         }
 
@@ -275,7 +283,13 @@ export const useBingoGame = () => {
 
         }, delay);
 
-        return () => clearTimeout(timeout);
+        return () => {
+            clearTimeout(timeout);
+            if (skipResultTimeoutRef.current) {
+                clearTimeout(skipResultTimeoutRef.current);
+                skipResultTimeoutRef.current = null;
+            }
+        };
     }, [isSkipping, skipTarget, drawnBalls, bingoCard]);
 
     const handleCardClick = (number) => {
@@ -481,7 +495,7 @@ export const useBingoGame = () => {
         setDrawnBalls(finalDrawnBalls);
         setCheckedNumbers(finalChecked);
         setPrize(wonPrize);
-        setSkipTransition(true); // Skip transition voor direct naar result
+        setSkipTransition(false); // Toon loading screen voor skipToResult (vanuit intro)
         setGameState(outcome);
 
         // Create history for all drawn balls (in reverse order, newest first)
@@ -523,6 +537,10 @@ export const useBingoGame = () => {
     // Reset game naar IDLE state
     const resetGame = useCallback(() => {
         clearInterval(timerRef.current);
+        if (skipResultTimeoutRef.current) {
+            clearTimeout(skipResultTimeoutRef.current);
+            skipResultTimeoutRef.current = null;
+        }
         setGameState('IDLE');
         setBingoCard([]);
         setDrawnBalls([]);

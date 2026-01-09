@@ -27,6 +27,8 @@ function App() {
     isSkipping,
     skipOutcome,
     isTransitioning,
+    isCelebrating,
+    isSkipEnding,
     startGame,
     handleCardClick,
     finishGame,
@@ -165,6 +167,8 @@ function App() {
                     isOverlay={false}
                     onClose={closeGameOverlay}
                     isTransitioning={isTransitioning}
+                    isCelebrating={isCelebrating}
+                    isSkipEnding={isSkipEnding}
                   />
                 )}
 

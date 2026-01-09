@@ -267,10 +267,12 @@ a:focus-visible {
 @keyframes fade-in-confetti {
   from {
     opacity: 0;
+    transform: scale(0.8) rotate(-5deg);
   }
 
   to {
     opacity: 0.8;
+    transform: scale(1) rotate(0deg);
   }
 }
 
@@ -282,6 +284,64 @@ a:focus-visible {
 
   to {
     transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes prize-bounce {
+  0% {
+    transform: scale(0) rotate(-15deg);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.2) rotate(8deg);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(0.9) rotate(-3deg);
+  }
+  80% {
+    transform: scale(1.05) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes confetti-zoom {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-20deg);
+  }
+  40% {
+    opacity: 0.5;
+    transform: scale(1.2) rotate(10deg);
+  }
+  70% {
+    opacity: 0.7;
+    transform: scale(0.95) rotate(-5deg);
+  }
+  100% {
+    opacity: 0.8;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes bingo-celebration {
+  0% {
+    transform: scale(0) rotate(-20deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(5deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.95) rotate(-2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
     opacity: 1;
   }
 }

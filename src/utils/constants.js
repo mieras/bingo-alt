@@ -24,12 +24,14 @@ export const GRID_SIZE = 4;
 export const DRAW_INTERVAL = 5000; // 4 seconds
 export const HIGHLIGHT_DURATION = 1000; // Last 2 seconds
 export const MAX_DRAWN_BALLS = 36; // Maximum balls drawn per game
+export const MANUAL_CHECK_SPEED_BOOST = 0.95; // Snelheidsverhoging bij handmatig afvinken (0.7 = 30% sneller)
 
 // Skip animation settings
 export const SKIP_BALL_INTERVAL = 120; // Base interval in ms per ball during skip
 export const SKIP_USE_EASING = true; // Enable easing (starts fast, ends slower for suspense)
 export const SKIP_EASING_TYPE = 'in'; // 'in' (slow to fast), 'out' (fast to slow), 'in-out' (slow-fast-slow)
 export const SKIP_EASING_FACTOR = 1; // Higher = more dramatic slowdown at end
+export const SKIP_RESULT_DELAY = 1000; // Delay in ms om de kaart te zien na skip animatie voordat result screen verschijnt
 
 // Prize thumbnail images (placeholder URLs)
 export const PRIZE_THUMBNAILS = {

@@ -1,12 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ContentWrapper from './ContentWrapper';
 import { getPrizeThumbnail } from '../utils/constants';
 import confettiImage from '../assets/bingo-confetti-gold.png';
 import prizeImage from '../assets/bingo-prize.png';
 import GameHeader from './game/GameHeader';
+import confetti from 'canvas-confetti';
 
 const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false }) => {
   if (!prize) return null;
+
+  // Confetti effect bij won screen
+  useEffect(() => {
+    const duration = 3 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+    const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+    const interval = setInterval(function () {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+      confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+    }, 250);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const prizeThumbnail = getPrizeThumbnail(prize.prize);
   const winningBallIndex = drawnBalls.length;
@@ -34,15 +58,17 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false }) => 
               alt="Confetti"
               className="object-contain absolute inset-0 w-full h-full opacity-0"
               style={{ 
-                animation: 'fade-in-confetti 0.6s ease-out 0.2s forwards'
+                animation: 'confetti-zoom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards'
               }}
             />
             {/* Prize Image */}
             <img
               src={prizeImage}
               alt={prize.prize}
-              className="relative z-10 w-full max-w-[180px] h-auto object-contain opacity-0 animate-scale-up"
-              style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
+              className="relative z-10 w-full max-w-[180px] h-auto object-contain opacity-0"
+              style={{ 
+                animation: 'prize-bounce 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards'
+              }}
             />
           </div>
         </div>

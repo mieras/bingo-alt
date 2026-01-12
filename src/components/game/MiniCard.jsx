@@ -1,16 +1,73 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { GRID_SIZE } from '../../utils/constants';
 import vlbLogo from '../../assets/vlb-logo.png';
 
-const MiniCard = ({ bingoCard, checkedNumbers }) => {
+const MiniCard = ({ bingoCard, checkedNumbers, animateChecks = false, drawnBalls = [], useAbsolute = true }) => {
+    const [animatedChecked, setAnimatedChecked] = useState(new Set());
+    const [isVisible, setIsVisible] = useState(false);
+
+    // Slide-in animation when component mounts
+    useEffect(() => {
+        setIsVisible(true);
+    }, []);
+
+    // Animate checks based on drawnBalls order - very fast animation
+    useEffect(() => {
+        if (!animateChecks || drawnBalls.length === 0 || bingoCard.length === 0) {
+            // If not animating, use checkedNumbers directly
+            setAnimatedChecked(checkedNumbers);
+            return;
+        }
+
+        // Reset animated checked
+        setAnimatedChecked(new Set());
+
+        // Animate each number in the order they were drawn - very fast (30ms per number)
+        let currentIndex = 0;
+        const animateNext = () => {
+            if (currentIndex >= drawnBalls.length) {
+                return;
+            }
+
+            const ball = drawnBalls[currentIndex];
+            // Only check if this number is on the card
+            if (bingoCard.includes(ball)) {
+                setAnimatedChecked(prev => new Set(prev).add(ball));
+            }
+
+            currentIndex++;
+            // Very fast animation: 30ms per number
+            setTimeout(animateNext, 30);
+        };
+
+        // Start animation immediately
+        const timeout = setTimeout(animateNext, 50);
+
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [animateChecks, drawnBalls, bingoCard, checkedNumbers]);
+
+    // Use animatedChecked if animating, otherwise use checkedNumbers
+    const displayChecked = animateChecks ? animatedChecked : checkedNumbers;
+
+    const containerStyle = useAbsolute ? {
+        position: 'absolute',
+        zIndex: 50,
+        bottom: '-2rem',
+        right: '1rem',
+        transform: `rotate(5deg) translateX(${isVisible ? '0' : '10px'}) translateY(${isVisible ? '0' : '10px'})`,
+        opacity: isVisible ? 1 : 0,
+        transition: 'all 200ms ease-out',
+    } : {
+        transform: 'rotate(5deg)',
+        transition: 'all 200ms ease-out',
+    };
+
     return (
         <div
-            className="absolute z-50"
-            style={{
-                transform: 'rotate(5deg)',
-                bottom: '-2rem',
-                right: '1rem',
-            }}
+            className={useAbsolute ? '' : 'relative'}
+            style={containerStyle}
         >
             {/* Red card holder */}
             <div
@@ -56,13 +113,13 @@ const MiniCard = ({ bingoCard, checkedNumbers }) => {
                         }}
                     >
                         {bingoCard.map((num, idx) => {
-                            const isChecked = num && checkedNumbers.has(num);
+                            const isChecked = num && displayChecked.has(num);
                             const isEmpty = idx === 10;
 
                             return (
                                 <div
                                     key={idx}
-                                    className="flex relative justify-center items-center border border-gray-100"
+                                    className="flex relative justify-center items-center border border-gray-50"
                                     style={{
                                         width: '16.5px',
                                         height: '13.5px',

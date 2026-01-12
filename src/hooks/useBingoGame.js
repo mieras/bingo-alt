@@ -32,14 +32,11 @@ export const useBingoGame = () => {
 
     const [maxBalls, setMaxBalls] = useState(MAX_DRAWN_BALLS);
 
-    const startGame = useCallback(() => {
+    // Generate card without starting the game
+    const generateCard = useCallback(() => {
         // 50% chance to win
         const isWinner = Math.random() < 0.5;
-        console.log('🎲 Starting game - isWinner:', isWinner);
-
-        // Always draw all 36 balls
-        const currentMaxBalls = MAX_DRAWN_BALLS;
-        setMaxBalls(currentMaxBalls);
+        console.log('🎲 Generating card - isWinner:', isWinner);
 
         // Step 1: Generate a completely random deck of all 45 balls
         const allNumbers = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
@@ -80,17 +77,36 @@ export const useBingoGame = () => {
                 grid.push(cardNumbers[numIdx++]);
             }
         }
-        setBingoCard(grid);
-
+        
+        // Store deck for later use in startGame
         drawDeckRef.current = deck;
+        
+        // Set the card
+        setBingoCard(grid);
+        
+        return { grid, deck };
+    }, []);
 
+    const startGame = useCallback(() => {
+        console.log('🎲 Starting game');
+
+        // Always draw all 36 balls
+        const currentMaxBalls = MAX_DRAWN_BALLS;
+        setMaxBalls(currentMaxBalls);
+
+        // If no card exists yet, generate one
+        if (bingoCard.length === 0 || drawDeckRef.current.length === 0) {
+            generateCard();
+        }
+
+        // Reset game state but keep the card
         setDrawnBalls([]);
         setCurrentBall(null);
         setCheckedNumbers(new Set());
         setHistory([]);
         setPrize(null);
         setGameState('PLAYING');
-    }, []);
+    }, [bingoCard.length, generateCard]);
 
     const checkWin = useCallback((checked) => {
         // Win if all numbers in bingoCard (except null) are in checked
@@ -528,65 +544,32 @@ export const useBingoGame = () => {
     const skipToResult = useCallback(() => {
         if (gameState !== 'IDLE') return;
 
-        // 50% chance to win - gebruik hetzelfde mechanisme als startGame
-        const isWinner = Math.random() < 0.5;
-        console.log('🎲 Skip to result - isWinner:', isWinner);
-
         // Always draw all 36 balls
         const currentMaxBalls = MAX_DRAWN_BALLS;
         setMaxBalls(currentMaxBalls);
 
-        // Step 1: Generate a completely random deck of all 45 balls
-        const allNumbers = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
-        const deck = allNumbers.sort(() => Math.random() - 0.5);
+        // Use existing card if available, otherwise generate a new one
+        let grid = bingoCard;
+        let deck = drawDeckRef.current;
+        
+        if (grid.length === 0 || deck.length === 0) {
+            // Generate card if it doesn't exist
+            const result = generateCard();
+            grid = result.grid;
+            deck = result.deck;
+        }
 
-        // Step 2: The first 36 balls will be drawn (same logic as startGame)
+        // Step 1: Get the drawn balls from the deck (same logic as startGame)
         // In startGame: deck.slice(-36) are the balls that will be drawn (pop() takes from end)
         const drawnBalls = deck.slice(-36); // These will be drawn
-        const notDrawnBalls = deck.slice(0, 9); // These won't be drawn
 
-        // Step 3: Generate the card based on win/loss (same logic as startGame)
-        let cardNumbers;
-
-        if (isWinner) {
-            // Winner: All 15 card numbers come from the 36 balls that will be drawn
-            const shuffledDrawn = [...drawnBalls].sort(() => Math.random() - 0.5);
-            cardNumbers = shuffledDrawn.slice(0, 15);
-        } else {
-            // Loser: 14 numbers from drawn balls + 1-3 numbers from not-drawn balls
-            const numMissing = Math.floor(Math.random() * 3) + 1; // 1-3 missing
-
-            const shuffledDrawn = [...drawnBalls].sort(() => Math.random() - 0.5);
-            const shuffledNotDrawn = [...notDrawnBalls].sort(() => Math.random() - 0.5);
-
-            const presentNums = shuffledDrawn.slice(0, 15 - numMissing);
-            const missingNums = shuffledNotDrawn.slice(0, numMissing);
-
-            cardNumbers = [...presentNums, ...missingNums];
-        }
-
-        // Step 4: Create the 4x4 grid with empty slot at index 10
-        const emptyIndex = 10;
-        const grid = [];
-        let numIdx = 0;
-        for (let i = 0; i < 16; i++) {
-            if (i === emptyIndex) {
-                grid.push(null);
-            } else {
-                grid.push(cardNumbers[numIdx++]);
-            }
-        }
-        setBingoCard(grid);
-
-        // Step 5: Determine win/loss based on card numbers and drawn balls
+        // Step 2: Determine win/loss based on card numbers and drawn balls
         // Check if all card numbers (except null) are in the drawn balls
         const numbersToWin = grid.filter(n => n !== null);
         const isWin = numbersToWin.every(n => drawnBalls.includes(n));
 
         console.log('🎲 Skip to result - isWin check:', {
-            isWinner,
             isWin,
-            cardNumbers: cardNumbers.length,
             numbersToWin: numbersToWin.length,
             drawnBalls: drawnBalls.length,
             missingNumbers: numbersToWin.filter(n => !drawnBalls.includes(n))
@@ -648,7 +631,7 @@ export const useBingoGame = () => {
         });
         setHistory(historyItems.reverse());
 
-    }, [gameState]);
+    }, [gameState, bingoCard, generateCard]);
 
     // Transition effect: wanneer game eindigt, geen loading screen
     useEffect(() => {
@@ -702,6 +685,7 @@ export const useBingoGame = () => {
         isSkipEnding,
         skipOutcome: skipTarget ? { outcome: skipTarget.outcome, prize: skipTarget.prize } : null,
         startGame,
+        generateCard,
         handleCardClick,
         finishGame,
         skipToResult,

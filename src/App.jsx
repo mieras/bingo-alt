@@ -14,6 +14,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState('mail'); // 'mail' | 'account' | 'bingo' | 'result'
   const [showGameOverlay, setShowGameOverlay] = useState(false);
   const [resultType, setResultType] = useState(null); // 'won' | 'lost' | null
+  const [hasPlayed, setHasPlayed] = useState(false); // Track if game has been played
 
   const {
     gameState,
@@ -30,6 +31,7 @@ function App() {
     isCelebrating,
     isSkipEnding,
     startGame,
+    generateCard,
     handleCardClick,
     finishGame,
     skipToResult,
@@ -62,6 +64,11 @@ function App() {
 
   const openGameOverlay = () => {
     setShowGameOverlay(true);
+    // Generate card if it doesn't exist yet or if game hasn't been played
+    // (if hasPlayed is false, we want a fresh card for a new game)
+    if (bingoCard.length === 0 || (!hasPlayed && gameState === 'IDLE')) {
+      generateCard();
+    }
     // Start game niet direct - laat StartScreen eerst tonen
   };
 
@@ -69,6 +76,10 @@ function App() {
     // Als het spel nog bezig is (PLAYING), reset het spel
     if (gameState === 'PLAYING') {
       resetGame();
+      setHasPlayed(false);
+    } else if (gameState === 'WON' || gameState === 'FINISHED') {
+      // Als het spel is afgerond, markeer als gespeeld (niet resetten)
+      setHasPlayed(true);
     }
     setShowGameOverlay(false);
     setResultType(null);
@@ -78,6 +89,24 @@ function App() {
   const handleStartGame = () => {
     startGame();
   };
+
+  const openResultScreen = () => {
+    // Open overlay en ga direct naar result screen
+    setShowGameOverlay(true);
+    // Set resultType based on current gameState
+    if (gameState === 'WON') {
+      setResultType('won');
+    } else if (gameState === 'FINISHED') {
+      setResultType('lost');
+    }
+  };
+
+  // Generate card when bingo page is loaded (if not already generated)
+  useEffect(() => {
+    if (currentPage === 'bingo' && bingoCard.length === 0 && !hasPlayed) {
+      generateCard();
+    }
+  }, [currentPage, bingoCard.length, hasPlayed, generateCard]);
 
   // Handle game state changes - transition naar result scherm in overlay
   useEffect(() => {
@@ -119,6 +148,11 @@ function App() {
             <BingoOverviewScreen
               onNavigateToMail={navigateToMail}
               onPlayNow={openGameOverlay}
+              onViewPrize={openResultScreen}
+              bingoCard={bingoCard}
+              checkedNumbers={checkedNumbers}
+              hasPlayed={hasPlayed}
+              prize={prize}
             />
           )}
 
@@ -197,6 +231,7 @@ function App() {
                       showHeader={true}
                       bingoCard={bingoCard}
                       checkedNumbers={checkedNumbers}
+                      drawnBalls={drawnBalls}
                     />
                   )}
                 </div>

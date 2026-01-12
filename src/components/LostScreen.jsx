@@ -8,7 +8,7 @@ import lostHeroImage from '../assets/bingo-lost.png';
 import GameHeader from './game/GameHeader';
 import MiniCard from './game/MiniCard';
 
-const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checkedNumbers = new Set() }) => {
+const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checkedNumbers = new Set(), drawnBalls = [] }) => {
   // Carousel cards data voor verlies scherm
   const carouselCards = [
     {
@@ -59,7 +59,12 @@ const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checked
 
           {/* Mini Bingo Card - rechtsboven, half over header */}
           {bingoCard.length > 0 && (
-            <MiniCard bingoCard={bingoCard} checkedNumbers={checkedNumbers} />
+            <MiniCard 
+              bingoCard={bingoCard} 
+              checkedNumbers={checkedNumbers}
+              animateChecks={true}
+              drawnBalls={drawnBalls}
+            />
           )}
         </div>
 

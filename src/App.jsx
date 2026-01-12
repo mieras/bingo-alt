@@ -184,6 +184,8 @@ function App() {
                     drawnBalls={drawnBalls}
                     onBackToBingo={closeGameOverlay}
                     showHeader={true}
+                    bingoCard={bingoCard}
+                    checkedNumbers={checkedNumbers}
                   />
                 )}
 
@@ -191,6 +193,8 @@ function App() {
                   <LostScreen
                     onBackToBingo={closeGameOverlay}
                     showHeader={true}
+                    bingoCard={bingoCard}
+                    checkedNumbers={checkedNumbers}
                   />
                 )}
               </div>

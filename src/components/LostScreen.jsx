@@ -6,8 +6,9 @@ import 'swiper/css/pagination';
 import ContentWrapper from './ContentWrapper';
 import lostHeroImage from '../assets/bingo-lost.png';
 import GameHeader from './game/GameHeader';
+import MiniCard from './game/MiniCard';
 
-const LostScreen = ({ onBackToBingo, showHeader = false }) => {
+const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checkedNumbers = new Set() }) => {
   // Carousel cards data voor verlies scherm
   const carouselCards = [
     {
@@ -55,6 +56,11 @@ const LostScreen = ({ onBackToBingo, showHeader = false }) => {
               style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
             />
           </div>
+          
+          {/* Mini Bingo Card - rechtsboven, half over header */}
+          {bingoCard.length > 0 && (
+            <MiniCard bingoCard={bingoCard} checkedNumbers={checkedNumbers} />
+          )}
         </div>
 
         {/* Content Section */}

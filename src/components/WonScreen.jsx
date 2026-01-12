@@ -4,9 +4,10 @@ import { getPrizeThumbnail } from '../utils/constants';
 import confettiImage from '../assets/bingo-confetti-gold.png';
 import prizeImage from '../assets/bingo-prize.png';
 import GameHeader from './game/GameHeader';
+import MiniCard from './game/MiniCard';
 import confetti from 'canvas-confetti';
 
-const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false }) => {
+const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingoCard = [], checkedNumbers = new Set() }) => {
   if (!prize) return null;
 
   // Confetti effect bij won screen
@@ -71,6 +72,11 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false }) => 
               }}
             />
           </div>
+          
+          {/* Mini Bingo Card - rechtsboven, half over header */}
+          {bingoCard.length > 0 && (
+            <MiniCard bingoCard={bingoCard} checkedNumbers={checkedNumbers} />
+          )}
         </div>
 
         {/* Content Section */}

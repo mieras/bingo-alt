@@ -37,7 +37,7 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingo
   const winningBallIndex = drawnBalls.length;
 
   return (
-    <div className="bg-white h-full w-full flex flex-col">
+    <div className="flex flex-col w-full h-full bg-white">
       {/* Header - Fixed */}
       {showHeader && <GameHeader onClose={onBackToBingo} />}
 
@@ -58,7 +58,7 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingo
               src={confettiImage}
               alt="Confetti"
               className="object-contain absolute inset-0 w-full h-full opacity-0"
-              style={{ 
+              style={{
                 animation: 'confetti-zoom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards'
               }}
             />
@@ -67,12 +67,12 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingo
               src={prizeImage}
               alt={prize.prize}
               className="relative z-10 w-full max-w-[180px] h-auto object-contain opacity-0"
-              style={{ 
+              style={{
                 animation: 'prize-bounce 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards'
               }}
             />
           </div>
-          
+
           {/* Mini Bingo Card - rechtsboven, half over header */}
           {bingoCard.length > 0 && (
             <MiniCard bingoCard={bingoCard} checkedNumbers={checkedNumbers} />
@@ -80,10 +80,10 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingo
         </div>
 
         {/* Content Section */}
-        <ContentWrapper className="flex flex-col items-center px-4 pt-6 pb-8 bg-white">
+        <ContentWrapper className="flex flex-col items-center px-2 pt-6 pb-8 bg-white">
           {/* Result Info */}
-          <div className="p-6 mb-6 w-full bg-white rounded-lg">
-            <h2 
+          <div className="py-6 w-full bg-white rounded-lg">
+            <h2
               className="text-5xl font-black text-[#003884] mb-2 text-center opacity-0 animate-fade-in"
               style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
             >
@@ -92,7 +92,7 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingo
             <p className="mb-4 text-sm text-center text-gray-600">
               {winningBallIndex}e getrokken bal
             </p>
-            <p className="text-2xl font-bold text-[#AA167C] mb-6 text-center">
+            <p className="text-2xl font-bold text-[#AA167C] mb-0 text-center">
               Je wint {prize.prize.toLowerCase()}
             </p>
             <p className="text-base text-[#29313d] leading-relaxed text-center">

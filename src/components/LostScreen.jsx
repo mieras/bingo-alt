@@ -33,7 +33,7 @@ const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checked
   ];
 
   return (
-    <div className="bg-white h-full w-full flex flex-col">
+    <div className="flex flex-col w-full h-full bg-white">
       {/* Header - Fixed */}
       {showHeader && <GameHeader onClose={onBackToBingo} />}
 
@@ -56,7 +56,7 @@ const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checked
               style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
             />
           </div>
-          
+
           {/* Mini Bingo Card - rechtsboven, half over header */}
           {bingoCard.length > 0 && (
             <MiniCard bingoCard={bingoCard} checkedNumbers={checkedNumbers} />
@@ -64,10 +64,10 @@ const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checked
         </div>
 
         {/* Content Section */}
-        <ContentWrapper className="flex flex-col px-4 pt-2 pb-4 bg-white">
+        <ContentWrapper className="flex flex-col px-2 pt-2 pb-4 bg-white">
           {/* Lost Message */}
-          <div className="p-4 mb-2 w-full text-center">
-            <h2 
+          <div className="pt-4 mb-2 w-full text-center">
+            <h2
               className="text-4xl font-black text-[#003884] mb-2 opacity-0 animate-fade-in"
               style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
             >
@@ -82,8 +82,8 @@ const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checked
           </div>
 
           {/* Carousel Section */}
-          <div className="mb-6 w-full">
-            <h3 className="text-xl font-bold text-[#003884] mb-2 text-center">
+          <div className="mb-2 w-full">
+            <h3 className="text-xl font-bold text-[#003884] mb-2 mt-2 text-center">
               Haal alles uit je deelname
             </h3>
             <Swiper
@@ -104,7 +104,7 @@ const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checked
               {carouselCards.map((card) => (
                 <SwiperSlide
                   key={card.id}
-                  className="h-auto! pb-8"
+                  className="h-auto! pb-2"
                   role="group"
                   aria-label={`Slide ${card.id}: ${card.title}`}
                 >

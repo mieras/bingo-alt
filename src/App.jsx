@@ -121,89 +121,89 @@ function App() {
               onPlayNow={openGameOverlay}
             />
           )}
+
+          {/* Game Overlay - binnen wrapper */}
+          {showGameOverlay && (
+            <>
+              {/* Backdrop */}
+              <div 
+                className="absolute inset-0 bg-black/50 backdrop-blur-sm z-40"
+                onClick={closeGameOverlay}
+                aria-hidden="true"
+              />
+              {/* Overlay Container */}
+              <div className="absolute inset-0 z-50 pointer-events-none">
+                <div 
+                  className="w-full h-full bg-white pointer-events-auto overflow-hidden"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Intro Screen (StartScreen) - wanneer gameState === 'IDLE' */}
+                  {gameState === 'IDLE' && !isTransitioning && (
+                    <StartScreen 
+                      onStart={handleStartGame} 
+                      onSkipToResult={() => {
+                        skipToResult();
+                        // Result wordt automatisch getoond via useEffect
+                      }}
+                      onClose={closeGameOverlay}
+                    />
+                  )}
+
+                  {/* Game Screen - wanneer gameState === 'PLAYING' */}
+                  {gameState === 'PLAYING' && (
+                    <GameScreen
+                      bingoCard={bingoCard}
+                      currentBall={currentBall}
+                      checkedNumbers={checkedNumbers}
+                      history={history}
+                      drawnBalls={drawnBalls}
+                      wigglingNumber={wigglingNumber}
+                      onCardClick={handleCardClick}
+                      onSkip={finishGame}
+                      isSkipping={isSkipping}
+                      skipOutcome={skipOutcome}
+                      progress={progress}
+                      panelColor={panelColor}
+                      gameState={gameState}
+                      prize={prize}
+                      isOverlay={false}
+                      onClose={closeGameOverlay}
+                      isTransitioning={isTransitioning}
+                      isCelebrating={isCelebrating}
+                      isSkipEnding={isSkipEnding}
+                    />
+                  )}
+
+                  {/* Loading Transition - tijdens transition */}
+                  {isTransitioning && (
+                    <LoadingTransition />
+                  )}
+
+                  {/* Result Screens in overlay - wanneer gameState === 'WON' of 'FINISHED' en niet meer transitioning */}
+                  {!isTransitioning && gameState === 'WON' && resultType === 'won' && prize && (
+                    <WonScreen
+                      prize={prize}
+                      drawnBalls={drawnBalls}
+                      onBackToBingo={closeGameOverlay}
+                      showHeader={true}
+                      bingoCard={bingoCard}
+                      checkedNumbers={checkedNumbers}
+                    />
+                  )}
+
+                  {!isTransitioning && gameState === 'FINISHED' && resultType === 'lost' && (
+                    <LostScreen
+                      onBackToBingo={closeGameOverlay}
+                      showHeader={true}
+                      bingoCard={bingoCard}
+                      checkedNumbers={checkedNumbers}
+                    />
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </div>
-      )}
-
-      {/* Game Overlay - altijd buiten wrapper, fullscreen voor alle pagina's */}
-      {showGameOverlay && (
-        <>
-          {/* Backdrop */}
-          <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
-            onClick={closeGameOverlay}
-            aria-hidden="true"
-          />
-          {/* Fullscreen Container */}
-          <div className="fixed inset-0 z-50 pointer-events-none">
-            <div 
-              className="w-full h-full bg-white pointer-events-auto overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Intro Screen (StartScreen) - wanneer gameState === 'IDLE' */}
-              {gameState === 'IDLE' && !isTransitioning && (
-                <StartScreen 
-                  onStart={handleStartGame} 
-                  onSkipToResult={() => {
-                    skipToResult();
-                    // Result wordt automatisch getoond via useEffect
-                  }}
-                  onClose={closeGameOverlay}
-                />
-              )}
-
-              {/* Game Screen - wanneer gameState === 'PLAYING' */}
-              {gameState === 'PLAYING' && (
-                <GameScreen
-                  bingoCard={bingoCard}
-                  currentBall={currentBall}
-                  checkedNumbers={checkedNumbers}
-                  history={history}
-                  drawnBalls={drawnBalls}
-                  wigglingNumber={wigglingNumber}
-                  onCardClick={handleCardClick}
-                  onSkip={finishGame}
-                  isSkipping={isSkipping}
-                  skipOutcome={skipOutcome}
-                  progress={progress}
-                  panelColor={panelColor}
-                  gameState={gameState}
-                  prize={prize}
-                  isOverlay={false}
-                  onClose={closeGameOverlay}
-                  isTransitioning={isTransitioning}
-                  isCelebrating={isCelebrating}
-                  isSkipEnding={isSkipEnding}
-                />
-              )}
-
-              {/* Loading Transition - tijdens transition */}
-              {isTransitioning && (
-                <LoadingTransition />
-              )}
-
-              {/* Result Screens in overlay - wanneer gameState === 'WON' of 'FINISHED' en niet meer transitioning */}
-              {!isTransitioning && gameState === 'WON' && resultType === 'won' && prize && (
-                <WonScreen
-                  prize={prize}
-                  drawnBalls={drawnBalls}
-                  onBackToBingo={closeGameOverlay}
-                  showHeader={true}
-                  bingoCard={bingoCard}
-                  checkedNumbers={checkedNumbers}
-                />
-              )}
-
-              {!isTransitioning && gameState === 'FINISHED' && resultType === 'lost' && (
-                <LostScreen
-                  onBackToBingo={closeGameOverlay}
-                  showHeader={true}
-                  bingoCard={bingoCard}
-                  checkedNumbers={checkedNumbers}
-                />
-              )}
-            </div>
-          </div>
-        </>
       )}
     </div>
   );

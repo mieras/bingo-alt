@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import ContentWrapper from './ContentWrapper';
 import MiniCard from './game/MiniCard';
+import WeeklyResultsCard from './WeeklyResultsCard';
 import { GRID_SIZE } from '../utils/constants';
 import navImage from '../assets/vl-account-nav.png';
-import heroImage from '../assets/hero-image.png';
-import confettiImage from '../assets/bingo-confetti-gold.png';
 import vlbLogo from '../assets/vlb-logo.png';
 
 const BingoOverviewScreen = ({ onNavigateToMail, onPlayNow, onViewPrize, bingoCard = [], checkedNumbers = new Set(), hasPlayed = false, prize = null, panelColor = '#AA167C' }) => {
@@ -78,119 +77,95 @@ const BingoOverviewScreen = ({ onNavigateToMail, onPlayNow, onViewPrize, bingoCa
           </div>
 
           {/* Wekelijkse Uitslagen Promotie Card */}
-          <div className="relative bg-[#003884] rounded-lg overflow-hidden mb-6">
-            {/* Lichtere blauwe golf onderaan */}
-            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-transparent via-[#0069b4] to-[#0069b4] opacity-30"></div>
-
-            {/* Hero Image */}
-            <div className="relative px-4 pt-6 pb-4">
-              <div className="relative">
-                <img
-                  src={heroImage}
-                  alt="€ 25.000,- prijs"
-                  className="object-contain w-full h-auto"
-                />
-                {/* Confetti overlay */}
-                <div className="absolute inset-0 opacity-60">
-                  <img
-                    src={confettiImage}
-                    alt="Confetti"
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="relative px-4 pb-6">
-              <h2 className="mb-4 text-xl font-bold text-white">
-                Wekelijkse uitslagen
-              </h2>
-
-              <div className="mb-4 space-y-3">
-                <div className="flex gap-2 items-start">
-                  <div className="w-5 h-5 shrink-0 mt-0.5">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="#009640" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </div>
-                  <p className="text-sm text-white">Elke zondag staat de Bingo klaar</p>
-                </div>
-                <div className="flex gap-2 items-start">
-                  <div className="w-5 h-5 shrink-0 mt-0.5">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="#009640" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </div>
-                  <p className="text-sm text-white">De eerste Bingo is maar liefst € 25.000,- waard!</p>
-                </div>
-              </div>
-
-              <p className="text-sm leading-relaxed text-white">
-                Elke week ontvangt u per lot een unieke Bingokaart. Alle deelnemers spelen automatisch mee en maken kans op fantastische (geld)prijzen!
-              </p>
-            </div>
-          </div>
+          <WeeklyResultsCard />
 
           {/* Huidige Bingokaart Weergave */}
-          <div className="p-4 mb-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
-            <div className="flex flex-row gap-4 items-center">
-              {/* MiniCard - altijd tonen */}
-              <div className="flex relative flex-1 justify-center">
-                {bingoCard.length > 0 ? (
-                  <div className="relative" style={{ transform: 'scale(1.25)' }}>
-                    <MiniCard
-                      bingoCard={bingoCard}
-                      checkedNumbers={hasPlayed ? checkedNumbers : new Set()}
-                      animateChecks={false}
-                      useAbsolute={false}
-                      cardColor={panelColor}
-                    />
-                  </div>
-                ) : (
-                  // Placeholder als kaart nog niet is gegenereerd
-                  <div className="bg-white rounded-lg p-4 shadow-lg max-w-[200px]">
-                    <div className="mb-2 text-center">
-                      <div className="text-xs font-bold text-[#003884] mb-1">VRIENDENLOTERIJ</div>
-                      <div className="text-xs text-[#003884] mb-2">EREDIVISIE BINGO</div>
-                      <div className="grid grid-cols-4 gap-2 text-sm font-bold text-[#003884]">
-                        <div>07</div>
-                        <div>17</div>
-                        <div>30</div>
-                        <div>38</div>
-                        <div>01</div>
-                        <div>21</div>
-                        <div>29</div>
-                        <div>36</div>
-                        <div>03</div>
-                        <div>12</div>
-                        <div className="flex justify-center items-center">
-                          <img src={vlbLogo} alt="VL" className="w-4 h-4" />
-                        </div>
-                        <div>42</div>
-                        <div>11</div>
-                        <div>14</div>
-                        <div>25</div>
-                        <div>44</div>
+          <div
+            className="mb-4 bg-white overflow-hidden"
+            style={{
+              borderRadius: '8px',
+              border: '2px solid #E5E6E6',
+              background: '#FFF',
+              boxShadow: '0 1px 0 0 #E5E6E6'
+            }}
+          >
+            {/* Media Container met achtergrond */}
+            <div className="py-8 flex justify-center items-center" style={{ backgroundColor: '#E4F5F6' }}>
+              {bingoCard.length > 0 ? (
+                <div className="relative" style={{ transform: 'scale(1.25)' }}>
+                  <MiniCard
+                    bingoCard={bingoCard}
+                    checkedNumbers={hasPlayed ? checkedNumbers : new Set()}
+                    animateChecks={false}
+                    useAbsolute={false}
+                    cardColor={panelColor}
+                  />
+                </div>
+              ) : (
+                // Placeholder als kaart nog niet is gegenereerd
+                <div className="bg-white rounded-lg p-4 shadow-lg max-w-[200px]">
+                  <div className="mb-2 text-center">
+                    <div className="text-xs font-bold text-[#003884] mb-1">VRIENDENLOTERIJ</div>
+                    <div className="text-xs text-[#003884] mb-2">EREDIVISIE BINGO</div>
+                    <div className="grid grid-cols-4 gap-2 text-sm font-bold text-[#003884]">
+                      <div>07</div>
+                      <div>17</div>
+                      <div>30</div>
+                      <div>38</div>
+                      <div>01</div>
+                      <div>21</div>
+                      <div>29</div>
+                      <div>36</div>
+                      <div>03</div>
+                      <div>12</div>
+                      <div className="flex justify-center items-center">
+                        <img src={vlbLogo} alt="VL" className="w-4 h-4" />
                       </div>
+                      <div>42</div>
+                      <div>11</div>
+                      <div>14</div>
+                      <div>25</div>
+                      <div>44</div>
                     </div>
                   </div>
-                )}
+                </div>
+              )}
+            </div>
+
+            {/* Content sectie - Meta en Buttons */}
+            <div className="p-4 bg-white">
+              {/* Meta informatie - Kaartnummer links, Datum rechts */}
+              <div className="flex justify-between items-center mb-4">
+                <p className="font-bold text-[#003884] text-sm">45854-AB</p>
+                <p className="text-[#003884] text-xs">10 mei 2023</p>
               </div>
 
-              {/* Details en Knop */}
-              <div className="flex flex-col gap-3">
-                <div>
-                  <p className="font-bold text-[#003884] text-sm mb-1">45854-AB</p>
-                  <p className="text-[#003884] text-xs">10 mei 2023</p>
-                </div>
+              {/* Buttons */}
+              {hasPlayed ? (
                 <button
-                  onClick={hasPlayed ? onViewPrize : onPlayNow}
-                  className="bg-[#003884] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#002a5f] transition-colors uppercase tracking-wide text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#003884]"
+                  onClick={onViewPrize}
+                  className="w-full bg-[#009640] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#087239] transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#009640]"
                 >
-                  {hasPlayed ? 'Bekijk prijs' : 'Speel nu'}
+                  Bekijk je prijs
                 </button>
-              </div>
+              ) : (
+                <div className="flex gap-2">
+                  <button
+                    onClick={onPlayNow}
+                    className="flex-1 bg-[#009640] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#087239] transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#009640]"
+                  >
+                    Speel nu!
+                  </button>
+                  <button
+                    className="flex items-center justify-center w-12 h-12 border-2 border-[#003884] rounded-lg hover:bg-[#003884]/5 transition-colors focus:outline-none focus:ring-2 focus:ring-[#003884] focus:ring-offset-2"
+                    title="Download Bingokaart"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path d="M17.5 12.5V13.5C17.5 14.9001 17.5 15.6002 17.2275 16.135C16.9878 16.6054 16.6054 16.9878 16.135 17.2275C15.6002 17.5 14.9001 17.5 13.5 17.5H6.5C5.09987 17.5 4.3998 17.5 3.86502 17.2275C3.39462 16.9878 3.01217 16.6054 2.77248 16.135C2.5 15.6002 2.5 14.9001 2.5 13.5V12.5M14.1667 8.33333L10 12.5M10 12.5L5.83333 8.33333M10 12.5V2.5" stroke="#003884" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 

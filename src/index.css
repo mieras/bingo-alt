@@ -305,6 +305,27 @@ a:focus-visible {
   }
 }
 
+@keyframes card-bounce-large {
+  0% {
+    transform: scale(0) rotate(-10deg);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.8) rotate(8deg);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(1.35) rotate(3deg);
+  }
+  80% {
+    transform: scale(1.55) rotate(6deg);
+  }
+  100% {
+    transform: scale(1.5) rotate(5deg);
+    opacity: 1;
+  }
+}
+
 @keyframes confetti-zoom {
   0% {
     opacity: 0;

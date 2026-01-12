@@ -1,121 +1,147 @@
-import React from 'react';
-import ContentWrapper from './ContentWrapper';
-import SocialProofCarousel from './SocialProofCarousel';
+import React, { useState, useEffect } from 'react';
 import GameHeader from './game/GameHeader';
 
-// Figma asset URLs (geldig voor 7 dagen)
-const CHEVRON_RIGHT_URL = 'https://www.figma.com/api/mcp/asset/d362a218-9aab-4fac-b453-b804ea95063f';
-
 // Hero image
-import heroImage from '../assets/hero-image.png';
+import heroImage from '../assets/bingo-intro-hero.png';
 
-// How it works image - gebruik echte afbeelding als beschikbaar
-// Plaats how-it-works.jpg in src/assets/ en uncomment de import hieronder
-// import howItWorksImage from '../assets/how-it-works.jpg';
-const HOW_IT_WORKS_PLACEHOLDER = 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800&h=600&fit=crop';
+// Ticker berichten
+const TICKER_MESSAGES = [
+  'Elke week 30.000 winnaars',
+  '€ 25.000 gegarandeerd als hoofdprijs',
+  'Duizenden andere prijzen'
+];
+
+const TICKER_INTERVAL = 3000; // 3 seconden per bericht
 
 const StartScreen = ({ onStart, onSkipToResult, onClose }) => {
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Start fade out
+      setIsVisible(false);
+
+      // Na fade out, wissel bericht en fade in
+      setTimeout(() => {
+        setCurrentMessageIndex((prev) => (prev + 1) % TICKER_MESSAGES.length);
+        setIsVisible(true);
+      }, 300); // 300ms fade out duration
+    }, TICKER_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <div className="bg-white overflow-clip relative rounded-tl-[12px] rounded-tr-[12px] size-full flex flex-col">
       {/* Header Section - alleen tonen wanneer onClose beschikbaar is (in overlay) */}
       {onClose && <GameHeader onClose={onClose} />}
-      
+
       {/* Content Section */}
       <div className="flex overflow-y-auto flex-col flex-1 items-center w-full bg-white">
         {/* Hero Image Section */}
-        <div className="flex relative justify-center w-full shrink-0" style={{ backgroundColor: 'var(--ds-core-light-blue)' }}>
-          <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
-            <img src={heroImage}
-              alt="VriendenLoterij Bingo hero - € 25.000 cheque en bingokaart"
-              className="object-cover min-w-full h-full"
-            />
-          </div>
+        <div className="relative w-full h-[211px] overflow-hidden">
+          <img
+            src={heroImage}
+            alt="VriendenLoterij Bingo hero - € 25.000 cheque en bingokaart"
+            className="object-cover absolute inset-0 w-full h-full"
+          />
+          {/* Gradient overlay voor fade naar wit */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'linear-gradient(to bottom, rgba(255,255,255,0) 10%, rgba(255,255,255,0.9) 83%, white 100%)'
+            }}
+          />
         </div>
 
-        {/* Social Proof Carousel */}
-        <SocialProofCarousel />
-        <ContentWrapper className="flex flex-col flex-1 gap-6 items-start px-4 pt-6 pb-4">
-          {/* Intro Section */}
-          <div className="flex relative flex-col gap-2 items-start w-full">
-            <p className="font-['Laca_Text'] font-normal leading-6 relative text-[#111] text-base w-full">
-              Elke week ontvangt u per lot een unieke Bingokaart. Alle deelnemers spelen automatisch mee en maken kans op fantastische (geld)prijzen!
-            </p>
-          </div>
+        {/* Content */}
+        <div className="flex flex-col gap-6 items-start px-4 pt-2 pb-4 w-full">
+          {/* Title and Intro */}
+          <div className="flex flex-col gap-3 items-start w-full">
+            <div className="flex flex-col gap-1 items-start w-full">
+              <h1 className="font-bold leading-7 text-[#333] text-2xl w-full">
+                Speel Bingo
+              </h1>
+              <p className="leading-6 text-[#111] text-[17px] w-full">
+                Uw Bingokaart voor deze week staat klaar. Speel mee en vink zelf de nummers af en zie direct of je in de prijzen bent gevallen.
+              </p>
+            </div>
 
-          {/* How it works section */}
-          <div className="flex relative flex-col flex-1 gap-3 items-start w-full">
-            <h2 className="font-['Laca_Text'] font-bold leading-[28px] relative text-[#111] text-2xl w-full">
-              Hoe werkt het?
-            </h2>
+            {/* Social Proof Ticker */}
+            <div
+              className="flex overflow-hidden justify-center items-center p-3 w-full rounded-lg"
+              style={{ backgroundColor: '#ddf5f7', minHeight: '44px' }}
+            >
+              <p
+                className="text-sm text-[#00275c] transition-opacity duration-300"
+                style={{ opacity: isVisible ? 1 : 0 }}
+              >
+                {TICKER_MESSAGES[currentMessageIndex]}
+              </p>
+            </div>
 
+            {/* How it works section */}
+            <div className="flex flex-col gap-2 items-start mt-2 w-full">
+              <h2 className="font-bold leading-6 text-[#111] text-lg w-full">
+                Hoe werkt het?
+              </h2>
 
-
-            {/* Instructions List */}
-            <div className="flex relative flex-col gap-1 items-start w-full">
-              {[
-                'De ballen komen één voor één in beeld.',
-                'Staat het nummer op uw Bingokaart? Dan kunt u \'m afstrepen. Mis je een nummer, dan vullen wij het in.',
-                'Heeft u een volle kaart? Dan heeft u Bingo!',
-                'Meteen weten of je gewonnen hebt? klik op \'Bekijk uitslag\' en je ziet of je gewonnen hebt.'
-              ].map((text, idx) => (
-                <div key={idx} className="flex relative gap-2 items-start w-full">
-                  {/* Check icon */}
-                  <div className="relative w-5 h-5 shrink-0 mt-0.5">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="#009640" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </div>
-                  {/* Text */}
-                  <div className="flex relative flex-col flex-1 gap-1 items-start">
-                    <p className="font-['Laca_Text'] font-normal leading-6 relative text-[#111] text-base w-full">
+              {/* Instructions List */}
+              <div className="flex flex-col gap-1 items-start w-full">
+                {[
+                  'De nummers verschijnen één voor één.',
+                  'Nummer op uw Bingokaart? Vink het af.',
+                  'Volle kaart? Dan heb je Bingo!',
+                  'Nummer gemist? Geen probleem, wij vinken het automatisch voor je af.'
+                ].map((text, idx) => (
+                  <div key={idx} className="flex gap-2 items-start w-full">
+                    {/* Check icon */}
+                    <div className="w-5 h-5 shrink-0 mt-0.5">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="#009B00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                    {/* Text */}
+                    <p className="flex-1 leading-6 text-[#111] text-base">
                       {text}
                     </p>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex relative flex-col gap-3 justify-center items-center w-full cursor-pointer">
+          <div className="flex flex-col gap-3 items-center w-full">
             {/* Start Button */}
             <button
               onClick={onStart}
-              className="flex relative flex-col items-start p-0 w-full"
+              className="relative w-full bg-[#008900] text-white font-bold py-4 px-10 rounded-lg hover:bg-[#007200] transition-colors text-base"
+              style={{
+                boxShadow: 'inset 0px -2px 0px 0px #005e00'
+              }}
             >
-              <div className="flex relative flex-col items-center w-full">
-                <div className="bg-[#008900] flex gap-2 items-center justify-center py-4 px-10 relative rounded-lg w-full">
-                  {/* Play icon */}
-                  <div className="relative w-5 h-5">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path fillRule="evenodd" clipRule="evenodd" d="M8.33854 2.33515C8.3485 2.34179 8.35849 2.34846 8.36852 2.35514L17.1591 8.21555C17.4135 8.38508 17.6493 8.54228 17.8304 8.68835C18.0195 8.8408 18.2423 9.05219 18.3706 9.36145C18.5401 9.7702 18.5401 10.2296 18.3706 10.6383C18.2423 10.9476 18.0195 11.159 17.8304 11.3114C17.6493 11.4575 17.4135 11.6147 17.1592 11.7842L8.33857 17.6646C8.02766 17.8719 7.7481 18.0583 7.51087 18.1869C7.27349 18.3155 6.94765 18.4625 6.56733 18.4398C6.08087 18.4108 5.63149 18.1703 5.33749 17.7816C5.10763 17.4778 5.04921 17.1251 5.02457 16.8563C4.99995 16.5876 4.99998 16.2516 5 15.8779L5 4.15792C5 4.14587 5 4.13386 5 4.12188C4.99998 3.74822 4.99995 3.41222 5.02457 3.14354C5.04921 2.87466 5.10763 2.52199 5.33749 2.21815C5.63149 1.8295 6.08087 1.589 6.56733 1.55996C6.94765 1.53725 7.27349 1.68426 7.51087 1.81291C7.74809 1.94146 8.02765 2.12786 8.33854 2.33515Z" fill="white" />
-                    </svg>
-                  </div>
-                  {/* Button text */}
-                  <p className="font-['Laca_Text'] font-bold leading-5 relative text-white text-base text-center">
-                    Start trekking
-                  </p>
-                </div>
-              </div>
+              Speel nu
             </button>
 
-            {/* Direct to result link */}
+            {/* Direct to result text */}
             {onSkipToResult && (
-              <button
-                onClick={onSkipToResult}
-                className="flex relative gap-1 items-center p-0 bg-transparent border-none cursor-pointer"
-                aria-label="Direct naar de uitslag"
-              >
-                <p className="font-['Laca_Text'] font-semibold leading-5 relative text-[#0050a5] text-base text-left">
-                  Direct naar de uitslag
+              <div className="text-center text-sm text-[#111]">
+                <p className="mb-1">Wilt u meteen weten of u gewonnen heeft?</p>
+                <p>
+                  Bekijk dan{' '}
+                  <button
+                    onClick={onSkipToResult}
+                    className="text-[#003884] underline hover:text-[#002a5f] transition-colors bg-transparent border-none cursor-pointer p-0"
+                  >
+                    direct de uitslag
+                  </button>
+                  .
                 </p>
-                <div className="relative w-4 h-4">
-                  <img src={CHEVRON_RIGHT_URL} alt="" className="block w-full max-w-none h-full" />
-                </div>
-              </button>
+              </div>
             )}
           </div>
-        </ContentWrapper>
+        </div>
       </div>
     </div>
   );

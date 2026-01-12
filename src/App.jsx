@@ -15,6 +15,7 @@ function App() {
   const [showGameOverlay, setShowGameOverlay] = useState(false);
   const [resultType, setResultType] = useState(null); // 'won' | 'lost' | null
   const [hasPlayed, setHasPlayed] = useState(false); // Track if game has been played
+  const [panelColor, setPanelColor] = useState('#AA167C'); // Panel color for current card
 
   const {
     gameState,
@@ -40,11 +41,8 @@ function App() {
 
   const progress = (drawnBalls.length / 36) * 100;
 
-  // Random background kleur voor het panel - consistent per sessie
+  // Random background kleur voor het panel - consistent per kaart
   const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
-  const panelColor = useMemo(() => {
-    return panelColors[Math.floor(Math.random() * panelColors.length)];
-  }, [showGameOverlay]); // Reset bij nieuwe game overlay
 
   // Navigatie functies
   const navigateToAccount = () => {
@@ -68,6 +66,9 @@ function App() {
     // (if hasPlayed is false, we want a fresh card for a new game)
     if (bingoCard.length === 0 || (!hasPlayed && gameState === 'IDLE')) {
       generateCard();
+      // Generate a random color for this card
+      const randomColor = panelColors[Math.floor(Math.random() * panelColors.length)];
+      setPanelColor(randomColor);
     }
     // Start game niet direct - laat StartScreen eerst tonen
   };
@@ -105,6 +106,9 @@ function App() {
   useEffect(() => {
     if (currentPage === 'bingo' && bingoCard.length === 0 && !hasPlayed) {
       generateCard();
+      // Generate a random color for this card
+      const randomColor = panelColors[Math.floor(Math.random() * panelColors.length)];
+      setPanelColor(randomColor);
     }
   }, [currentPage, bingoCard.length, hasPlayed, generateCard]);
 
@@ -153,6 +157,7 @@ function App() {
               checkedNumbers={checkedNumbers}
               hasPlayed={hasPlayed}
               prize={prize}
+              panelColor={panelColor}
             />
           )}
 
@@ -222,6 +227,7 @@ function App() {
                       showHeader={true}
                       bingoCard={bingoCard}
                       checkedNumbers={checkedNumbers}
+                      panelColor={panelColor}
                     />
                   )}
 
@@ -232,6 +238,7 @@ function App() {
                       bingoCard={bingoCard}
                       checkedNumbers={checkedNumbers}
                       drawnBalls={drawnBalls}
+                      panelColor={panelColor}
                     />
                   )}
                 </div>

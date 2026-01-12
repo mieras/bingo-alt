@@ -1,5 +1,5 @@
 import React from 'react';
-import { getPrizeThumbnail } from '../../utils/constants';
+import { getPrizeThumbnailByBalls } from '../../utils/constants';
 
 const highlightPrizeText = (labelText, prizeText) => {
     if (!labelText) return null;
@@ -93,7 +93,7 @@ const GameHistory = ({ history, getBallColor, isGameFinished }) => {
                         {item.prize && (
                             <div className="overflow-hidden w-16 h-16 bg-gray-100 rounded-lg shrink-0">
                                 <img
-                                    src={getPrizeThumbnail(item.prize.prize)}
+                                    src={getPrizeThumbnailByBalls(item.prize.balls)}
                                     alt={item.prize.prize}
                                     className="object-cover w-full h-full"
                                 />

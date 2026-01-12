@@ -7,27 +7,30 @@ import ContentWrapper from './ContentWrapper';
 import lostHeroImage from '../assets/bingo-lost.png';
 import GameHeader from './game/GameHeader';
 import MiniCard from './game/MiniCard';
+import winactiesImage from '../assets/vl-winacties.png';
+import vipcardImage from '../assets/vl-vipcard.png';
+import extraBingoImage from '../assets/vl-extra-bingo.png';
 
-const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checkedNumbers = new Set(), drawnBalls = [] }) => {
+const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checkedNumbers = new Set(), drawnBalls = [], panelColor = '#AA167C' }) => {
   // Carousel cards data voor verlies scherm
   const carouselCards = [
     {
       id: 'winacties',
       title: 'Winacties',
       content: 'U kunt als deelnemer bij de VriendenLoterij gratis meedoen aan winacties. Maak kans op extra prijzen en profiteer van exclusieve aanbiedingen.',
-      thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=240&fit=crop',
+      thumbnail: winactiesImage,
     },
     {
       id: 'vip',
       title: 'VIP kaart',
       content: 'U kunt gratis naar ruim 180 musea, u krijgt tot wel 50% korting bij theaters, bioscopen, dierenparken en kastelen in heel Nederland én kans om exclusieve evenementen te bezoeken.',
-      thumbnail: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=240&fit=crop',
+      thumbnail: vipcardImage,
     },
     {
       id: 'upsell',
       title: 'Meer kans maken?',
       content: 'Koop een extra bingo kaart en verdubbel je kansen. Meer kaarten betekent meer mogelijkheden om te winnen.',
-      thumbnail: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=240&fit=crop',
+      thumbnail: extraBingoImage,
       isUpsell: true,
     },
   ];
@@ -46,13 +49,14 @@ const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checked
             background: 'linear-gradient(180deg, #F6E9E7 0%, #EAC7C7 100%)',
             borderRadius: '0px',
             minHeight: '200px',
+            height: '200px',
           }}
         >
-          <div className="flex relative justify-center items-center w-full">
+          <div className="flex relative justify-center items-center w-full h-full">
             <img
               src={lostHeroImage}
               alt="Helaas geen Bingo"
-              className="w-full max-w-[250px] h-auto object-contain opacity-0 animate-scale-up"
+              className="w-full h-full object-cover opacity-0 animate-scale-up"
               style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
             />
           </div>
@@ -64,6 +68,7 @@ const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checked
               checkedNumbers={checkedNumbers}
               animateChecks={true}
               drawnBalls={drawnBalls}
+              cardColor={panelColor}
             />
           )}
         </div>

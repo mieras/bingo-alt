@@ -7,7 +7,7 @@ import heroImage from '../assets/hero-image.png';
 import confettiImage from '../assets/bingo-confetti-gold.png';
 import vlbLogo from '../assets/vlb-logo.png';
 
-const BingoOverviewScreen = ({ onNavigateToMail, onPlayNow, onViewPrize, bingoCard = [], checkedNumbers = new Set(), hasPlayed = false, prize = null }) => {
+const BingoOverviewScreen = ({ onNavigateToMail, onPlayNow, onViewPrize, bingoCard = [], checkedNumbers = new Set(), hasPlayed = false, prize = null, panelColor = '#AA167C' }) => {
   const [showStartScreen, setShowStartScreen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
@@ -134,7 +134,7 @@ const BingoOverviewScreen = ({ onNavigateToMail, onPlayNow, onViewPrize, bingoCa
 
           {/* Huidige Bingokaart Weergave */}
           <div className="p-4 mb-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
-            <div className="flex flex-col gap-4 items-center md:flex-row">
+            <div className="flex flex-row gap-4 items-center">
               {/* MiniCard - altijd tonen */}
               <div className="flex relative flex-1 justify-center">
                 {bingoCard.length > 0 ? (
@@ -144,6 +144,7 @@ const BingoOverviewScreen = ({ onNavigateToMail, onPlayNow, onViewPrize, bingoCa
                       checkedNumbers={hasPlayed ? checkedNumbers : new Set()}
                       animateChecks={false}
                       useAbsolute={false}
+                      cardColor={panelColor}
                     />
                   </div>
                 ) : (

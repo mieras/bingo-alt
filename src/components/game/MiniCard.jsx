@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GRID_SIZE } from '../../utils/constants';
 import vlbLogo from '../../assets/vlb-logo.png';
 
-const MiniCard = ({ bingoCard, checkedNumbers, animateChecks = false, drawnBalls = [], useAbsolute = true }) => {
+const MiniCard = ({ bingoCard, checkedNumbers, animateChecks = false, drawnBalls = [], useAbsolute = true, cardColor = '#E73358' }) => {
     const [animatedChecked, setAnimatedChecked] = useState(new Set());
     const [isVisible, setIsVisible] = useState(false);
 
@@ -54,7 +54,7 @@ const MiniCard = ({ bingoCard, checkedNumbers, animateChecks = false, drawnBalls
     const containerStyle = useAbsolute ? {
         position: 'absolute',
         zIndex: 50,
-        bottom: '-2rem',
+        bottom: '-1image.pngrem',
         right: '1rem',
         transform: `rotate(5deg) translateX(${isVisible ? '0' : '10px'}) translateY(${isVisible ? '0' : '10px'})`,
         opacity: isVisible ? 1 : 0,
@@ -75,7 +75,7 @@ const MiniCard = ({ bingoCard, checkedNumbers, animateChecks = false, drawnBalls
                 style={{
                     width: '90px',
                     height: '111px',
-                    backgroundColor: '#E73358',
+                    backgroundColor: cardColor,
                     boxShadow: '0px 67px 80px 0px rgba(0,0,0,0.07), 0px 28px 33px 0px rgba(0,0,0,0.05), 0px 15px 18px 0px rgba(0,0,0,0.04), 0px 8px 10px 0px rgba(0,0,0,0.04), 0px 4px 5px 0px rgba(0,0,0,0.03), 0px 2px 2px 0px rgba(0,0,0,0.02)',
                 }}
             >

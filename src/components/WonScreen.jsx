@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import ContentWrapper from './ContentWrapper';
-import { getPrizeThumbnail } from '../utils/constants';
+import { getPrizeThumbnailByBalls } from '../utils/constants';
 import confettiImage from '../assets/bingo-confetti-gold.png';
-import prizeImage from '../assets/bingo-prize.png';
 import GameHeader from './game/GameHeader';
 import MiniCard from './game/MiniCard';
 import confetti from 'canvas-confetti';
 
-const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingoCard = [], checkedNumbers = new Set() }) => {
+const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingoCard = [], checkedNumbers = new Set(), panelColor = '#AA167C' }) => {
   if (!prize) return null;
 
   // Confetti effect bij won screen
@@ -33,7 +32,7 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingo
     return () => clearInterval(interval);
   }, []);
 
-  const prizeThumbnail = getPrizeThumbnail(prize.prize);
+  const prizeThumbnail = getPrizeThumbnailByBalls(prize.balls);
   const winningBallIndex = drawnBalls.length;
 
   return (
@@ -64,7 +63,7 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingo
             />
             {/* Prize Image */}
             <img
-              src={prizeImage}
+              src={prizeThumbnail}
               alt={prize.prize}
               className="relative z-10 w-full max-w-[180px] h-auto object-contain opacity-0"
               style={{
@@ -80,6 +79,7 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingo
               checkedNumbers={checkedNumbers}
               animateChecks={true}
               drawnBalls={drawnBalls}
+              cardColor={panelColor}
             />
           )}
         </div>

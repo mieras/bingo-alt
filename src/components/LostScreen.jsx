@@ -6,12 +6,18 @@ import 'swiper/css/pagination';
 import ContentWrapper from './ContentWrapper';
 import lostHeroImage from '../assets/bingo-lost.png';
 import GameHeader from './game/GameHeader';
-import MiniCard from './game/MiniCard';
+import BingoCard from './game/BingoCard';
+import BallsHistory from './game/BallsHistory';
 import winactiesImage from '../assets/vl-winacties.png';
 import vipcardImage from '../assets/vl-vipcard.png';
 import extraBingoImage from '../assets/vl-extra-bingo.png';
 
-const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checkedNumbers = new Set(), drawnBalls = [], panelColor = '#AA167C' }) => {
+const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [], checkedNumbers = new Set(), drawnBalls = [], panelColor = '#AA167C' }) => {
+  // Random kleur voor ballen
+  const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
+  const getBallColor = (ballNumber) => {
+    return panelColors[ballNumber % panelColors.length];
+  };
   // Carousel cards data voor verlies scherm
   const carouselCards = [
     {
@@ -34,17 +40,21 @@ const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checked
       isUpsell: true,
     },
   ];
+  const handleReplay = () => {
+    if (onReplay) return onReplay();
+    return onBackToBingo();
+  };
 
   return (
-    <div className="flex flex-col w-full h-full bg-white">
+    <div className="flex flex-col w-full h-full" style={{ background: 'linear-gradient(180deg, #F6E9E7 0%, #EAC7C7 100%)' }}>
       {/* Header - Fixed */}
       {showHeader && <GameHeader onClose={onBackToBingo} />}
 
       {/* Scrollable Content - Hero Image + Content */}
       <div className="overflow-y-auto flex-1">
-        {/* Hero Image Section - Scrolls with content */}
+        {/* Hero Section - Bingo kaart met rode achtergrond */}
         <div
-          className="flex relative justify-center items-center w-full animate-fade-in"
+          className="flex relative justify-center items-center w-full"
           style={{
             background: 'linear-gradient(180deg, #F6E9E7 0%, #EAC7C7 100%)',
             borderRadius: '0px',
@@ -52,49 +62,50 @@ const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checked
             height: '200px',
           }}
         >
-          <div className="flex relative justify-center items-center w-full h-full">
-            <img
-              src={lostHeroImage}
-              alt="Helaas geen Bingo"
-              className="w-full h-full object-cover opacity-0 animate-scale-up"
-              style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
-            />
-          </div>
-
-          {/* Mini Bingo Card - rechtsboven, half over header */}
           {bingoCard.length > 0 && (
-            <MiniCard
-              bingoCard={bingoCard}
-              checkedNumbers={checkedNumbers}
-              animateChecks={true}
-              drawnBalls={drawnBalls}
-              cardColor={panelColor}
-            />
+            <div className="opacity-80">
+              <BingoCard
+                bingoCard={bingoCard}
+                checkedNumbers={checkedNumbers}
+                currentBall={null}
+                wigglingNumber={null}
+                showHint={false}
+                onCardClick={() => {}}
+              />
+            </div>
           )}
         </div>
 
+        {/* Horizontale Balls Strip */}
+        {drawnBalls.length > 0 && (
+          <div className="bg-white py-3">
+            <BallsHistory drawnBalls={drawnBalls} getBallColor={getBallColor} />
+          </div>
+        )}
+
         {/* Content Section */}
-        <ContentWrapper className="flex flex-col px-2 pt-2 pb-4 bg-white">
-          {/* Lost Message */}
-          <div className="pt-4 mb-2 w-full text-center">
-            <h2
-              className="text-4xl font-black text-[#003884] mb-2 opacity-0 animate-fade-in"
-              style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
-            >
-              Helaas!
-            </h2>
-            <p className="text-lg text-[#29313d] font-medium mb-2">
-              Alle ballen zijn getrokken, je hebt geen Bingo.
-            </p>
-            <p className="text-base text-[#29313d]">
-              Volgende week nieuwe ronde, nieuwe kansen!
-            </p>
+        <ContentWrapper className="flex flex-col px-4 pt-3 pb-4 bg-white">
+          {/* Prijs kaartje (lost) */}
+          <div className="flex gap-3 items-center p-4 mb-4 w-full rounded-lg border border-gray-200 shadow-[0px_2px_8px_0px_rgba(0,0,0,0.08)] bg-white">
+            <div className="flex-1 min-w-0">
+              <div className="text-xl font-black text-[#003884] mb-1">Helaas</div>
+              <p className="text-base text-[#29313d] leading-relaxed">
+                Trekking is voorbij! Geen Bingo, volgende week nieuwe ronde, nieuwe kansen!
+              </p>
+            </div>
+            <div className="overflow-hidden w-20 h-16 rounded-lg shrink-0 bg-[#F2D064] flex items-center justify-center">
+              <img
+                src={lostHeroImage}
+                alt="Helaas"
+                className="w-full h-full object-contain p-2"
+              />
+            </div>
           </div>
 
           {/* Carousel Section */}
           <div className="mb-2 w-full">
             <h3 className="text-xl font-bold text-[#003884] mb-2 mt-2 text-center">
-              Haal alles uit je deelname
+              Haal alles uit je ticket
             </h3>
             <Swiper
               modules={[Autoplay, Pagination, Parallax]}
@@ -159,13 +170,16 @@ const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checked
             </Swiper>
           </div>
 
-          {/* Back to Bingo Button */}
+          {/* Speel opnieuw af Button */}
           <button
-            onClick={onBackToBingo}
-            className="w-full bg-white border-2 border-[#003884] text-[#003884] font-bold mt-2 py-4 px-6 rounded-lg hover:bg-[#003884] hover:text-white transition-colors uppercase tracking-wide text-base focus:outline-none focus:ring-2 focus:ring-[#003884] focus:ring-offset-2"
-            aria-label="Terug naar Bingo"
+            onClick={handleReplay}
+            className="w-full bg-white text-[#003884] font-bold mt-2 py-4 px-6 rounded-lg border-2 border-[#003884] hover:bg-[#F3F7FF] transition-colors text-base flex items-center justify-center gap-2"
+            aria-label="Speel opnieuw af"
           >
-            Terug naar Bingo
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1.66699 8.33333C1.66699 8.33333 3.33781 6.05685 4.69519 4.69854C6.05257 3.34022 7.92832 2.5 10.0003 2.5C14.1425 2.5 17.5003 5.85786 17.5003 10C17.5003 14.1421 14.1425 17.5 10.0003 17.5C6.58108 17.5 3.69625 15.2119 2.79346 12.0833M1.66699 8.33333V3.33333M1.66699 8.33333H6.66699" stroke="#003884" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span>Speel opnieuw af</span>
           </button>
         </ContentWrapper>
       </div>

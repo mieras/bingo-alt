@@ -33,12 +33,16 @@ function App() {
     isTransitioning,
     isCelebrating,
     isSkipEnding,
+    isPaused,
     startGame,
     generateCard,
     handleCardClick,
     finishGame,
     skipToResult,
-    resetGame
+    resetGame,
+    pauseGame,
+    resumeGame,
+    drawNextBallManually
   } = useBingoGame();
 
   const progress = (drawnBalls.length / 36) * 100;
@@ -116,6 +120,17 @@ function App() {
     } else if (gameState === 'FINISHED') {
       setResultType('lost');
     }
+  };
+
+  const replayInOverlay = () => {
+    // Reset game + maak direct een nieuwe kaart zodat je opnieuw kan spelen
+    resetGame();
+    setHasPlayed(false);
+    setResultType(null);
+    // Maak een nieuwe kaart en kleur voor de nieuwe run
+    generateCard();
+    const randomColor = panelColors[Math.floor(Math.random() * panelColors.length)];
+    setPanelColor(randomColor);
   };
 
   // Generate card when bingo page is loaded (if not already generated)
@@ -209,6 +224,8 @@ function App() {
                         // Result wordt automatisch getoond via useEffect
                       }}
                       onClose={closeGameOverlay}
+                      bingoCard={bingoCard}
+                      panelColor={panelColor}
                     />
                   )}
 
@@ -234,6 +251,10 @@ function App() {
                       isTransitioning={isTransitioning}
                       isCelebrating={isCelebrating}
                       isSkipEnding={isSkipEnding}
+                      isPaused={isPaused}
+                      onPause={pauseGame}
+                      onResume={resumeGame}
+                      onNextBall={drawNextBallManually}
                     />
                   )}
 
@@ -248,6 +269,7 @@ function App() {
                       prize={prize}
                       drawnBalls={drawnBalls}
                       onBackToBingo={closeGameOverlay}
+                      onReplay={replayInOverlay}
                       showHeader={true}
                       bingoCard={bingoCard}
                       checkedNumbers={checkedNumbers}
@@ -258,6 +280,7 @@ function App() {
                   {!isTransitioning && gameState === 'FINISHED' && resultType === 'lost' && (
                     <LostScreen
                       onBackToBingo={closeGameOverlay}
+                      onReplay={replayInOverlay}
                       showHeader={true}
                       bingoCard={bingoCard}
                       checkedNumbers={checkedNumbers}

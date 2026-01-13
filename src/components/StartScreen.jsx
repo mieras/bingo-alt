@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import GameHeader from './game/GameHeader';
-
-// Hero image
-import heroImage from '../assets/bingo-intro-hero.png';
+import BingoCard from './game/BingoCard';
 
 // Ticker berichten
 const TICKER_MESSAGES = [
@@ -13,7 +11,7 @@ const TICKER_MESSAGES = [
 
 const TICKER_INTERVAL = 3000; // 3 seconden per bericht
 
-const StartScreen = ({ onStart, onSkipToResult, onClose }) => {
+const StartScreen = ({ onStart, onSkipToResult, onClose, bingoCard = [], panelColor = '#AA167C' }) => {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -37,106 +35,97 @@ const StartScreen = ({ onStart, onSkipToResult, onClose }) => {
       {onClose && <GameHeader onClose={onClose} />}
 
       {/* Content Section */}
-      <div className="flex overflow-y-auto flex-col flex-1 items-center w-full bg-white">
-        {/* Hero Image Section */}
-        <div className="relative w-full h-[211px] overflow-hidden">
-          <img
-            src={heroImage}
-            alt="VriendenLoterij Bingo hero - € 25.000 cheque en bingokaart"
-            className="object-cover absolute inset-0 w-full h-full"
-          />
-          {/* Gradient overlay voor fade naar wit */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: 'linear-gradient(to bottom, rgba(255,255,255,0) 10%, rgba(255,255,255,0.9) 83%, white 100%)'
-            }}
-          />
+      <div className="flex overflow-y-auto flex-col flex-1 w-full bg-white">
+        {/* Hero sectie met panelColor - zelfde als GameScreen */}
+        <div className="flex flex-col shrink-0" style={{ backgroundColor: panelColor }}>
+          {/* Bingo Card Container - zelfde structuur als GameScreen */}
+          <div className="flex flex-col flex-1 justify-center items-center">
+            <BingoCard
+              bingoCard={bingoCard}
+              checkedNumbers={new Set()}
+              currentBall={null}
+              wigglingNumber={null}
+              showHint={false}
+              onCardClick={() => {}}
+            />
+          </div>
+        </div>
+
+        {/* Ticker balk - Direct onder hero, full width van rand tot rand */}
+        <div
+          className="flex overflow-hidden justify-center items-center py-3 w-full"
+          style={{ backgroundColor: '#ddf5f7', minHeight: '44px' }}
+        >
+          <p
+            className="text-sm text-[#00275c] transition-opacity duration-300"
+            style={{ opacity: isVisible ? 1 : 0 }}
+          >
+            {TICKER_MESSAGES[currentMessageIndex]}
+          </p>
         </div>
 
         {/* Content */}
-        <div className="flex flex-col gap-6 items-start px-4 pt-2 pb-4 w-full">
-          {/* Title and Intro */}
-          <div className="flex flex-col gap-3 items-start w-full">
+        <div className="flex flex-col gap-6 items-start px-4 py-4 w-full">
+          {/* How it works section */}
+          <div className="flex flex-col gap-2 items-start w-full">
+            <h2 className="font-bold leading-6 text-[#111] text-lg w-full">
+              Hoe werkt het?
+            </h2>
+
+            {/* Instructions List - correcte teksten volgens Figma */}
             <div className="flex flex-col gap-1 items-start w-full">
-              <h1 className="font-bold leading-7 text-[#333] text-2xl w-full">
-                Speel Bingo
-              </h1>
-              <p className="leading-6 text-[#111] text-[17px] w-full">
-                Uw Bingokaart voor deze week staat klaar. Speel mee en vink zelf de nummers af en zie direct of je in de prijzen bent gevallen.
-              </p>
-            </div>
-
-            {/* Social Proof Ticker */}
-            <div
-              className="flex overflow-hidden justify-center items-center p-3 w-full rounded-lg"
-              style={{ backgroundColor: '#ddf5f7', minHeight: '44px' }}
-            >
-              <p
-                className="text-sm text-[#00275c] transition-opacity duration-300"
-                style={{ opacity: isVisible ? 1 : 0 }}
-              >
-                {TICKER_MESSAGES[currentMessageIndex]}
-              </p>
-            </div>
-
-            {/* How it works section */}
-            <div className="flex flex-col gap-2 items-start mt-2 w-full">
-              <h2 className="font-bold leading-6 text-[#111] text-lg w-full">
-                Hoe werkt het?
-              </h2>
-
-              {/* Instructions List */}
-              <div className="flex flex-col gap-1 items-start w-full">
-                {[
-                  'De nummers verschijnen één voor één.',
-                  'Nummer op uw Bingokaart? Vink het af.',
-                  'Volle kaart? Dan heb je Bingo!',
-                  'Nummer gemist? Geen probleem, wij vinken het automatisch voor je af.'
-                ].map((text, idx) => (
-                  <div key={idx} className="flex gap-2 items-start w-full">
-                    {/* Check icon */}
-                    <div className="w-5 h-5 shrink-0 mt-0.5">
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="#009B00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </div>
-                    {/* Text */}
-                    <p className="flex-1 leading-6 text-[#111] text-base">
-                      {text}
-                    </p>
+              {[
+                { text: 'De nummers verschijnen ', bold: 'één voor één', rest: '.' },
+                { text: 'Nummer op uw Bingokaart? Vink em af.' },
+                { text: '', bold: 'Volle kaart?', rest: ' Dan heb je Bingo!' },
+                { text: 'Nummer gemist? Geen probleem, wij vinken het automatisch voor je af.' }
+              ].map((item, idx) => (
+                <div key={idx} className="flex gap-2 items-start w-full">
+                  {/* Check icon */}
+                  <div className="w-5 h-5 shrink-0 mt-0.5">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="#009B00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
                   </div>
-                ))}
-              </div>
+                  {/* Text */}
+                  <p className="flex-1 leading-6 text-[#111] text-base">
+                    {item.bold ? (
+                      <>
+                        {item.text}<span className="font-bold">{item.bold}</span>{item.rest}
+                      </>
+                    ) : item.text}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Action Buttons */}
           <div className="flex flex-col gap-3 items-center w-full">
-            {/* Start Button */}
+            {/* Start Button met Play Icon */}
             <button
               onClick={onStart}
-              className="relative w-full bg-[#008900] text-white font-bold py-4 px-10 rounded-lg hover:bg-[#007200] transition-colors text-base"
+              className="relative flex items-center justify-center gap-2 w-full bg-[#008900] text-white font-bold py-4 px-10 rounded-lg hover:bg-[#007200] transition-colors text-base"
               style={{
                 boxShadow: 'inset 0px -2px 0px 0px #005e00'
               }}
             >
-              Speel nu
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5.83301 4.15809C5.83301 3.34879 5.83301 2.94414 6.00175 2.72108C6.14875 2.52675 6.37344 2.4065 6.61667 2.39198C6.89587 2.37531 7.23256 2.59977 7.90594 3.04869L16.6689 8.89067C17.2253 9.2616 17.5035 9.44707 17.6005 9.68084C17.6852 9.88522 17.6852 10.1149 17.6005 10.3193C17.5035 10.5531 17.2253 10.7385 16.6689 11.1095L7.90594 16.9514C7.23256 17.4004 6.89587 17.6248 6.61667 17.6082C6.37344 17.5936 6.14875 17.4734 6.00175 17.2791C5.83301 17.056 5.83301 16.6513 5.83301 15.842V4.15809Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span>Start trekking</span>
             </button>
 
             {/* Direct to result text */}
             {onSkipToResult && (
               <div className="text-center text-sm text-[#111]">
-                <p className="mb-1">Wilt u meteen weten of u gewonnen heeft?</p>
                 <p>
-                  Bekijk dan{' '}
                   <button
                     onClick={onSkipToResult}
                     className="text-[#003884] underline hover:text-[#002a5f] transition-colors bg-transparent border-none cursor-pointer p-0"
                   >
-                    direct de uitslag
+                    Direct naar de uitslag
                   </button>
-                  .
                 </p>
               </div>
             )}

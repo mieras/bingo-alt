@@ -2,21 +2,23 @@ import React, { useEffect } from 'react';
 import ContentWrapper from './ContentWrapper';
 import { getPrizeThumbnailByBalls } from '../utils/constants';
 import confettiImage from '../assets/bingo-confetti-gold.png';
+import bingoTypeImage from '../assets/vl-bingo-type.png';
 import GameHeader from './game/GameHeader';
-import MiniCard from './game/MiniCard';
+import BingoCard from './game/BingoCard';
+import BallsHistory from './game/BallsHistory';
 import confetti from 'canvas-confetti';
 
 // Upsell image
 import upsellImage from '../assets/vl-extra-bingo.png';
 
-const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingoCard = [], checkedNumbers = new Set(), panelColor = '#E73358' }) => {
+const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = false, bingoCard = [], checkedNumbers = new Set(), panelColor = '#E73358' }) => {
   if (!prize) return null;
 
   // Confetti effect bij won screen
   useEffect(() => {
     const duration = 3 * 1000;
     const animationEnd = Date.now() + duration;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100, colors: ['#F2D064', '#F1D168', '#FEF6C8', '#FFFFFF', '#FFCD14'] };
 
     const randomInRange = (min, max) => Math.random() * (max - min) + min;
 
@@ -37,15 +39,30 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingo
 
   const prizeThumbnail = getPrizeThumbnailByBalls(prize.balls);
   const winningBallIndex = drawnBalls.length;
+  const handleReplay = () => {
+    if (onReplay) return onReplay();
+    return onBackToBingo();
+  };
+
+  // Random kleur voor ballen
+  const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
+  const getBallColor = (ballNumber) => {
+    return panelColors[ballNumber % panelColors.length];
+  };
 
   return (
-    <div className="flex flex-col w-full h-full bg-white">
+    <div
+      className="flex flex-col w-full h-full"
+      style={{
+        background: 'radial-gradient(209.91% 178.12% at -12.83% -103.12%, #F1D168 0%, #FEF6C8 32%, #F2D064 68%, #FCF3C3 100%)'
+      }}
+    >
       {/* Header - Fixed */}
       {showHeader && <GameHeader onClose={onBackToBingo} />}
 
       {/* Scrollable Content */}
       <div className="overflow-y-auto flex-1">
-        {/* Hero Section met MiniCard */}
+        {/* Hero Section met Bingo kaart */}
         <div
           className="flex relative justify-center items-center w-full"
           style={{
@@ -54,80 +71,106 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingo
             background: 'radial-gradient(209.91% 178.12% at -12.83% -103.12%, #F1D168 0%, #FEF6C8 32%, #F2D064 68%, #FCF3C3 100%)',
           }}
         >
-          {/* Confetti achtergrond */}
+          {/* Confetti achtergrond (fade + zoom 1.1 -> 1) */}
           <img
             src={confettiImage}
             alt=""
-            className="object-cover absolute inset-0 w-full h-full opacity-0 pointer-events-none"
+            className="object-cover absolute inset-0 w-full h-full opacity-0 pointer-events-none animate-hero-confetti-fade-zoom"
+            style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}
+          />
+
+          {/* Bingo type overlay */}
+          <img
+            src={bingoTypeImage}
+            alt="Bingo!"
+            className="absolute z-20 w-[240px] max-w-[70%] opacity-0 pointer-events-none"
             style={{
-              animation: 'confetti-zoom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards'
+              top: '18px',
+              animation: 'fade-in 0.6s ease-out 0.35s forwards'
             }}
           />
 
-          {/* MiniCard - gecentreerd in hero */}
+          {/* Bingo kaart - gecentreerd in hero (opacity 0.8) */}
           {bingoCard.length > 0 && (
             <div
-              className="relative z-10 opacity-0"
+              className="relative z-10 opacity-80"
               style={{
-                transform: 'scale(0) rotate(-6deg)',
-                animation: 'card-bounce-large 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards'
+                animation: 'fade-in 0.6s ease-out 0.25s forwards'
               }}
             >
-              <MiniCard
+              <BingoCard
                 bingoCard={bingoCard}
                 checkedNumbers={checkedNumbers}
-                animateChecks={true}
-                drawnBalls={drawnBalls}
-                cardColor={panelColor}
-                useAbsolute={false}
+                currentBall={null}
+                wigglingNumber={null}
+                showHint={false}
+                onCardClick={() => {}}
               />
             </div>
           )}
         </div>
 
+        {/* Horizontale Balls Strip */}
+        {drawnBalls.length > 0 && (
+          <div className="bg-white py-3">
+            <BallsHistory drawnBalls={drawnBalls} getBallColor={getBallColor} />
+          </div>
+        )}
+
         {/* Content Section */}
         <ContentWrapper className="flex flex-col items-center px-4 pt-4 pb-6 bg-white">
-          {/* Result Info */}
-          <div className="mb-4 w-full text-center">
-            <h2
-              className="text-3xl font-bold text-[#333] mb-1 opacity-0 animate-fade-in"
-              style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
-            >
-              Bingo!
-            </h2>
-            <p className="mb-4 text-sm text-gray-500">
-              {winningBallIndex}e getrokken bal
-            </p>
+          {/* Prize Card met gouden border */}
+          <div
+            className="flex gap-3 items-center px-4 py-3 mb-4 w-full rounded-lg border-2"
+            style={{
+              borderColor: '#F2D064',
+              backgroundColor: '#FFF',
+            }}
+          >
+            {/* Info - Links */}
+            <div className="flex-1 min-w-0">
+              <div className="text-xs font-medium text-gray-700">
+                {winningBallIndex}e getrokken bal
+              </div>
+              <div className="text-sm text-gray-800 mt-0.5 leading-snug font-bold">
+                Bingo! U wint {prize.prize}
+              </div>
+            </div>
 
-            {/* Prize Image */}
-            <div className="flex justify-center mb-4">
+            {/* Prize Image - Gouden achtergrond */}
+            <div
+              className="overflow-hidden w-16 h-16 rounded-lg shrink-0 flex items-center justify-center"
+              style={{
+                backgroundColor: '#F2D064',
+              }}
+            >
               <img
                 src={prizeThumbnail}
                 alt={prize.prize}
-                className="w-auto max-w-[160px] h-auto max-h-[120px] object-contain opacity-0"
-                style={{
-                  animation: 'prize-bounce 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards'
-                }}
+                className="w-full h-full object-contain p-2"
               />
             </div>
+          </div>
 
-            <h3 className="text-lg font-bold text-[#333] mb-2">
-              Je wint {prize.prize.toLowerCase()}.
-            </h3>
+          {/* Gefeliciteerd */}
+          <div className="mb-4 w-full text-center">
+            <h2 className="text-2xl font-bold text-[#333] mb-2">
+              Gefeliciteerd
+            </h2>
             <p className="text-base text-[#111] leading-relaxed">
-              Je ontvangt automatisch binnen 4 weken na bekendmaking berichtgeving over uw prijs.
+              Je ontvangt automatisch binnen 4 weken na bekendmaking berichtgeving over uw prijs per mail en post.
             </p>
           </div>
 
-          {/* Primary Button */}
+          {/* Speel opnieuw af Button (secondary outline + rewind icoon) */}
           <button
-            onClick={onBackToBingo}
-            className="w-full bg-[#003884] text-white font-bold py-4 px-6 rounded-lg hover:bg-[#002a5f] transition-colors text-base mb-4"
-            style={{
-              boxShadow: 'inset 0px -2px 0px 0px #002a5f'
-            }}
+            onClick={handleReplay}
+            className="w-full bg-white text-[#003884] font-bold py-4 px-6 rounded-lg border-2 border-[#003884] hover:bg-[#F3F7FF] transition-colors text-base mb-4 flex items-center justify-center gap-2"
           >
-            Alles over je prijs
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1.66699 8.33333C1.66699 8.33333 3.33781 6.05685 4.69519 4.69854C6.05257 3.34022 7.92832 2.5 10.0003 2.5C14.1425 2.5 17.5003 5.85786 17.5003 10C17.5003 14.1421 14.1425 17.5 10.0003 17.5C6.58108 17.5 3.69625 15.2119 2.79346 12.0833M1.66699 8.33333V3.33333M1.66699 8.33333H6.66699" stroke="#003884" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span>Speel opnieuw af</span>
           </button>
 
           {/* Upsell Section */}

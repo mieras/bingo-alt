@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GRID_SIZE } from '../../utils/constants';
 import vlbLogo from '../../assets/vlb-logo.png';
 
-const MiniCard = ({ bingoCard, checkedNumbers, animateChecks = false, drawnBalls = [], useAbsolute = true, cardColor = '#E73358' }) => {
+const MiniCard = ({ bingoCard, checkedNumbers, animateChecks = false, drawnBalls = [], useAbsolute = true, cardColor = '#E73358', noRotation = false }) => {
     const [animatedChecked, setAnimatedChecked] = useState(new Set());
     const [isVisible, setIsVisible] = useState(false);
 
@@ -51,16 +51,17 @@ const MiniCard = ({ bingoCard, checkedNumbers, animateChecks = false, drawnBalls
     // Use animatedChecked if animating, otherwise use checkedNumbers
     const displayChecked = animateChecks ? animatedChecked : checkedNumbers;
 
+    const rotation = noRotation ? '0deg' : '5deg';
     const containerStyle = useAbsolute ? {
         position: 'absolute',
         zIndex: 50,
-        bottom: '-1image.pngrem',
+        bottom: '-1rem',
         right: '1rem',
-        transform: `rotate(5deg) translateX(${isVisible ? '0' : '10px'}) translateY(${isVisible ? '0' : '10px'})`,
+        transform: `rotate(${rotation}) translateX(${isVisible ? '0' : '10px'}) translateY(${isVisible ? '0' : '10px'})`,
         opacity: isVisible ? 1 : 0,
         transition: 'all 200ms ease-out',
     } : {
-        transform: 'rotate(5deg)',
+        transform: `rotate(${rotation})`,
         transition: 'all 200ms ease-out',
     };
 

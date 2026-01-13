@@ -32,7 +32,7 @@ const BingoCard = ({
                     let textClass = "relative z-10 ";
 
                     if (isWiggling) {
-                        buttonClass += "animate-wiggle";
+                        buttonClass += "animate-wiggle-extreme bg-red-50";
                         textClass += "text-[#014087]";
                     } else if (isChecked) {
                         buttonClass += "transition-colors duration-200";

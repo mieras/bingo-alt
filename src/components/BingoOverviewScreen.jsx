@@ -6,7 +6,7 @@ import { GRID_SIZE } from '../utils/constants';
 import navImage from '../assets/vl-account-nav.png';
 import vlbLogo from '../assets/vlb-logo.png';
 
-const BingoOverviewScreen = ({ onNavigateToMail, onPlayNow, onViewPrize, bingoCard = [], checkedNumbers = new Set(), hasPlayed = false, prize = null, panelColor = '#AA167C' }) => {
+const BingoOverviewScreen = ({ onNavigateToMail, onPlayNow, onViewPrize, onNavigateToAccount, bingoCard = [], checkedNumbers = new Set(), hasPlayed = false, prize = null, panelColor = '#AA167C' }) => {
   const [showStartScreen, setShowStartScreen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
@@ -45,13 +45,19 @@ const BingoOverviewScreen = ({ onNavigateToMail, onPlayNow, onViewPrize, bingoCa
   return (
     <div className="bg-white overflow-clip relative rounded-tl-[12px] rounded-tr-[12px] size-full flex flex-col">
       <div className="flex overflow-y-auto flex-col flex-1">
-        {/* Navigatie Header - Statische afbeelding */}
+        {/* Navigatie Header - Klikbaar naar Account/Login */}
         <div className="w-full shrink-0">
-          <img
-            src={navImage}
-            alt="Navigatie"
-            className="object-cover w-full h-auto"
-          />
+          <button
+            onClick={onNavigateToAccount}
+            className="w-full cursor-pointer hover:opacity-90 transition-opacity"
+            aria-label="Ga naar mijn account"
+          >
+            <img
+              src={navImage}
+              alt="Navigatie"
+              className="object-cover w-full h-auto pointer-events-none"
+            />
+          </button>
         </div>
 
         <ContentWrapper className="flex flex-col px-4 pt-6 pb-8">

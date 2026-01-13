@@ -8,14 +8,16 @@ import StartScreen from './components/StartScreen';
 import WonScreen from './components/WonScreen';
 import LostScreen from './components/LostScreen';
 import LoadingTransition from './components/LoadingTransition';
+import LoginScreen from './components/LoginScreen';
 
 function App() {
   // Routing state
-  const [currentPage, setCurrentPage] = useState('mail'); // 'mail' | 'account' | 'bingo' | 'result'
+  const [currentPage, setCurrentPage] = useState('mail'); // 'mail' | 'login' | 'account' | 'bingo' | 'result'
   const [showGameOverlay, setShowGameOverlay] = useState(false);
   const [resultType, setResultType] = useState(null); // 'won' | 'lost' | null
   const [hasPlayed, setHasPlayed] = useState(false); // Track if game has been played
   const [panelColor, setPanelColor] = useState('#AA167C'); // Panel color for current card
+  const [loginRedirect, setLoginRedirect] = useState(null); // Waar naartoe na login: 'bingo' | 'account'
 
   const {
     gameState,
@@ -45,14 +47,28 @@ function App() {
   const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
 
   // Navigatie functies
-  const navigateToAccount = () => {
-    setCurrentPage('account');
+  const navigateToLogin = (redirectTo = 'bingo') => {
+    setLoginRedirect(redirectTo);
+    setCurrentPage('login');
     setShowGameOverlay(false);
   };
 
+  const handleLogin = () => {
+    // Na login, ga naar de opgeslagen redirect
+    if (loginRedirect === 'account') {
+      setCurrentPage('account');
+    } else {
+      setCurrentPage('bingo');
+    }
+    setLoginRedirect(null);
+  };
+
+  const navigateToAccount = () => {
+    navigateToLogin('account');
+  };
+
   const navigateToBingo = () => {
-    setCurrentPage('bingo');
-    setShowGameOverlay(false);
+    navigateToLogin('bingo');
   };
 
   const navigateToMail = () => {
@@ -141,6 +157,13 @@ function App() {
       {/* Andere schermen - binnen wrapper */}
       {currentPage !== 'mail' && (
         <div className="w-full max-w-[400px] h-full mx-auto relative">
+          {currentPage === 'login' && (
+            <LoginScreen
+              onLogin={handleLogin}
+              onClose={() => navigateToMail()}
+            />
+          )}
+
           {currentPage === 'account' && (
             <AccountHomeScreen
               onNavigateToMail={navigateToMail}
@@ -151,6 +174,7 @@ function App() {
           {currentPage === 'bingo' && (
             <BingoOverviewScreen
               onNavigateToMail={navigateToMail}
+              onNavigateToAccount={() => navigateToLogin('account')}
               onPlayNow={openGameOverlay}
               onViewPrize={openResultScreen}
               bingoCard={bingoCard}

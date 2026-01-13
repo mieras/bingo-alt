@@ -5,13 +5,14 @@ import confettiImage from '../assets/bingo-confetti-gold.png';
 import bingoTypeImage from '../assets/vl-bingo-type.png';
 import GameHeader from './game/GameHeader';
 import BingoCard from './game/BingoCard';
+import GameProgress from './game/GameProgress';
 import BallsHistory from './game/BallsHistory';
 import confetti from 'canvas-confetti';
 
 // Upsell image
 import upsellImage from '../assets/vl-extra-bingo.png';
 
-const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = false, bingoCard = [], checkedNumbers = new Set(), panelColor = '#E73358' }) => {
+const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, showHeader = false, bingoCard = [], checkedNumbers = new Set() }) => {
   if (!prize) return null;
 
   // Confetti effect bij won screen
@@ -51,26 +52,25 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = fa
   };
 
   return (
-    <div
-      className="flex flex-col w-full h-full"
-      style={{
-        background: 'radial-gradient(209.91% 178.12% at -12.83% -103.12%, #F1D168 0%, #FEF6C8 32%, #F2D064 68%, #FCF3C3 100%)'
-      }}
-    >
+    <div className="flex flex-col w-full h-full bg-white">
       {/* Header - Fixed */}
       {showHeader && <GameHeader onClose={onBackToBingo} />}
 
       {/* Scrollable Content */}
       <div className="overflow-y-auto flex-1">
-        {/* Hero Section met Bingo kaart */}
-        <div
-          className="flex relative justify-center items-center w-full"
-          style={{
-            minHeight: '228px',
-            padding: '24px 12px',
-            background: 'radial-gradient(209.91% 178.12% at -12.83% -103.12%, #F1D168 0%, #FEF6C8 32%, #F2D064 68%, #FCF3C3 100%)',
-          }}
-        >
+        {/* Hero Section (zelfde opbouw als spelscherm: kaart + bal count) */}
+        <div className="flex overflow-hidden relative flex-col shrink-0">
+          {/* Achtergrond alleen in de hero (zacht infaden; geen harde overgang) */}
+          <div
+            className="absolute inset-0 opacity-0 animate-fade-in"
+            style={{
+              background: 'radial-gradient(209.91% 178.12% at -12.83% -103.12%, #F1D168 0%, #FEF6C8 32%, #F2D064 68%, #FCF3C3 100%)',
+              animationDuration: '450ms',
+              animationFillMode: 'forwards'
+            }}
+            aria-hidden="true"
+          />
+
           {/* Confetti achtergrond (fade + zoom 1.1 -> 1) */}
           <img
             src={confettiImage}
@@ -79,41 +79,44 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = fa
             style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}
           />
 
-          {/* Bingo type overlay */}
-          <img
-            src={bingoTypeImage}
-            alt="Bingo!"
-            className="absolute z-20 w-[240px] max-w-[70%] opacity-0 pointer-events-none"
-            style={{
-              top: '18px',
-              animation: 'fade-in 0.6s ease-out 0.35s forwards'
-            }}
-          />
+          <div className="flex relative z-10 flex-col">
+            {/* Bingo Card Container */}
+            <div className="flex flex-col flex-1 justify-center items-center">
+              {bingoCard.length > 0 && (
+                <div className="flex relative justify-center w-full">
+                  <BingoCard
+                    bingoCard={bingoCard}
+                    checkedNumbers={checkedNumbers}
+                    currentBall={null}
+                    wigglingNumber={null}
+                    showHint={false}
+                    onCardClick={() => { }}
+                    opacity={0.8}
+                    className="mb-0"
+                  />
 
-          {/* Bingo kaart - gecentreerd in hero (opacity 0.8) */}
-          {bingoCard.length > 0 && (
-            <div
-              className="relative z-10 opacity-80"
-              style={{
-                animation: 'fade-in 0.6s ease-out 0.25s forwards'
-              }}
-            >
-              <BingoCard
-                bingoCard={bingoCard}
-                checkedNumbers={checkedNumbers}
-                currentBall={null}
-                wigglingNumber={null}
-                showHint={false}
-                onCardClick={() => {}}
-              />
+                  {/* Bingo woord PNG: center/center over de kaart */}
+                  <div className="grid absolute inset-0 z-20 place-items-center pointer-events-none">
+                    <img
+                      src={bingoTypeImage}
+                      alt="Bingo!"
+                      className="w-[240px] max-w-[70%] opacity-0"
+                      style={{ animation: 'fade-in 0.6s ease-out 0.35s forwards' }}
+                      draggable="false"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+
+            <GameProgress drawnBalls={drawnBalls} progress={progress} />
+          </div>
         </div>
 
         {/* Horizontale Balls Strip */}
         {drawnBalls.length > 0 && (
-          <div className="bg-white py-3">
-            <BallsHistory drawnBalls={drawnBalls} getBallColor={getBallColor} />
+          <div className="px-4 py-3 bg-white">
+            <BallsHistory drawnBalls={drawnBalls} getBallColor={getBallColor} checkedByUser={checkedNumbers} />
           </div>
         )}
 
@@ -121,34 +124,31 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = fa
         <ContentWrapper className="flex flex-col items-center px-4 pt-4 pb-6 bg-white">
           {/* Prize Card met gouden border */}
           <div
-            className="flex gap-3 items-center px-4 py-3 mb-4 w-full rounded-lg border-2"
-            style={{
-              borderColor: '#F2D064',
-              backgroundColor: '#FFF',
-            }}
+            className="overflow-hidden mb-4 min-h-20 w-full gradient-border-gold"
           >
-            {/* Info - Links */}
-            <div className="flex-1 min-w-0">
-              <div className="text-xs font-medium text-gray-700">
-                {winningBallIndex}e getrokken bal
+            <div className="flex items-stretch h-full min-h-20">
+              {/* Info - Links (padding alleen op tekst, verticaal gecentreerd) */}
+              <div className="flex-1 px-4 py-3 min-w-0 flex flex-col justify-center">
+                <div className="text-xs font-medium text-gray-700">
+                  {winningBallIndex}e getrokken bal
+                </div>
+                <div className="text-sm text-gray-800 mt-0.5 leading-snug font-bold">
+                  Bingo! U wint {prize.prize}
+                </div>
               </div>
-              <div className="text-sm text-gray-800 mt-0.5 leading-snug font-bold">
-                Bingo! U wint {prize.prize}
-              </div>
-            </div>
 
-            {/* Prize Image - Gouden achtergrond */}
-            <div
-              className="overflow-hidden w-16 h-16 rounded-lg shrink-0 flex items-center justify-center"
-              style={{
-                backgroundColor: '#F2D064',
-              }}
-            >
-              <img
-                src={prizeThumbnail}
-                alt={prize.prize}
-                className="w-full h-full object-contain p-2"
-              />
+              {/* Prize Image - flush tegen rand, volledige hoogte */}
+              <div
+                className="flex justify-center items-center w-20 shrink-0"
+                style={{ backgroundColor: '#F2D064' }}
+              >
+                <img
+                  src={prizeThumbnail}
+                  alt={prize.prize}
+                  className="object-cover w-full h-full"
+                  draggable="false"
+                />
+              </div>
             </div>
           </div>
 
@@ -168,7 +168,7 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = fa
             className="w-full bg-white text-[#003884] font-bold py-4 px-6 rounded-lg border-2 border-[#003884] hover:bg-[#F3F7FF] transition-colors text-base mb-4 flex items-center justify-center gap-2"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1.66699 8.33333C1.66699 8.33333 3.33781 6.05685 4.69519 4.69854C6.05257 3.34022 7.92832 2.5 10.0003 2.5C14.1425 2.5 17.5003 5.85786 17.5003 10C17.5003 14.1421 14.1425 17.5 10.0003 17.5C6.58108 17.5 3.69625 15.2119 2.79346 12.0833M1.66699 8.33333V3.33333M1.66699 8.33333H6.66699" stroke="#003884" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M1.66699 8.33333C1.66699 8.33333 3.33781 6.05685 4.69519 4.69854C6.05257 3.34022 7.92832 2.5 10.0003 2.5C14.1425 2.5 17.5003 5.85786 17.5003 10C17.5003 14.1421 14.1425 17.5 10.0003 17.5C6.58108 17.5 3.69625 15.2119 2.79346 12.0833M1.66699 8.33333V3.33333M1.66699 8.33333H6.66699" stroke="#003884" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <span>Speel opnieuw af</span>
           </button>

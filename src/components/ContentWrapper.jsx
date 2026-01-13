@@ -6,7 +6,7 @@ import React from 'react';
  */
 const ContentWrapper = ({ children, className = '' }) => {
   return (
-    <div className={`w-full max-w-[375px] mx-auto ${className}`}>
+    <div className={`mx-auto w-full ${className}`}>
       {children}
     </div>
   );

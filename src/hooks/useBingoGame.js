@@ -149,9 +149,8 @@ export const useBingoGame = () => {
                 if (timerRef.current) {
                     clearTimeout(timerRef.current);
                 }
-                setTimeout(() => {
-                    setGameState('FINISHED');
-                }, DRAW_INTERVAL);
+                // Geen extra "laatste bal" animatie: direct klaar
+                setGameState('FINISHED');
             }
             return;
         }
@@ -192,13 +191,11 @@ export const useBingoGame = () => {
                     setGameState('WON');
                 }, 2000);
             } else {
-                // No win, game finished - wacht DRAW_INTERVAL zodat gebruiker de laatste bal kan zien
                 if (timerRef.current) {
                     clearTimeout(timerRef.current);
                 }
-                setTimeout(() => {
-                    setGameState('FINISHED');
-                }, DRAW_INTERVAL);
+                // Direct klaar zodra alle ballen getrokken zijn
+                setGameState('FINISHED');
             }
         }
 

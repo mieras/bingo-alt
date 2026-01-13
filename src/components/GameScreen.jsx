@@ -169,7 +169,7 @@ const GameScreen = ({
 
                     {/* Horizontale Balls Container */}
                     {drawnBalls.length > 0 && (
-                        <div className="py-2 bg-white">
+                        <div className="bg-white px-4 py-3">
                             <BallsHistory
                                 drawnBalls={drawnBalls}
                                 getBallColor={getBallColor}

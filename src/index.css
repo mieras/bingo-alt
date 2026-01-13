@@ -461,6 +461,14 @@ a:focus-visible {
   animation: scale-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.gradient-border-gold {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(90deg, #D09429 -93.08%, #EAEAEA -53.58%, #FFF685 4.67%, #FFF6E5 47.13%, #D29429 68.86%, #FFFBC7 104.4%) border-box;
+}
+
 @keyframes pulse-blue {
   0%,
   100% {

@@ -7,10 +7,17 @@ const BingoCard = ({
     currentBall,
     wigglingNumber,
     showHint,
-    onCardClick
+    onCardClick,
+    opacity = 1,
+    className = ''
 }) => {
     return (
-        <div className="w-[80%] max-w-[360px] mb-4 bg-white rounded-b-[32px] shadow-xl overflow-hidden flex-shrink-0 flex flex-col" role="grid" aria-label="Bingo kaart">
+        <div
+            className={`w-[80%] max-w-[360px] mb-4 bg-white rounded-b-[32px] shadow-xl overflow-hidden shrink-0 flex flex-col ${className}`}
+            style={{ opacity }}
+            role="grid"
+            aria-label="Bingo kaart"
+        >
             <div
                 className="grid bg-gray-100"
                 style={{
@@ -51,7 +58,7 @@ const BingoCard = ({
                             role="gridcell"
                         >
                             {isEmpty ? (
-                                <div className="flex items-center justify-center w-full h-full p-2" aria-label="Vrije ruimte">
+                                <div className="flex justify-center items-center p-2 w-full h-full" aria-label="Vrije ruimte">
                                     <svg width="80%" height="80%" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <g clipPath="url(#clip0_15_1098)">
                                             <path d="M18.0487 31.9676C10.3202 31.9676 4.03295 25.6811 4.03295 17.9541C4.03295 14.6074 5.21378 11.5321 7.17896 9.11956L4.31891 6.26C1.62906 9.4123 0 13.4953 0 17.9541C0 27.9046 8.0967 36 18.0487 36C22.5083 36 26.5921 34.3709 29.7449 31.9676L26.8847 28.8218C24.4717 30.7868 21.3961 31.9676 18.0487 31.9676Z" fill="#014087" />
@@ -85,10 +92,10 @@ const BingoCard = ({
                                     disabled={!num || isChecked}
                                     className={`${buttonClass} focus:outline-none`}
                                     aria-label={
-                                        isChecked 
-                                            ? `Nummer ${num} is afgevinkt` 
-                                            : isCurrentMatch 
-                                                ? `Nummer ${num} komt overeen met de getrokken bal` 
+                                        isChecked
+                                            ? `Nummer ${num} is afgevinkt`
+                                            : isCurrentMatch
+                                                ? `Nummer ${num} komt overeen met de getrokken bal`
                                                 : `Nummer ${num} op je bingo kaart`
                                     }
                                     aria-pressed={isChecked}
@@ -98,7 +105,7 @@ const BingoCard = ({
                                         <div className="absolute inset-0 z-0 bg-[#DDF5F7] animate-hint-pulse" />
                                     )}
                                     {isChecked && (
-                                        <div className="absolute inset-0 z-20 flex items-center justify-center">
+                                        <div className="flex absolute inset-0 z-20 justify-center items-center">
                                             {/* Stroke overlay met animatie - 80% grootte, gecentreerd */}
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"

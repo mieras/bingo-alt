@@ -268,12 +268,12 @@ function App() {
                     <WonScreen
                       prize={prize}
                       drawnBalls={drawnBalls}
+                      progress={progress}
                       onBackToBingo={closeGameOverlay}
                       onReplay={replayInOverlay}
                       showHeader={true}
                       bingoCard={bingoCard}
                       checkedNumbers={checkedNumbers}
-                      panelColor={panelColor}
                     />
                   )}
 
@@ -281,11 +281,11 @@ function App() {
                     <LostScreen
                       onBackToBingo={closeGameOverlay}
                       onReplay={replayInOverlay}
+                      progress={progress}
                       showHeader={true}
                       bingoCard={bingoCard}
                       checkedNumbers={checkedNumbers}
                       drawnBalls={drawnBalls}
-                      panelColor={panelColor}
                     />
                   )}
                 </div>

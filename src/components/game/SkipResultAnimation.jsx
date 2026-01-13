@@ -25,7 +25,7 @@ const SkipResultAnimation = ({ bingoCard, checkedNumbers, isSkipEnding = false }
 
     const interval = setInterval(() => {
       setCarouselIndex((prev) => (prev + 1) % CAROUSEL_BALLS.length);
-    }, 900);
+    }, 1300);
 
     return () => clearInterval(interval);
   }, [isSkipEnding]);

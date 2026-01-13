@@ -7,12 +7,13 @@ import ContentWrapper from './ContentWrapper';
 import lostHeroImage from '../assets/bingo-lost.png';
 import GameHeader from './game/GameHeader';
 import BingoCard from './game/BingoCard';
+import GameProgress from './game/GameProgress';
 import BallsHistory from './game/BallsHistory';
 import winactiesImage from '../assets/vl-winacties.png';
 import vipcardImage from '../assets/vl-vipcard.png';
 import extraBingoImage from '../assets/vl-extra-bingo.png';
 
-const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [], checkedNumbers = new Set(), drawnBalls = [], panelColor = '#AA167C' }) => {
+const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false, bingoCard = [], checkedNumbers = new Set(), drawnBalls = [] }) => {
   // Random kleur voor ballen
   const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
   const getBallColor = (ballNumber) => {
@@ -46,40 +47,49 @@ const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [
   };
 
   return (
-    <div className="flex flex-col w-full h-full" style={{ background: 'linear-gradient(180deg, #F6E9E7 0%, #EAC7C7 100%)' }}>
+    <div className="flex flex-col w-full h-full bg-white">
       {/* Header - Fixed */}
       {showHeader && <GameHeader onClose={onBackToBingo} />}
 
       {/* Scrollable Content - Hero Image + Content */}
       <div className="overflow-y-auto flex-1">
-        {/* Hero Section - Bingo kaart met rode achtergrond */}
-        <div
-          className="flex relative justify-center items-center w-full"
-          style={{
-            background: 'linear-gradient(180deg, #F6E9E7 0%, #EAC7C7 100%)',
-            borderRadius: '0px',
-            minHeight: '200px',
-            height: '200px',
-          }}
-        >
-          {bingoCard.length > 0 && (
-            <div className="opacity-80">
-              <BingoCard
-                bingoCard={bingoCard}
-                checkedNumbers={checkedNumbers}
-                currentBall={null}
-                wigglingNumber={null}
-                showHint={false}
-                onCardClick={() => {}}
-              />
+        {/* Hero Section (zelfde opbouw als spelscherm: kaart + bal count) */}
+        <div className="relative flex flex-col shrink-0 overflow-hidden">
+          {/* Achtergrond alleen in hero (zacht infaden) */}
+          <div
+            className="absolute inset-0 opacity-0 animate-fade-in"
+            style={{
+              background: 'linear-gradient(180deg, #F6E9E7 0%, #EAC7C7 100%)',
+              animationDuration: '450ms',
+              animationFillMode: 'forwards'
+            }}
+            aria-hidden="true"
+          />
+
+          <div className="relative z-10 flex flex-col">
+            {/* Bingo Card Container */}
+            <div className="flex flex-col flex-1 justify-center items-center">
+              {bingoCard.length > 0 && (
+                  <BingoCard
+                    bingoCard={bingoCard}
+                    checkedNumbers={checkedNumbers}
+                    currentBall={null}
+                    wigglingNumber={null}
+                    showHint={false}
+                    onCardClick={() => {}}
+                    opacity={0.8}
+                  />
+              )}
             </div>
-          )}
+
+            <GameProgress drawnBalls={drawnBalls} progress={progress} />
+          </div>
         </div>
 
         {/* Horizontale Balls Strip */}
         {drawnBalls.length > 0 && (
-          <div className="bg-white py-3">
-            <BallsHistory drawnBalls={drawnBalls} getBallColor={getBallColor} />
+          <div className="bg-white px-4 py-3">
+            <BallsHistory drawnBalls={drawnBalls} getBallColor={getBallColor} checkedByUser={checkedNumbers} />
           </div>
         )}
 
@@ -142,13 +152,13 @@ const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [
                     {/* Content */}
                     <div className="flex flex-col gap-0 px-5 py-5 grow">
                       <h3
-                        className="text-lg font-bold text-[#29313d] mb-0 break-words"
+                        className="text-lg font-bold text-[#29313d] mb-0 wrap-break-word"
                         data-swiper-parallax="-100"
                       >
                         {card.title}
                       </h3>
                       <p
-                        className="text-sm text-[#7a7a7a] leading-relaxed break-words"
+                        className="text-sm text-[#7a7a7a] leading-relaxed wrap-break-word"
                         data-swiper-parallax="-200"
                         data-swiper-parallax-duration="600"
                       >

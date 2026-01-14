@@ -21,6 +21,7 @@ export const useBingoGame = () => {
 
     const timerRef = useRef(null);
     const drawDeckRef = useRef([]);
+    const originalDeckRef = useRef([]); // Bewaar het originele deck voor "speel opnieuw af"
     const skipResultTimeoutRef = useRef(null);
     const scheduleNextBallRef = useRef(null);
     const lastBallTimerStartedRef = useRef(false);
@@ -84,6 +85,8 @@ export const useBingoGame = () => {
         
         // Store deck for later use in startGame
         drawDeckRef.current = deck;
+        // Bewaar ook het originele deck voor "speel opnieuw af"
+        originalDeckRef.current = [...deck];
         
         // Set the card
         setBingoCard(grid);
@@ -607,12 +610,13 @@ export const useBingoGame = () => {
 
         // Use existing card if available, otherwise generate a new one
         let grid = bingoCard;
-        let deck = drawDeckRef.current;
+        // Gebruik het originele deck als dat beschikbaar is, anders het huidige deck
+        let deck = originalDeckRef.current.length > 0 ? originalDeckRef.current : drawDeckRef.current;
 
         if (grid.length === 0 || deck.length === 0) {
             const result = generateCard();
             grid = result.grid;
-            deck = result.deck;
+            deck = originalDeckRef.current.length > 0 ? originalDeckRef.current : result.deck;
         }
 
         // Same draw order as the real game (pop() from end)
@@ -716,7 +720,7 @@ export const useBingoGame = () => {
         }
     }, [gameState, isSkipping, drawnBalls.length, maxBalls, drawNextBall, isPaused]);
 
-    // Reset game naar IDLE state
+    // Reset game naar IDLE state, maar behoud de kaart en herstel het originele deck
     const resetGame = useCallback(() => {
         if (timerRef.current) {
             clearTimeout(timerRef.current);
@@ -726,7 +730,8 @@ export const useBingoGame = () => {
             skipResultTimeoutRef.current = null;
         }
         setGameState('IDLE');
-        setBingoCard([]);
+        // Behoud bingoCard voor "speel opnieuw af"
+        // setBingoCard([]); // NIET resetten - behoud dezelfde kaart
         setDrawnBalls([]);
         setCurrentBall(null);
         setCheckedNumbers(new Set());
@@ -741,7 +746,10 @@ export const useBingoGame = () => {
         setManualCheckBoost(false);
         setIsSkipEnding(false);
         setIsPaused(false);
-        drawDeckRef.current = [];
+        // Herstel het originele deck voor "speel opnieuw af"
+        if (originalDeckRef.current.length > 0) {
+            drawDeckRef.current = [...originalDeckRef.current];
+        }
         lastBallTimerStartedRef.current = false;
     }, []);
 

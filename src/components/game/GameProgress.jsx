@@ -4,8 +4,8 @@ const GameProgress = ({ drawnBalls, progress }) => {
     return (
         <>
             {/* Info Bar - "Bal" en counter op achtergrondkleur */}
-            <div className="flex justify-between items-end px-4 py-2 mt-auto max-w-full mx-auto w-full">
-                <h2 className="text-sm font-bold text-white uppercase tracking-wide">Bal</h2>
+            <div className="flex justify-between items-end px-2 py-1 mx-auto mt-auto w-full max-w-full">
+                <h2 className="text-sm font-bold tracking-wide text-white uppercase">Bal</h2>
                 <span className="text-xs font-medium text-white" aria-label={`${drawnBalls.length} van 36 ballen getrokken`}>
                     {String(drawnBalls.length).padStart(2, '0')}/36
                 </span>

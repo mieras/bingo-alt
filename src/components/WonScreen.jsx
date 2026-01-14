@@ -105,8 +105,8 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
             </div>
           </div>
         </div>
-        {/* Horizontale Balls Strip */}
-        {drawnBalls.length > 0 && (
+        {/* Horizontale Balls Strip - altijd tonen als er ballen zijn getrokken */}
+        {drawnBalls && drawnBalls.length > 0 && (
           <div className="px-4 py-3 bg-white">
             <BallsHistory drawnBalls={drawnBalls} getBallColor={getBallColor} checkedByUser={checkedNumbers} animate={false} />
           </div>

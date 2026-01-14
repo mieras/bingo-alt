@@ -63,10 +63,10 @@ const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set(), ani
                         >
                             {/* Vakje met border + checkbox absolute */}
                             <div
-                                className={`flex relative justify-center items-center ${isFirst && animate ? 'ball-history-item-bg' : ''}`}
+                                className={`flex relative justify-center pt-4 ${isFirst && animate ? 'ball-history-item-bg' : ''}`}
                                 style={{
                                     width: '72px',
-                                    height: '96px',
+                                    height: '88px',
                                     borderRight: isLast ? '0px' : '1px solid #F3F3F3',
                                     background: '#FFF',
 

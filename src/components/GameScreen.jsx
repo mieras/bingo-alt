@@ -109,7 +109,7 @@ const GameScreen = ({
                     {/* Hero sectie - auto hoogte gebaseerd op content + padding, met fixed progress bar */}
                     <div className="flex relative flex-col shrink-0 hero-bingo-container">
                         {/* Bingo Card Container - verticaal gecentreerd */}
-                        <div className="flex relative justify-center items-center pb-4 w-full hero-bingo-card-container" style={{ overflow: 'visible' }}>
+                        <div className="flex relative justify-center items-center pb-2 w-full hero-bingo-card-container" style={{ overflow: 'visible' }}>
                             <BingoCard
                                 bingoCard={bingoCard}
                                 checkedNumbers={checkedNumbers}

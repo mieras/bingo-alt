@@ -18,6 +18,8 @@ function App() {
   const [hasPlayed, setHasPlayed] = useState(false); // Track if game has been played
   const [panelColor, setPanelColor] = useState('#AA167C'); // Panel color for current card
   const [loginRedirect, setLoginRedirect] = useState(null); // Waar naartoe na login: 'bingo' | 'account'
+  // Bewaar het laatste resultaat zodat het beschikbaar blijft na "speel opnieuw af"
+  const [lastResult, setLastResult] = useState(null); // { prize, resultType, drawnBalls, checkedNumbers, progress }
 
   const {
     gameState,
@@ -82,13 +84,15 @@ function App() {
 
   const openGameOverlay = () => {
     setShowGameOverlay(true);
-    // Generate card if it doesn't exist yet or if game hasn't been played
-    // (if hasPlayed is false, we want a fresh card for a new game)
-    if (bingoCard.length === 0 || (!hasPlayed && gameState === 'IDLE')) {
+    // Generate card and color only if they don't exist yet
+    // Behoud dezelfde kaart en kleur als ze al bestaan
+    if (bingoCard.length === 0) {
       generateCard();
-      // Generate a random color for this card
-      const randomColor = panelColors[Math.floor(Math.random() * panelColors.length)];
-      setPanelColor(randomColor);
+      // Generate a random color for this card (alleen als er nog geen kleur is)
+      if (panelColor === '#AA167C') { // Default waarde betekent dat er nog geen kleur is gekozen
+        const randomColor = panelColors[Math.floor(Math.random() * panelColors.length)];
+        setPanelColor(randomColor);
+      }
     }
     // Start game niet direct - laat StartScreen eerst tonen
   };
@@ -99,8 +103,16 @@ function App() {
       resetGame();
       setHasPlayed(false);
     } else if (gameState === 'WON' || gameState === 'FINISHED') {
-      // Als het spel is afgerond, markeer als gespeeld (niet resetten)
+      // Als het spel is afgerond, markeer als gespeeld en bewaar het resultaat
       setHasPlayed(true);
+      // Bewaar het laatste resultaat zodat het beschikbaar blijft na "speel opnieuw af"
+      setLastResult({
+        prize: prize,
+        resultType: gameState === 'WON' ? 'won' : 'lost',
+        drawnBalls: [...drawnBalls],
+        checkedNumbers: new Set(checkedNumbers),
+        progress: progress
+      });
     }
     setShowGameOverlay(false);
     setResultType(null);
@@ -114,8 +126,10 @@ function App() {
   const openResultScreen = () => {
     // Open overlay en ga direct naar result screen
     setShowGameOverlay(true);
-    // Set resultType based on current gameState
-    if (gameState === 'WON') {
+    // Gebruik het opgeslagen resultaat als het beschikbaar is, anders gebruik huidige gameState
+    if (lastResult) {
+      setResultType(lastResult.resultType);
+    } else if (gameState === 'WON') {
       setResultType('won');
     } else if (gameState === 'FINISHED') {
       setResultType('lost');
@@ -123,25 +137,26 @@ function App() {
   };
 
   const replayInOverlay = () => {
-    // Reset game + maak direct een nieuwe kaart zodat je opnieuw kan spelen
+    // Reset game maar behoud dezelfde kaart en kleur
     resetGame();
-    setHasPlayed(false);
+    // Behoud hasPlayed zodat gebruiker nog steeds naar resultaat kan gaan vanuit overview
+    // setHasPlayed(false); // NIET resetten - behoud "Bekijk je prijs" functionaliteit
     setResultType(null);
-    // Maak een nieuwe kaart en kleur voor de nieuwe run
-    generateCard();
-    const randomColor = panelColors[Math.floor(Math.random() * panelColors.length)];
-    setPanelColor(randomColor);
+    // Behoud dezelfde kaart en kleur - geen nieuwe genereren
+    // De kaart en kleur blijven behouden omdat we alleen resetGame() aanroepen
   };
 
   // Generate card when bingo page is loaded (if not already generated)
   useEffect(() => {
-    if (currentPage === 'bingo' && bingoCard.length === 0 && !hasPlayed) {
+    if (currentPage === 'bingo' && bingoCard.length === 0) {
       generateCard();
-      // Generate a random color for this card
-      const randomColor = panelColors[Math.floor(Math.random() * panelColors.length)];
-      setPanelColor(randomColor);
+      // Generate a random color for this card (alleen als er nog geen kleur is gekozen)
+      if (panelColor === '#AA167C') { // Default waarde betekent dat er nog geen kleur is gekozen
+        const randomColor = panelColors[Math.floor(Math.random() * panelColors.length)];
+        setPanelColor(randomColor);
+      }
     }
-  }, [currentPage, bingoCard.length, hasPlayed, generateCard]);
+  }, [currentPage, bingoCard.length, generateCard, panelColor]);
 
   // Handle game state changes - transition naar result scherm in overlay
   useEffect(() => {
@@ -263,30 +278,38 @@ function App() {
                     <LoadingTransition />
                   )}
 
-                  {/* Result Screens in overlay - wanneer gameState === 'WON' of 'FINISHED' en niet meer transitioning */}
-                  {!isTransitioning && gameState === 'WON' && resultType === 'won' && prize && (
-                    <WonScreen
-                      prize={prize}
-                      drawnBalls={drawnBalls}
-                      progress={progress}
-                      onBackToBingo={closeGameOverlay}
-                      onReplay={replayInOverlay}
-                      showHeader={true}
-                      bingoCard={bingoCard}
-                      checkedNumbers={checkedNumbers}
-                    />
+                  {/* Result Screens in overlay - toon resultaat van huidige gameState of opgeslagen resultaat */}
+                  {!isTransitioning && resultType === 'won' && (
+                    // Gebruik opgeslagen resultaat als beschikbaar, anders huidige state
+                    (lastResult && lastResult.resultType === 'won' && lastResult.prize) || 
+                    (gameState === 'WON' && prize) ? (
+                      <WonScreen
+                        prize={lastResult?.prize || prize}
+                        drawnBalls={lastResult?.drawnBalls || drawnBalls}
+                        progress={lastResult?.progress || progress}
+                        onBackToBingo={closeGameOverlay}
+                        onReplay={replayInOverlay}
+                        showHeader={true}
+                        bingoCard={bingoCard}
+                        checkedNumbers={lastResult?.checkedNumbers || checkedNumbers}
+                      />
+                    ) : null
                   )}
 
-                  {!isTransitioning && gameState === 'FINISHED' && resultType === 'lost' && (
-                    <LostScreen
-                      onBackToBingo={closeGameOverlay}
-                      onReplay={replayInOverlay}
-                      progress={progress}
-                      showHeader={true}
-                      bingoCard={bingoCard}
-                      checkedNumbers={checkedNumbers}
-                      drawnBalls={drawnBalls}
-                    />
+                  {!isTransitioning && resultType === 'lost' && (
+                    // Gebruik opgeslagen resultaat als beschikbaar, anders huidige state
+                    (lastResult && lastResult.resultType === 'lost') || 
+                    (gameState === 'FINISHED') ? (
+                      <LostScreen
+                        onBackToBingo={closeGameOverlay}
+                        onReplay={replayInOverlay}
+                        progress={lastResult?.progress || progress}
+                        showHeader={true}
+                        bingoCard={bingoCard}
+                        checkedNumbers={lastResult?.checkedNumbers || checkedNumbers}
+                        drawnBalls={lastResult?.drawnBalls || drawnBalls}
+                      />
+                    ) : null
                   )}
                 </div>
               </div>

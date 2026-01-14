@@ -10,7 +10,7 @@ const GameControls = ({ onSkip, isGameFinished, isSkipping, isPaused, onPause, o
                 background: 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 40%, rgba(255, 255, 255, 1) 70%)'
             }}
         >
-            <div className="flex flex-col gap-2 justify-end items-center px-3 pb-5 h-full pointer-events-none">
+            <div className="flex flex-col gap-2 justify-end items-center px-2 pb-2 h-full pointer-events-none">
                 {isPaused ? (
                     <>
                         {/* Paused state: Volgende bal (secondary) + Play (primary icon) */}

@@ -19,7 +19,7 @@ export class GoldConfetti {
       baseSize: 4,
       baseLength: 10,
       speedMult: 1.5,
-      infinite: true,
+      infinite: false, // Standaard false: confetti stopt vanzelf wanneer alles buiten scherm is
       colorMode: 'gold',
     };
 
@@ -63,10 +63,23 @@ export class GoldConfetti {
     if (!this.isRunning) return;
 
     this.ctx.clearRect(0, 0, this.w, this.h);
+    
+    let visibleRibbons = 0;
     this.ribbons.forEach(r => {
       r.update();
+      // Check of ribbon nog zichtbaar is (binnen scherm of net erboven)
+      if (r.y > -r.length && r.y < this.h + r.length && r.x > -r.size && r.x < this.w + r.size) {
+        visibleRibbons++;
+      }
       r.draw();
     });
+    
+    // Als infinite false is en alle ribbons buiten scherm zijn, stop animatie
+    if (!this.config.infinite && visibleRibbons === 0) {
+      this.stop();
+      return;
+    }
+    
     this.animationId = requestAnimationFrame(() => this.animate());
   }
 
@@ -135,29 +148,24 @@ class Ribbon {
  * React hook voor gouden confetti
  * @param {React.RefObject<HTMLCanvasElement>} canvasRef - Ref naar canvas element
  * @param {boolean} enabled - Of confetti moet draaien
- * @param {number} duration - Duur in milliseconden (default 5000ms = 5 seconden)
+ * @param {boolean} infinite - Of confetti oneindig moet doorgaan (default false = stopt vanzelf)
  */
-export function useGoldConfetti(canvasRef, enabled = true, duration = 5000) {
+export function useGoldConfetti(canvasRef, enabled = true, infinite = false) {
   const confettiRef = React.useRef(null);
 
   React.useEffect(() => {
     if (!canvasRef.current || !enabled) return;
 
     const confetti = new GoldConfetti(canvasRef.current);
+    confetti.config.infinite = infinite;
     confettiRef.current = confetti;
     confetti.start();
 
-    // Stop confetti na duration
-    const stopTimer = setTimeout(() => {
-      confetti.stop();
-    }, duration);
-
     return () => {
-      clearTimeout(stopTimer);
       confetti.destroy();
       confettiRef.current = null;
     };
-  }, [canvasRef, enabled, duration]);
+  }, [canvasRef, enabled, infinite]);
 
   return confettiRef.current;
 }

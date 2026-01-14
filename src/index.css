@@ -152,24 +152,16 @@
 }
 
 /* Ball animations voor BallsHistory */
-@keyframes ball-reveal {
-  from {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes ball-subtle-bounce {
+@keyframes ball-reveal-bounce {
   0% {
-    transform: translateY(0) scale(1);
+    opacity: 0;
+    transform: scale(0.5) rotate(-12deg);
   }
-  50% {
-    transform: translateY(-8px) scale(1.1);
+  40% {
+    opacity: 1;
+    transform: scale(1.1) translateY(0);
   }
+
   100% {
     transform: translateY(0) scale(1);
   }
@@ -184,13 +176,8 @@
   }
 }
 
-.ball-reveal {
-  animation: reveal-bounce 0.4s ease-out forwards;
-  transform-origin: center center;
-}
-
-.ball-subtle-bounce {
-  animation: ball-subtle-bounce 0.6s ease-out 0.4s forwards;
+.ball-reveal-bounce {
+  animation: ball-reveal-bounce 0.5s ease-out forwards;
   transform-origin: center center;
 }
 
@@ -249,31 +236,59 @@ body {
 }
 
 .btn-primary {
-  background: #003884;
+  border-radius: var(--Actions-Strokes-Action-stroke-corner-radius, 8px);
+  background: var(--Button-Fill-Button-fill-primary, #008539);
+  box-shadow: 0 var(--Button-Effects-Button-shadow-primary-y-offset, -4px) 0 0
+    var(--Button-Effects-Button-primary-shadow-color, #006129) inset;
   color: #fff;
-  border: 2px solid #003884;
-  padding: 0.75rem 2rem;
+  border: none;
+  padding: 0.75rem 1rem;
   font-size: 1rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: -0.0125em;
   cursor: pointer;
   transition: all 0.2s;
-  border-radius: 0.375rem;
 }
 
 .btn-primary:hover {
-  background: #002a66;
-  border-color: #002a66;
+  background: #006129;
+  box-shadow: 0 var(--Button-Effects-Button-shadow-primary-y-offset, -4px) 0 0
+    #004d1f inset;
   color: #fff;
 }
 
 .btn-primary:focus {
-  outline: none;
-  ring: 2px;
-  ring-color: white;
-  ring-offset: 2px;
-  ring-offset-color: #003884;
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+.btn-secondary {
+  border-radius: var(--Actions-Strokes-Action-stroke-corner-radius, 8px);
+  border: var(--Button-Stroke-Button-stroke-width, 2px) solid
+    var(--Button-Stroke-Button-stroke-color-secondary, #003884);
+  background: var(--Button-Fill-Button-fill-secondary, #fff);
+  box-shadow: 0 var(--Button-Effects-Button-shadow-secondary-y-offset, -4px) 0 0
+    var(--Button-Effects-Button-secondary-shadow-color, #003884) inset;
+  color: var(--Button-Stroke-Button-stroke-color-secondary, #003884);
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.0125em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #f3f7ff;
+  box-shadow: 0 var(--Button-Effects-Button-shadow-secondary-y-offset, -4px) 0 0
+    #002a5f inset;
+  border-color: #002a5f;
+  color: #002a5f;
+}
+
+.btn-secondary:focus {
+  outline: 2px solid var(--Button-Stroke-Button-stroke-color-secondary, #003884);
+  outline-offset: 2px;
 }
 
 /* Focus styles voor alle interactieve elementen */

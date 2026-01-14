@@ -89,7 +89,7 @@ const GameResult = ({ prize }) => {
 
                 <button
                     onClick={() => window.location.reload()}
-                    className="px-8 py-4 bg-[#003884] text-white font-bold rounded-md shadow-lg hover:bg-[#002a5f] transition-colors uppercase tracking-wide text-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#003884]"
+                    className="px-8 py-4 btn-primary text-lg"
                     aria-label="Start een nieuw Bingo spel"
                 >
                     Opnieuw spelen
@@ -194,7 +194,7 @@ const GameResult = ({ prize }) => {
                                             </div>
                                             {card.isUpsell && (
                                                 <button
-                                                    className="mt-2 px-6 py-3 bg-[#003884] text-white font-bold rounded-md hover:bg-[#002a5f] transition-colors uppercase tracking-wide text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#003884]"
+                                                    className="mt-2 px-6 py-3 btn-primary text-sm"
                                                     data-swiper-parallax="-300"
                                                     aria-label={`Extra kaart kopen voor ${card.title}`}
                                                 >
@@ -213,7 +213,7 @@ const GameResult = ({ prize }) => {
                 <div className="mt-6 text-center">
                     <button
                         onClick={() => window.location.reload()}
-                        className="px-8 py-4 bg-[#003884] text-white font-bold rounded-md shadow-lg hover:bg-[#002a5f] transition-colors uppercase tracking-wide text-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#003884]"
+                        className="px-8 py-4 btn-primary text-lg"
                         aria-label="Start een nieuw Bingo spel"
                     >
                         Opnieuw spelen

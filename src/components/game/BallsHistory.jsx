@@ -78,7 +78,7 @@ const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set(), ani
 
                                 {/* Ball */}
                                 <div
-                                    className={`flex relative justify-center items-center w-12 h-12 rounded-full shadow-lg ${isFirst && animate ? 'ball-reveal ball-subtle-bounce' : ''}`}
+                                    className={`flex relative justify-center items-center w-12 h-12 rounded-full shadow-lg ${isFirst && animate ? 'ball-reveal-bounce' : ''}`}
                                     style={{
                                         backgroundColor: getBallColor(ball),
                                         backgroundImage: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.2) 100%)',

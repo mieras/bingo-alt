@@ -52,4 +52,15 @@
   --bingo-number-blue: #003884;
   --bingo-text: #29313d;
   --bingo-scribble: #ddf5f7;
+
+  /* Button Design System Variabelen */
+  --Actions-Strokes-Action-stroke-corner-radius: 8px;
+  --Button-Fill-Button-fill-primary: #008539;
+  --Button-Effects-Button-shadow-primary-y-offset: -4px;
+  --Button-Effects-Button-primary-shadow-color: #006129;
+  --Button-Stroke-Button-stroke-width: 2px;
+  --Button-Stroke-Button-stroke-color-secondary: #003884;
+  --Button-Fill-Button-fill-secondary: #FFF;
+  --Button-Effects-Button-shadow-secondary-y-offset: -4px;
+  --Button-Effects-Button-secondary-shadow-color: #003884;
 }

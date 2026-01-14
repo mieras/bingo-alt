@@ -26,8 +26,8 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
     return () => clearTimeout(timer);
   }, []);
 
-  // Gouden confetti effect bij won screen
-  useGoldConfetti(confettiCanvasRef, true);
+  // Gouden confetti effect bij won screen - stopt vanzelf wanneer alles buiten scherm is
+  useGoldConfetti(confettiCanvasRef, true, false);
 
   const prizeThumbnail = getPrizeThumbnailByBalls(prize.balls);
   const winningBallIndex = drawnBalls.length;
@@ -187,7 +187,7 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
           {/* Speel opnieuw af Button (secondary outline + rewind icoon) */}
           <button
             onClick={handleReplay}
-            className="w-full bg-white text-[#003884] font-bold py-4 px-6 rounded-lg border-2 border-[#003884] hover:bg-[#F3F7FF] transition-colors text-base mb-4 flex items-center justify-center gap-2"
+            className="w-full btn-secondary mb-4 flex items-center justify-center gap-2"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M1.66699 8.33333C1.66699 8.33333 3.33781 6.05685 4.69519 4.69854C6.05257 3.34022 7.92832 2.5 10.0003 2.5C14.1425 2.5 17.5003 5.85786 17.5003 10C17.5003 14.1421 14.1425 17.5 10.0003 17.5C6.58108 17.5 3.69625 15.2119 2.79346 12.0833M1.66699 8.33333V3.33333M1.66699 8.33333H6.66699" stroke="#003884" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

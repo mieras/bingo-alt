@@ -69,23 +69,19 @@ const LoginScreen = ({ onLogin, onClose }) => {
               </a>
             </div>
             
-            {/* Inloggen button - Groen */}
+            {/* Inloggen button - Primary */}
             <button
               type="submit"
-              className="w-full bg-[#009640] text-white font-bold py-4 px-6 rounded-lg hover:bg-[#087239] transition-colors uppercase tracking-wide text-base focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#009640]"
-              style={{
-                borderBottom: '4px solid #087239',
-                textShadow: '0 1px #0c7b3f',
-              }}
+              className="w-full btn-primary"
             >
               Inloggen
             </button>
           </form>
           
-          {/* Account aanmaken button - Secundair */}
+          {/* Account aanmaken button - Secondary */}
           <button
             type="button"
-            className="w-full mt-4 bg-white border-2 border-[#003884] text-[#003884] font-bold py-4 px-6 rounded-lg hover:bg-[#003884] hover:text-white transition-colors uppercase tracking-wide text-base focus:outline-none focus:ring-2 focus:ring-[#003884] focus:ring-offset-2"
+            className="w-full mt-4 btn-secondary"
           >
             Account aanmaken
           </button>

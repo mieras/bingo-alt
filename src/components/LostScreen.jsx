@@ -168,7 +168,7 @@ const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false,
                       </p>
                       {card.isUpsell && (
                         <button
-                          className="mt-2 px-6 py-3 bg-[#003884] text-white font-bold rounded-md hover:bg-[#002a5f] transition-colors uppercase tracking-wide text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#003884]"
+                          className="mt-2 px-6 py-3 btn-primary text-sm"
                           data-swiper-parallax="-300"
                           aria-label={`Extra kaart kopen voor ${card.title}`}
                         >
@@ -185,7 +185,7 @@ const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false,
           {/* Speel opnieuw af Button */}
           <button
             onClick={handleReplay}
-            className="w-full bg-white text-[#003884] font-bold mt-2 py-4 px-6 rounded-lg border-2 border-[#003884] hover:bg-[#F3F7FF] transition-colors text-base flex items-center justify-center gap-2"
+            className="w-full btn-secondary mt-2 flex items-center justify-center gap-2"
             aria-label="Speel opnieuw af"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

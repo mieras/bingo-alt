@@ -124,7 +124,7 @@ const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bing
               {hasPlayed ? (
                 <button
                   onClick={onViewPrize}
-                  className="w-full bg-[#009640] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#087239] transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#009640]"
+                  className="w-full btn-primary text-sm"
                 >
                   Bekijk je prijs
                 </button>
@@ -132,7 +132,7 @@ const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bing
                 <div className="flex flex-col gap-3">
                   <button
                     onClick={onPlayNow}
-                    className="w-full bg-[#009640] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#087239] transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#009640]"
+                    className="w-full btn-primary text-sm"
                   >
                     Open je Bingokaart
                   </button>
@@ -215,13 +215,13 @@ const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bing
 
             {/* App Store Knoppen */}
             <div className="flex flex-col gap-3">
-              <button className="bg-[#003884] text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 hover:bg-[#002a5f] transition-colors">
+              <button className="btn-primary py-3 px-6 flex items-center justify-center gap-2">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H9v6l5.25 3.15.75-1.23-4.5-2.67V5z" />
                 </svg>
                 <span>ONTDEK HET OP Google Play</span>
               </button>
-              <button className="bg-[#003884] text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 hover:bg-[#002a5f] transition-colors">
+              <button className="btn-primary py-3 px-6 flex items-center justify-center gap-2">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H9v6l5.25 3.15.75-1.23-4.5-2.67V5z" />
                 </svg>

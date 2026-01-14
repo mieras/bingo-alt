@@ -13,8 +13,8 @@ const BingoCard = ({
 }) => {
     return (
         <div
-            className={`w-[80%] max-w-[360px] mb-4 bg-white rounded-b-[32px] shadow-xl overflow-hidden shrink-0 flex flex-col ${className}`}
-            style={{ opacity }}
+            className={`w-[80%] max-w-[360px] bg-white rounded-b-[32px] shadow-xl overflow-hidden shrink-0 flex flex-col ${className}`}
+            style={{ opacity, flexShrink: 0, minWidth: 0 }}
             role="grid"
             aria-label="Bingo kaart"
         >

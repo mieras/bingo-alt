@@ -36,10 +36,10 @@ const StartScreen = ({ onStart, onSkipToResult, onClose, bingoCard = [], panelCo
 
       {/* Content Section */}
       <div className="flex overflow-y-auto flex-col flex-1 w-full bg-white">
-        {/* Hero sectie met panelColor - zelfde als GameScreen */}
-        <div className="flex flex-col shrink-0" style={{ backgroundColor: panelColor }}>
-          {/* Bingo Card Container - zelfde structuur als GameScreen */}
-          <div className="flex flex-col flex-1 justify-center items-center">
+        {/* Hero sectie met panelColor - consistente hoogte */}
+        <div className="relative flex flex-col shrink-0 hero-bingo-container" style={{ backgroundColor: panelColor }}>
+          {/* Bingo Card Container - verticaal gecentreerd */}
+          <div className="relative flex flex-1 items-center justify-center w-full pb-4 min-h-0 hero-bingo-card-container">
             <BingoCard
               bingoCard={bingoCard}
               checkedNumbers={new Set()}

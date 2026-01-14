@@ -145,12 +145,10 @@ const GameScreen = ({
             {/* Hide game content during transition */}
             {!isTransitioning && (
                 <>
-                    {/* Kaart met fade-out tijdens skip ending */}
-                    <div
-                        className="flex flex-col shrink-0"
-                    >
-                        {/* Bingo Card Container */}
-                        <div className="flex flex-col flex-1 justify-center items-center">
+                    {/* Hero sectie - auto hoogte gebaseerd op content + padding, met fixed progress bar */}
+                    <div className="flex relative flex-col shrink-0 hero-bingo-container">
+                        {/* Bingo Card Container - verticaal gecentreerd */}
+                        <div className="flex relative justify-center items-center pb-4 w-full hero-bingo-card-container" style={{ overflow: 'visible' }}>
                             <BingoCard
                                 bingoCard={bingoCard}
                                 checkedNumbers={checkedNumbers}
@@ -161,51 +159,55 @@ const GameScreen = ({
                             />
                         </div>
 
-                        <GameProgress
-                            drawnBalls={drawnBalls}
-                            progress={progress}
-                        />
+                        {/* GameProgress - fixed onderaan in hero */}
+                        <div className="w-full shrink-0">
+                            <GameProgress
+                                drawnBalls={drawnBalls}
+                                progress={progress}
+                            />
+                        </div>
                     </div>
 
-                    {/* Horizontale Balls Container */}
-                    {drawnBalls.length > 0 && (
-                        <div className="bg-white px-4 py-3">
-                            <BallsHistory
-                                drawnBalls={drawnBalls}
-                                getBallColor={getBallColor}
-                                checkedByUser={checkedNumbers}
-                            />
-                        </div>
-                    )}
-
-                    {/* Prize Card - Huidige getrokken bal info */}
-                    {!isSkipping && !isSkipEnding && drawnBalls.length > 0 && (
-                        <div className="px-4 pb-3 bg-white">
-                            <PrizeCard
-                                currentBall={currentBall}
-                                ballIndex={drawnBalls.length}
-                                prize={history[0]?.prize || null}
-                            />
-                        </div>
-                    )}
-
-                    {/* Skip animatie content */}
+                    {/* Content sectie - flex-1, scrollbaar, met alle game content */}
                     <div
                         ref={historyRef}
-                        className="flex flex-col flex-1 bg-white"
+                        className="flex overflow-y-auto flex-col flex-1 bg-white"
                         style={{
                             WebkitOverflowScrolling: 'touch',
                         }}
                         role="region"
                         aria-label="Spel voortgang"
                     >
-                        {(isSkipping || isSkipEnding) ? (
+                        {/* BallsHistory - tijdens spel */}
+                        {!isSkipping && !isSkipEnding && drawnBalls.length > 0 && (
+                            <div className="px-4 py-3 bg-white">
+                                <BallsHistory
+                                    drawnBalls={drawnBalls}
+                                    getBallColor={getBallColor}
+                                    checkedByUser={checkedNumbers}
+                                />
+                            </div>
+                        )}
+
+                        {/* Prize Card - tijdens spel */}
+                        {!isSkipping && !isSkipEnding && drawnBalls.length > 0 && (
+                            <div className="px-4 pb-3 bg-white">
+                                <PrizeCard
+                                    currentBall={currentBall}
+                                    ballIndex={drawnBalls.length}
+                                    prize={history[0]?.prize || null}
+                                />
+                            </div>
+                        )}
+
+                        {/* Skip animatie - tijdens skip/animatie */}
+                        {(isSkipping || isSkipEnding) && (
                             <SkipResultAnimation
                                 bingoCard={bingoCard}
                                 checkedNumbers={checkedNumbers}
                                 isSkipEnding={isSkipEnding}
                             />
-                        ) : null}
+                        )}
                     </div>
 
                     {/* GameControls verborgen tijdens skip ending */}

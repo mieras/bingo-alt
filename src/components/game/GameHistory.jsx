@@ -51,14 +51,14 @@ const GameHistory = ({ history, getBallColor, isGameFinished }) => {
                     <li
                         key={item.timestamp}
                         className={`
-                        flex gap-3 items-center px-2 transition-colors border-b border-gray-100
-                        ${isNewest ? 'py-4 animate-bg-fade' : 'py-3'}
+                        flex gap-3 items-center px-2 transition-colors border-b overflow-hidden border-gray-100
+                        ${isNewest ? 'py-4' : 'py-3'} animate-bg-fade-item
 `}
                     >
                         {/* Ball Number - Links (met originele vorm) */}
                         <div className="flex justify-center w-14 shrink-0">
                             <div
-                                className={`w-13 h-13 rounded-full shadow-lg flex items-center justify-center relative ${isNewest ? 'animate-slide-in-left' : ''}`}
+                                className={`w-13 h-13 rounded-full shadow-lg flex items-center justify-center relative animate-reveal-bounce`}
                                 style={{
                                     backgroundColor: getBallColor(item.ball),
                                     backgroundImage: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.2) 100%)',
@@ -68,7 +68,7 @@ const GameHistory = ({ history, getBallColor, isGameFinished }) => {
                                 {/* White Badge Container */}
                                 <div className="w-8 h-8 bg-white rounded-[12px] flex flex-col items-center justify-center shadow-[inset_1px_2px_1px_rgba(0,0,0,0.05)] relative z-0">
                                     <span className="pt-0 font-bold leading-none text-gray-900 text-l text-box-trim">{item.ball}</span>
-                                    <div className="w-3 h-[2.5px] bg-gray-900 mt-[0px] rounded-full opacity-80"></div>
+                                    <div className="w-3 h-[2.5px] bg-gray-900 mt-0 rounded-full opacity-80"></div>
                                 </div>
                             </div>
                         </div>

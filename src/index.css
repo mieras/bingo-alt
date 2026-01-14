@@ -87,7 +87,8 @@
 }
 
 @keyframes bg-pulse-yellow {
-  0%, 100% {
+  0%,
+  100% {
     background-color: #fff9e6;
   }
   50% {
@@ -96,7 +97,9 @@
 }
 
 .animate-bg-fade-yellow {
-  animation: bg-pulse-yellow 1.5s ease-in-out 2, bg-fade-yellow 3s ease-out 3s forwards;
+  animation:
+    bg-pulse-yellow 1.5s ease-in-out 2,
+    bg-fade-yellow 3s ease-out 3s forwards;
 }
 
 .animate-roll-in {
@@ -117,6 +120,101 @@
 
 .animate-bg-fade {
   animation: bg-fade-yellow 3s ease-out forwards;
+}
+
+@keyframes bg-fade-item {
+  0% {
+    background-color: #fff9e6;
+  }
+  70% {
+    background-color: #fff9e6;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.animate-bg-fade-item {
+  animation: bg-fade-item 2s ease-out forwards;
+}
+
+@keyframes reveal-bounce {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(5px) scale(1.05);
+  }
+  70% {
+    transform: translateY(-3px) scale(1);
+  }
+  85% {
+    transform: translateY(2px) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-reveal-bounce {
+  animation: reveal-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes ball-history-bg-fade {
+  0% {
+    background-color: #fff9e6;
+  }
+  60% {
+    background-color: #fff9e6;
+  }
+  100% {
+    background-color: #ffffff;
+  }
+}
+
+.ball-history-item-bg {
+  animation: ball-history-bg-fade 1.5s ease-out forwards;
+}
+
+@keyframes ball-subtle-bounce {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.02);
+  }
+}
+
+.ball-subtle-bounce {
+  animation: ball-subtle-bounce 1s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+@keyframes ball-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(-10px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.1) translateY(2px);
+  }
+  80% {
+    transform: scale(0.95) translateY(-1px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.ball-reveal {
+  animation: ball-reveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transform-origin: center center;
 }
 
 @keyframes hint-pulse {
@@ -253,7 +351,8 @@ a:focus-visible {
 }
 
 @keyframes wiggle {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1) rotate(0deg);
   }
   10% {
@@ -274,7 +373,8 @@ a:focus-visible {
 }
 
 @keyframes wiggle-extreme {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1) rotate(0deg);
     filter: brightness(1);
   }
@@ -466,7 +566,16 @@ a:focus-visible {
   border-radius: 8px;
   background:
     linear-gradient(#ffffff, #ffffff) padding-box,
-    linear-gradient(90deg, #D09429 -93.08%, #EAEAEA -53.58%, #FFF685 4.67%, #FFF6E5 47.13%, #D29429 68.86%, #FFFBC7 104.4%) border-box;
+    linear-gradient(
+        90deg,
+        #d09429 -93.08%,
+        #eaeaea -53.58%,
+        #fff685 4.67%,
+        #fff6e5 47.13%,
+        #d29429 68.86%,
+        #fffbc7 104.4%
+      )
+      border-box;
 }
 
 @keyframes pulse-blue {
@@ -561,4 +670,180 @@ a:focus-visible {
   width: 32px !important;
   background: var(--ds-core-blue) !important;
   border-radius: 4px !important;
+}
+
+@keyframes hourglass-rotation {
+  50% {
+    transform: rotateZ(0);
+  }
+  100% {
+    transform: rotateZ(90deg);
+  }
+}
+
+.hourglass-svg {
+  animation-name: hourglass-rotation;
+  animation-duration: 0.5s;
+  animation-delay: 0.1s;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
+  transform-origin: center center;
+}
+
+/* Prize Carousel Styles */
+.prize-carousel-container {
+  position: relative;
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+  max-width: 400px;
+  max-height: 400px;
+  overflow: hidden;
+}
+
+.prize-carousel-content {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  width: 70%;
+  height: 60%;
+  transform: translate(-50%, -50%);
+}
+
+.prize-carousel-slide {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: z-index 0ms 250ms;
+  aspect-ratio: 4/3;
+}
+
+.prize-carousel-image {
+  position: relative;
+  width: 70%;
+  height: 70%;
+
+  object-fit: contain;
+  /* box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.2); */
+  transition: 500ms cubic-bezier(0.17, 0.67, 0.55, 1.43);
+  transform: scale(0);
+  opacity: 0;
+}
+
+.prize-carousel-text {
+  margin-top: 12px;
+  font-size: 12px;
+  text-align: center;
+  color: #666;
+  font-weight: 300;
+  transition: 500ms cubic-bezier(0.17, 0.67, 0.55, 1.43);
+  opacity: 0;
+
+  transform: translateX(0px);
+}
+
+.prize-carousel-slide.preactivede .prize-carousel-image {
+  transform: translateX(-50%) scale(0);
+}
+
+.prize-carousel-slide.preactivede .prize-carousel-text {
+  opacity: 0;
+  transform: translateX(-150px);
+}
+
+.prize-carousel-slide.preactive {
+  z-index: 1;
+}
+
+.prize-carousel-slide.preactive .prize-carousel-image {
+  opacity: 0.3;
+  transform: translateX(-25%) scale(0.8);
+  filter: blur(10px);
+}
+
+.prize-carousel-slide.preactive .prize-carousel-text {
+  opacity: 0.3;
+  transform: translateX(-150px);
+}
+
+.prize-carousel-slide.proactive {
+  z-index: 1;
+}
+
+.prize-carousel-slide.proactive .prize-carousel-image {
+  opacity: 0.3;
+  transform: translateX(25%) scale(0.8);
+  filter: blur(10px);
+}
+
+.prize-carousel-slide.proactive .prize-carousel-text {
+  opacity: 0.3;
+  transform: translateX(150px);
+}
+
+.prize-carousel-slide.proactivede .prize-carousel-image {
+  transform: translateX(50%) scale(0);
+}
+
+.prize-carousel-slide.proactivede .prize-carousel-text {
+  opacity: 0;
+  transform: translateX(150px);
+}
+
+.prize-carousel-slide.active {
+  z-index: 2;
+}
+
+.prize-carousel-slide.active .prize-carousel-image {
+  opacity: 1;
+  transform: translateX(0%) scale(1);
+}
+
+.prize-carousel-slide.active .prize-carousel-text {
+  opacity: 1;
+  transition-delay: 200ms;
+  transform: translateX(0px);
+}
+
+/* Hero Bingo Container - auto hoogte gebaseerd op content */
+.hero-bingo-container {
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-bingo-card-container {
+  overflow: visible !important;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Responsive schaling voor bingo kaart */
+@media (max-height: 800px) {
+  .hero-bingo-card-container > *:first-child {
+    transform: scale(0.9);
+  }
+}
+
+@media (max-height: 700px) {
+  .hero-bingo-card-container > *:first-child {
+    transform: scale(0.8);
+  }
+}
+
+@media (max-height: 600px) {
+  .hero-bingo-card-container > *:first-child {
+    transform: scale(0.75);
+  }
+}
+
+.hero-balls-history {
+  z-index: 10;
 }

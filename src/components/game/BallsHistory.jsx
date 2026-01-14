@@ -31,7 +31,7 @@ const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set() }) =
 
     return (
         <div
-            className="w-full"
+            className="overflow-hidden w-full"
             style={{
                 borderRadius: '8px',
                 border: '1px solid #F3F3F3',
@@ -58,12 +58,12 @@ const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set() }) =
                     return (
                         <div
                             key={`${ball}-${idx}`}
-                            className="flex flex-col items-center shrink-0"
+                            className="flex flex-col items-center shrink-0 ball-history-item"
                             style={{ width: '72px' }}
                         >
                             {/* Vakje met border + checkbox absolute */}
                             <div
-                                className="flex relative justify-center items-center"
+                                className={`flex relative justify-center items-center ${isFirst ? 'ball-history-item-bg' : ''}`}
                                 style={{
                                     width: '72px',
                                     height: '96px',
@@ -78,7 +78,7 @@ const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set() }) =
 
                                 {/* Ball */}
                                 <div
-                                    className="flex relative justify-center items-center w-12 h-12 rounded-full shadow-lg"
+                                    className={`flex relative justify-center items-center w-12 h-12 rounded-full shadow-lg ${isFirst ? 'ball-reveal ball-subtle-bounce' : ''}`}
                                     style={{
                                         backgroundColor: getBallColor(ball),
                                         backgroundImage: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.2) 100%)',

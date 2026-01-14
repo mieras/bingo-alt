@@ -204,21 +204,21 @@ function App() {
           {showGameOverlay && (
             <>
               {/* Backdrop */}
-              <div 
+              <div
                 className="absolute inset-0 bg-black/50 backdrop-blur-sm z-40"
                 onClick={closeGameOverlay}
                 aria-hidden="true"
               />
               {/* Overlay Container */}
               <div className="absolute inset-0 z-50 pointer-events-none">
-                <div 
+                <div
                   className="w-full h-full bg-white pointer-events-auto overflow-hidden"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {/* Intro Screen (StartScreen) - wanneer gameState === 'IDLE' */}
                   {gameState === 'IDLE' && !isTransitioning && (
-                    <StartScreen 
-                      onStart={handleStartGame} 
+                    <StartScreen
+                      onStart={handleStartGame}
                       onSkipToResult={() => {
                         skipToResult();
                         // Result wordt automatisch getoond via useEffect

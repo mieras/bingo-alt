@@ -14,16 +14,13 @@ const GameControls = ({ onSkip, isGameFinished, isSkipping, isPaused, onPause, o
                 {isPaused ? (
                     <>
                         {/* Paused state: Volgende bal (secondary) + Play (primary icon) */}
-                        <div className="flex gap-2 items-center w-full max-w-[351px] pointer-events-auto">
+                        <div className="flex gap-2 items-stretch w-full max-w-[351px] pointer-events-auto">
                             <button
                                 onClick={onNextBall}
                                 disabled={isSkipping}
                                 className={`
-                                    flex-1 px-6 py-4 text-sm font-bold rounded-md 
-                                    bg-white text-[#003884] border-2 border-[#003884] shadow-lg 
-                                    transition-all duration-200
-                                    focus:outline-none focus:ring-2 focus:ring-[#003884] focus:ring-offset-2
-                                    ${isSkipping ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50 hover:shadow-xl active:scale-[0.98]'}
+                                    flex-1 btn-secondary
+                                    ${isSkipping ? 'opacity-50 cursor-not-allowed' : 'active:scale-[0.98]'}
                                 `}
                                 aria-label="Trek volgende bal"
                             >
@@ -33,11 +30,9 @@ const GameControls = ({ onSkip, isGameFinished, isSkipping, isPaused, onPause, o
                                 onClick={onResume}
                                 disabled={isSkipping}
                                 className={`
-                                    w-14 h-14 flex items-center justify-center rounded-md 
-                                    bg-[#009640] text-white shadow-lg 
-                                    transition-all duration-200 pointer-events-auto
-                                    focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#009640]
-                                    ${isSkipping ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#087239] hover:shadow-xl active:scale-[0.98]'}
+                                    w-14 flex items-center justify-center btn-primary self-stretch
+                                    pointer-events-auto
+                                    ${isSkipping ? 'opacity-50 cursor-not-allowed' : 'active:scale-[0.98]'}
                                 `}
                                 aria-label="Hervat trekking"
                             >
@@ -54,11 +49,9 @@ const GameControls = ({ onSkip, isGameFinished, isSkipping, isPaused, onPause, o
                             onClick={onPause}
                             disabled={isSkipping}
                             className={`
-                                w-full max-w-[351px] px-6 py-4 text-sm font-bold rounded-md 
-                                bg-[#009640] text-white shadow-lg 
-                                transition-all duration-200 pointer-events-auto
-                                focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#009640]
-                                ${isSkipping ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#087239] hover:shadow-xl active:scale-[0.98]'}
+                                w-full max-w-[351px] btn-primary
+                                pointer-events-auto
+                                ${isSkipping ? 'opacity-50 cursor-not-allowed' : 'active:scale-[0.98]'}
                             `}
                             aria-label="Pauzeer trekking"
                         >

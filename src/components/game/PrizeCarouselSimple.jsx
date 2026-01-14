@@ -20,52 +20,34 @@ const PrizeCarouselSimple = ({ autoPlay = true, interval = 1000 }) => {
         return () => clearInterval(timer);
     }, [autoPlay, interval]);
 
-    const getSlideClass = (index) => {
-        if (index === currentIndex) {
-            return 'active';
-        }
-
-        const total = PRIZES.length;
-        const diff = index - currentIndex;
-
-        // Handle wrapping for previous/next
-        let normalizedDiff = diff;
-        if (normalizedDiff > total / 2) {
-            normalizedDiff -= total;
-        } else if (normalizedDiff < -total / 2) {
-            normalizedDiff += total;
-        }
-
-        if (normalizedDiff === -1) {
-            return 'preactive';
-        } else if (normalizedDiff === 1) {
-            return 'proactive';
-        } else if (normalizedDiff === -2) {
-            return 'preactivede';
-        } else if (normalizedDiff === 2) {
-            return 'proactivede';
-        } else {
-            return 'preactivede';
-        }
-    };
-
     return (
-        <div className="prize-carousel-container">
-            <div className="prize-carousel-content">
-                {PRIZES.map((prize, index) => {
-                    const slideClass = getSlideClass(index);
+        <div className="relative w-full overflow-hidden">
+            <div
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{
+                    transform: `translateX(-${currentIndex * 100}%)`
+                }}
+            >
+                {PRIZES.map((prize, idx) => {
+                    const isCenter = idx === currentIndex;
+                    const distance = Math.abs(idx - currentIndex);
+
                     return (
                         <div
                             key={prize.balls}
-                            className={`prize-carousel-slide ${slideClass}`}
+                            className="shrink-0 w-full flex justify-center items-center"
+                            style={{
+                                filter: isCenter ? 'blur(0px)' : `blur(${Math.min(distance * 8, 20)}px)`,
+                                opacity: isCenter ? 1 : Math.max(0.3, 1 - distance * 0.3),
+                                transition: 'filter 0.3s, opacity 0.3s'
+                            }}
                         >
                             <img
-                                className="prize-carousel-image"
                                 src={getPrizeThumbnailByBalls(prize.balls)}
                                 alt={prize.prize}
+                                className="w-48 h-48 object-contain"
                                 draggable="false"
                             />
-                            {/* <p className="prize-carousel-text">{prize.prize}</p> */}
                         </div>
                     );
                 })}

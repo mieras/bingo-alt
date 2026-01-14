@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DRAW_INTERVAL } from '../utils/constants';
-import confetti from 'canvas-confetti';
 
 // Import new components
 import GameHeader from './game/GameHeader';
@@ -69,30 +68,6 @@ const GameScreen = ({
         }
     }, [history.length]);
 
-    // Confetti effect bij Bingo - tijdens celebration
-    useEffect(() => {
-        if (isCelebrating) {
-            const duration = 2 * 1000; // 2 seconden celebration
-            const animationEnd = Date.now() + duration;
-            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
-
-            const randomInRange = (min, max) => Math.random() * (max - min) + min;
-
-            const interval = setInterval(function () {
-                const timeLeft = animationEnd - Date.now();
-
-                if (timeLeft <= 0) {
-                    return clearInterval(interval);
-                }
-
-                const particleCount = 50 * (timeLeft / duration);
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-            }, 250);
-
-            return () => clearInterval(interval);
-        }
-    }, [isCelebrating]);
 
     // Header close button handler
     const handleHeaderClose = () => {
@@ -127,20 +102,6 @@ const GameScreen = ({
                 <LoadingTransition />
             )}
 
-            {/* Celebration overlay - confetti tijdens Bingo */}
-            {isCelebrating && (
-                <div className="flex absolute inset-0 z-40 justify-center items-center pointer-events-none">
-                    <div
-                        className="text-7xl font-black text-white drop-shadow-2xl"
-                        style={{
-                            textShadow: '0 0 20px rgba(255,255,255,0.8), 0 0 40px rgba(255,215,0,0.6)',
-                            animation: 'bingo-celebration 2s ease-out forwards'
-                        }}
-                    >
-                        BINGO!
-                    </div>
-                </div>
-            )}
 
             {/* Hide game content during transition */}
             {!isTransitioning && (
@@ -178,13 +139,14 @@ const GameScreen = ({
                         role="region"
                         aria-label="Spel voortgang"
                     >
-                        {/* BallsHistory - tijdens spel */}
-                        {!isSkipping && !isSkipEnding && drawnBalls.length > 0 && (
+                        {/* BallsHistory - tijdens spel en tijdens skip animatie (maar niet tijdens skip ending) */}
+                        {drawnBalls.length > 0 && !isSkipEnding && (
                             <div className="px-4 py-3 bg-white">
                                 <BallsHistory
                                     drawnBalls={drawnBalls}
                                     getBallColor={getBallColor}
                                     checkedByUser={checkedNumbers}
+                                    animate={!isSkipping}
                                 />
                             </div>
                         )}

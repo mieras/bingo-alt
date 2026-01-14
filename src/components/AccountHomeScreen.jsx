@@ -5,17 +5,17 @@ import accountOverviewImage from '../assets/vl-ma-overview.png';
 const AccountHomeScreen = ({ onNavigateToMail, onNavigateToBingo }) => {
   return (
     <div className="bg-white overflow-clip relative rounded-tl-[12px] rounded-tr-[12px] size-full flex flex-col">
-      <div className="flex flex-col flex-1 overflow-y-auto">
+      <div className="flex overflow-y-auto flex-col flex-1">
         {/* Mock Image - Klikbaar naar Bingo Overview */}
         <button
           onClick={onNavigateToBingo}
-          className="w-full shrink-0 cursor-pointer hover:opacity-90 transition-opacity"
+          className="w-full transition-opacity cursor-pointer shrink-0 hover:opacity-90"
           aria-label="Ga naar Bingo overzicht"
         >
-          <img 
-            src={accountOverviewImage} 
+          <img
+            src={accountOverviewImage}
             alt="Mijn Account Overzicht"
-            className="w-full h-auto object-cover pointer-events-none"
+            className="object-cover w-full h-auto pointer-events-none"
           />
         </button>
 
@@ -24,14 +24,14 @@ const AccountHomeScreen = ({ onNavigateToMail, onNavigateToBingo }) => {
           <div className="flex flex-col gap-3 mt-4">
             <button
               onClick={onNavigateToBingo}
-              className="w-full bg-[#009b00] text-white font-bold py-4 px-6 rounded-lg hover:bg-[#007900] transition-colors uppercase tracking-wide text-base focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#009b00]"
+              className="w-full btn-primary"
             >
               Speel Nu
             </button>
-            
+
             <button
               onClick={onNavigateToBingo}
-              className="w-full bg-[#003884] text-white font-bold py-4 px-6 rounded-lg hover:bg-[#002a5f] transition-colors uppercase tracking-wide text-base focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#003884]"
+              className="w-full btn-primary"
             >
               Bingo
             </button>

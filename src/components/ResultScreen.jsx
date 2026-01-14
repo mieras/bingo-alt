@@ -58,7 +58,7 @@ const ResultScreen = ({ prize, history, bingoCard, checkedNumbers, panelColor })
 
           <button
             onClick={() => window.location.reload()}
-            className="mt-8 btn-primary w-full focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#003884]"
+            className="mt-8 btn-primary w-full"
             aria-label="Start een nieuw Bingo spel"
           >
             Play Again

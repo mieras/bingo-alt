@@ -13,7 +13,7 @@ const CheckedIcon = () => (
     </svg>
 );
 
-const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set() }) => {
+const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set(), animate = false }) => {
     const containerRef = useRef(null);
 
     // Auto-scroll naar begin bij nieuwe bal
@@ -63,7 +63,7 @@ const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set() }) =
                         >
                             {/* Vakje met border + checkbox absolute */}
                             <div
-                                className={`flex relative justify-center items-center ${isFirst ? 'ball-history-item-bg' : ''}`}
+                                className={`flex relative justify-center items-center ${isFirst && animate ? 'ball-history-item-bg' : ''}`}
                                 style={{
                                     width: '72px',
                                     height: '96px',
@@ -78,7 +78,7 @@ const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set() }) =
 
                                 {/* Ball */}
                                 <div
-                                    className={`flex relative justify-center items-center w-12 h-12 rounded-full shadow-lg ${isFirst ? 'ball-reveal ball-subtle-bounce' : ''}`}
+                                    className={`flex relative justify-center items-center w-12 h-12 rounded-full shadow-lg ${isFirst && animate ? 'ball-reveal-bounce' : ''}`}
                                     style={{
                                         backgroundColor: getBallColor(ball),
                                         backgroundImage: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.2) 100%)',

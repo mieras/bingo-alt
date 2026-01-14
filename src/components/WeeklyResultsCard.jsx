@@ -39,7 +39,7 @@ const WeeklyResultsCard = () => {
         </ul>
 
         <p className="text-sm leading-relaxed text-white">
-          Elke week maak je kans op geweldige prijzen. Speel nu en zie direct je prijs, of download je Bingokaart en controleer de uitslag handmatig.
+          Elke week maak je kans op geweldige prijzen. Speel nu en zie direct je prijs. Of download je Bingokaart en controleer de uitslag handmatig.
         </p>
       </div>
     </div>

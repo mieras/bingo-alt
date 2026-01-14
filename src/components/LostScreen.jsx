@@ -51,10 +51,10 @@ const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false,
       {/* Header - Fixed */}
       {showHeader && <GameHeader onClose={onBackToBingo} />}
 
-      {/* Scrollable Content - Hero Image + Content */}
-      <div className="overflow-y-auto flex-1">
-        {/* Hero Section (zelfde opbouw als spelscherm: kaart + bal count) */}
-        <div className="relative flex flex-col shrink-0 overflow-hidden">
+      {/* Scrollable container - hele container scrollt inclusief hero */}
+      <div className="flex overflow-y-auto flex-col flex-1 bg-white">
+        {/* Hero sectie - auto hoogte gebaseerd op content + padding, met fixed progress bar */}
+        <div className="flex relative flex-col shrink-0 hero-bingo-container overflow-hidden">
           {/* Achtergrond alleen in hero (zacht infaden) */}
           <div
             className="absolute inset-0 opacity-0 animate-fade-in"
@@ -66,9 +66,9 @@ const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false,
             aria-hidden="true"
           />
 
-          <div className="relative z-10 flex flex-col">
-            {/* Bingo Card Container */}
-            <div className="flex flex-col flex-1 justify-center items-center">
+          <div className="flex relative z-10 flex-col">
+            {/* Bingo Card Container - verticaal gecentreerd */}
+            <div className="flex relative justify-center items-center pb-4 w-full hero-bingo-card-container" style={{ overflow: 'visible' }}>
               {bingoCard.length > 0 && (
                   <BingoCard
                     bingoCard={bingoCard}
@@ -82,10 +82,12 @@ const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false,
               )}
             </div>
 
-            <GameProgress drawnBalls={drawnBalls} progress={progress} />
+            {/* GameProgress - fixed onderaan in hero */}
+            <div className="w-full shrink-0">
+              <GameProgress drawnBalls={drawnBalls} progress={progress} />
+            </div>
           </div>
         </div>
-
         {/* Horizontale Balls Strip */}
         {drawnBalls.length > 0 && (
           <div className="bg-white px-4 py-3">

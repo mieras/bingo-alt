@@ -23,6 +23,7 @@ export const useBingoGame = () => {
     const drawDeckRef = useRef([]);
     const skipResultTimeoutRef = useRef(null);
     const scheduleNextBallRef = useRef(null);
+    const lastBallTimerStartedRef = useRef(false);
 
     // Generate unique random numbers
     const generateNumbers = (count, max, min = 1) => {
@@ -109,6 +110,7 @@ export const useBingoGame = () => {
         setHistory([]);
         setPrize(null);
         setIsPaused(false);
+        lastBallTimerStartedRef.current = false;
         setGameState('PLAYING');
     }, [bingoCard.length, generateCard]);
 
@@ -162,42 +164,9 @@ export const useBingoGame = () => {
         setDrawnBalls(prev => [...prev, nextBall]);
         setCurrentBall(nextBall);
 
-        // Check if this is the last ball (36/36) and if we won
-        // Note: updatedChecked includes the auto-checked previous ball
-        const isLastBall = newDrawn.length >= maxBalls;
-        if (isLastBall) {
-            // Auto-check de laatste bal ook als die op de kaart staat
-            if (bingoCard.includes(nextBall)) {
-                updatedChecked.add(nextBall);
-            }
-            
-            // Check win condition with the updated checked numbers (includes auto-checked previous + last ball)
-            const numbersToWin = bingoCard.filter(n => n !== null);
-            const isWin = numbersToWin.every(n => updatedChecked.has(n));
-            
-            if (isWin) {
-                // WIN! Start celebration
-                if (timerRef.current) {
-                    clearTimeout(timerRef.current);
-                }
-                setCheckedNumbers(updatedChecked);
-                setIsCelebrating(true);
-                const lookupCount = Math.max(newDrawn.length, 19);
-                const wonPrize = PRIZES.find(p => p.balls === lookupCount);
-                setPrize(wonPrize);
-                
-                setTimeout(() => {
-                    setIsCelebrating(false);
-                    setGameState('WON');
-                }, 2000);
-            } else {
-                if (timerRef.current) {
-                    clearTimeout(timerRef.current);
-                }
-                // Direct klaar zodra alle ballen getrokken zijn
-                setGameState('FINISHED');
-            }
-        }
+        // Bij de laatste bal (36/36) laten we de gebruiker de tijd om zelf af te vinken
+        // De timer loopt gewoon door, en als die afloopt wordt de bal automatisch gechecked
+        // Dit wordt afgehandeld in een aparte useEffect
 
         // Update History
         // Check if this ball causes a win (if we auto-checked it or user checked it)
@@ -260,7 +229,7 @@ export const useBingoGame = () => {
             
             const currentIndex = drawnBalls.length;
             
-            // Stop als we maxBalls hebben bereikt
+            // Stop als we maxBalls hebben bereikt (bij bal 36 stoppen we met nieuwe ballen trekken)
             if (currentIndex >= maxBalls) {
                 return;
             }
@@ -300,7 +269,9 @@ export const useBingoGame = () => {
 
         if (checkWin(checkedNumbers)) {
             // WIN! Start celebration met confetti, dan na delay naar won scherm
-            clearInterval(timerRef.current);
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
             setIsCelebrating(true);
             
             // Calculate prize based on drawnBalls count
@@ -316,6 +287,73 @@ export const useBingoGame = () => {
             }, 2000);
         }
     }, [checkedNumbers, gameState, checkWin, drawnBalls.length, isSkipping]);
+
+    // Auto-check laatste bal (36) als timer afloopt
+    useEffect(() => {
+        if (gameState !== 'PLAYING' || isSkipping || drawnBalls.length !== maxBalls || !currentBall) {
+            lastBallTimerStartedRef.current = false;
+            return;
+        }
+        
+        // Als de timer al gestart is, niet opnieuw starten
+        if (lastBallTimerStartedRef.current) {
+            return;
+        }
+        
+        // Als bal niet op kaart staat, game is direct klaar
+        if (!bingoCard.includes(currentBall)) {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+            setGameState('FINISHED');
+            return;
+        }
+
+        // Start timer voor auto-check van laatste bal (alleen één keer)
+        lastBallTimerStartedRef.current = true;
+        const interval = getInterval(drawnBalls.length - 1, false);
+        
+        timerRef.current = setTimeout(() => {
+            // Timer is afgelopen, auto-check de laatste bal
+            setCheckedNumbers(prev => {
+                // Check eerst of bal al gechecked is (door gebruiker)
+                if (prev.has(currentBall)) {
+                    return prev;
+                }
+                
+                const updatedChecked = new Set(prev);
+                updatedChecked.add(currentBall);
+                
+                // Check win condition
+                const numbersToWin = bingoCard.filter(n => n !== null);
+                const isWin = numbersToWin.every(n => updatedChecked.has(n));
+                
+                if (isWin) {
+                    // WIN! Start celebration
+                    setIsCelebrating(true);
+                    const lookupCount = Math.max(drawnBalls.length, 19);
+                    const wonPrize = PRIZES.find(p => p.balls === lookupCount);
+                    setPrize(wonPrize);
+                    
+                    setTimeout(() => {
+                        setIsCelebrating(false);
+                        setGameState('WON');
+                    }, 2000);
+                } else {
+                    // Geen win, game is klaar
+                    setGameState('FINISHED');
+                }
+                
+                return updatedChecked;
+            });
+        }, interval);
+
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, [gameState, isSkipping, drawnBalls.length, maxBalls, currentBall, bingoCard, getInterval]);
 
     // Skipping Animation Effect
     useEffect(() => {
@@ -455,7 +493,24 @@ export const useBingoGame = () => {
 
             setCheckedNumbers(newChecked);
 
-            // Direct de volgende bal trekken als je handmatig afvinkt
+            // Als we al op de laatste bal (36) zitten, trek geen nieuwe bal meer
+            if (drawnBalls.length >= maxBalls) {
+                // Laatste bal is gechecked, check of we klaar zijn (geen win)
+                const numbersToWin = bingoCard.filter(n => n !== null);
+                const isWin = numbersToWin.every(n => newChecked.has(n));
+                
+                if (!isWin) {
+                    // Geen win, game is klaar
+                    if (timerRef.current) {
+                        clearTimeout(timerRef.current);
+                    }
+                    setGameState('FINISHED');
+                }
+                // Als er wel een win is, wordt dit al afgehandeld door de Check Win Effect
+                return;
+            }
+
+            // Direct de volgende bal trekken als je handmatig afvinkt (niet bij laatste bal)
             if (timerRef.current) {
                 clearTimeout(timerRef.current);
             }
@@ -663,7 +718,9 @@ export const useBingoGame = () => {
 
     // Reset game naar IDLE state
     const resetGame = useCallback(() => {
-        clearInterval(timerRef.current);
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+        }
         if (skipResultTimeoutRef.current) {
             clearTimeout(skipResultTimeoutRef.current);
             skipResultTimeoutRef.current = null;
@@ -685,6 +742,7 @@ export const useBingoGame = () => {
         setIsSkipEnding(false);
         setIsPaused(false);
         drawDeckRef.current = [];
+        lastBallTimerStartedRef.current = false;
     }, []);
 
     return {

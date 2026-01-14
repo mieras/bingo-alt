@@ -56,10 +56,10 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
       {/* Header - Fixed */}
       {showHeader && <GameHeader onClose={onBackToBingo} />}
 
-      {/* Scrollable Content */}
-      <div className="overflow-y-auto flex-1">
-        {/* Hero Section (zelfde opbouw als spelscherm: kaart + bal count) */}
-        <div className="flex overflow-hidden relative flex-col shrink-0">
+      {/* Scrollable container - hele container scrollt inclusief hero */}
+      <div className="flex overflow-y-auto flex-col flex-1 bg-white">
+        {/* Hero sectie - auto hoogte gebaseerd op content + padding, met fixed progress bar */}
+        <div className="flex relative flex-col shrink-0 hero-bingo-container overflow-hidden">
           {/* Achtergrond alleen in de hero (zacht infaden; geen harde overgang) */}
           <div
             className="absolute inset-0 opacity-0 animate-fade-in"
@@ -80,8 +80,8 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
           />
 
           <div className="flex relative z-10 flex-col">
-            {/* Bingo Card Container */}
-            <div className="flex flex-col flex-1 justify-center items-center">
+            {/* Bingo Card Container - verticaal gecentreerd */}
+            <div className="flex relative justify-center items-center pb-4 w-full hero-bingo-card-container" style={{ overflow: 'visible' }}>
               {bingoCard.length > 0 && (
                 <div className="flex relative justify-center w-full">
                   <BingoCard
@@ -109,10 +109,12 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
               )}
             </div>
 
-            <GameProgress drawnBalls={drawnBalls} progress={progress} />
+            {/* GameProgress - fixed onderaan in hero */}
+            <div className="w-full shrink-0">
+              <GameProgress drawnBalls={drawnBalls} progress={progress} />
+            </div>
           </div>
         </div>
-
         {/* Horizontale Balls Strip */}
         {drawnBalls.length > 0 && (
           <div className="px-4 py-3 bg-white">
@@ -124,22 +126,22 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
         <ContentWrapper className="flex flex-col items-center px-4 pt-4 pb-6 bg-white">
           {/* Prize Card met gouden border */}
           <div
-            className="overflow-hidden mb-4 min-h-20 w-full gradient-border-gold"
+            className="overflow-hidden mb-4 w-full min-h-20 gradient-border-gold"
           >
             <div className="flex items-stretch h-full min-h-20">
               {/* Info - Links (padding alleen op tekst, verticaal gecentreerd) */}
-              <div className="flex-1 px-4 py-3 min-w-0 flex flex-col justify-center">
+              <div className="flex flex-col flex-1 justify-center px-4 py-3 min-w-0">
                 <div className="text-xs font-medium text-gray-700">
                   {winningBallIndex}e getrokken bal
                 </div>
                 <div className="text-sm text-gray-800 mt-0.5 leading-snug font-bold">
-                  Bingo! U wint {prize.prize}
+                  Bingo? U wint {prize.prize}
                 </div>
               </div>
 
               {/* Prize Image - flush tegen rand, volledige hoogte */}
               <div
-                className="flex justify-center items-center w-20 shrink-0"
+                className="flex justify-center items-center w-24 h-24 shrink-0"
                 style={{ backgroundColor: '#F2D064' }}
               >
                 <img

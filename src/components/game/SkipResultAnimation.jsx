@@ -37,17 +37,17 @@ const SkipResultAnimation = ({ bingoCard, checkedNumbers, isSkipEnding = false }
   const message = overrideMessage || BASE_MESSAGES[messageIndex];
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full">
+    <div className="flex flex-col justify-center items-center w-full h-full">
       {/* Prize carousel - verticaal gecentreerd */}
-      <div className="w-full flex-1 flex items-center justify-center" style={{ minHeight: 0 }}>
-        <div className="w-full" style={{ height: '300px', maxHeight: '100%' }}>
+      <div className="flex flex-1 justify-center items-center w-full" style={{ minHeight: 0 }}>
+        <div className="w-full" >
           <PrizeCarouselSimple autoPlay={!isSkipEnding} interval={3000} />
         </div>
       </div>
 
       {/* Helper text */}
       <div className="px-6 pb-10 text-center shrink-0">
-        <p className="text-[22px] leading-7 font-medium text-[#6B7280] transition-opacity">
+        <p className="text-xs leading-7 font-medium text-[#6B7280] transition-opacity">
           {message}
         </p>
       </div>

@@ -146,6 +146,7 @@ const GameScreen = ({
                                     drawnBalls={drawnBalls}
                                     getBallColor={getBallColor}
                                     checkedByUser={checkedNumbers}
+                                    animate={!isSkipping}
                                 />
                             </div>
                         )}

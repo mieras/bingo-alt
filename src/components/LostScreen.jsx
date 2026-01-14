@@ -91,7 +91,7 @@ const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false,
         {/* Horizontale Balls Strip */}
         {drawnBalls.length > 0 && (
           <div className="bg-white px-4 py-3">
-            <BallsHistory drawnBalls={drawnBalls} getBallColor={getBallColor} checkedByUser={checkedNumbers} />
+            <BallsHistory drawnBalls={drawnBalls} getBallColor={getBallColor} checkedByUser={checkedNumbers} animate={false} />
           </div>
         )}
 

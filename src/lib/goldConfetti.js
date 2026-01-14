@@ -135,8 +135,9 @@ class Ribbon {
  * React hook voor gouden confetti
  * @param {React.RefObject<HTMLCanvasElement>} canvasRef - Ref naar canvas element
  * @param {boolean} enabled - Of confetti moet draaien
+ * @param {number} duration - Duur in milliseconden (default 5000ms = 5 seconden)
  */
-export function useGoldConfetti(canvasRef, enabled = true) {
+export function useGoldConfetti(canvasRef, enabled = true, duration = 5000) {
   const confettiRef = React.useRef(null);
 
   React.useEffect(() => {
@@ -146,11 +147,17 @@ export function useGoldConfetti(canvasRef, enabled = true) {
     confettiRef.current = confetti;
     confetti.start();
 
+    // Stop confetti na duration
+    const stopTimer = setTimeout(() => {
+      confetti.stop();
+    }, duration);
+
     return () => {
+      clearTimeout(stopTimer);
       confetti.destroy();
       confettiRef.current = null;
     };
-  }, [canvasRef, enabled]);
+  }, [canvasRef, enabled, duration]);
 
   return confettiRef.current;
 }

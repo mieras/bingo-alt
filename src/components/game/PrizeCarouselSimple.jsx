@@ -22,7 +22,7 @@ const PrizeCarouselSimple = ({ autoPlay = true, interval = 1000 }) => {
 
     return (
         <div className="relative w-full overflow-hidden">
-            <div 
+            <div
                 className="flex transition-transform duration-500 ease-in-out"
                 style={{
                     transform: `translateX(-${currentIndex * 100}%)`
@@ -31,7 +31,7 @@ const PrizeCarouselSimple = ({ autoPlay = true, interval = 1000 }) => {
                 {PRIZES.map((prize, idx) => {
                     const isCenter = idx === currentIndex;
                     const distance = Math.abs(idx - currentIndex);
-                    
+
                     return (
                         <div
                             key={prize.balls}

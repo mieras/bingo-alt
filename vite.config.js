@@ -5,7 +5,7 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/Bingo-Alt/',
+  base: '/bingo-alt/',
   plugins: [
     react(),
     tailwindcss(),

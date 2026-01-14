@@ -10,7 +10,7 @@ const GameControls = ({ onSkip, isGameFinished, isSkipping, isPaused, onPause, o
                 background: 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 40%, rgba(255, 255, 255, 1) 70%)'
             }}
         >
-            <div className="flex flex-col justify-end items-center gap-2 px-3 pb-5 h-full pointer-events-none">
+            <div className="flex flex-col gap-2 justify-end items-center px-3 pb-5 h-full pointer-events-none">
                 {isPaused ? (
                     <>
                         {/* Paused state: Volgende bal (secondary) + Play (primary icon) */}
@@ -42,7 +42,7 @@ const GameControls = ({ onSkip, isGameFinished, isSkipping, isPaused, onPause, o
                                 aria-label="Hervat trekking"
                             >
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M5.83301 4.15809C5.83301 3.34879 5.83301 2.94414 6.00175 2.72108C6.14875 2.52675 6.37344 2.4065 6.61667 2.39198C6.89587 2.37531 7.23256 2.59977 7.90594 3.04869L16.6689 8.89067C17.2253 9.2616 17.5035 9.44707 17.6005 9.68084C17.6852 9.88522 17.6852 10.1149 17.6005 10.3193C17.5035 10.5531 17.2253 10.7385 16.6689 11.1095L7.90594 16.9514C7.23256 17.4004 6.89587 17.6248 6.61667 17.6082C6.37344 17.5936 6.14875 17.4734 6.00175 17.2791C5.83301 17.056 5.83301 16.6513 5.83301 15.842V4.15809Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M5.83301 4.15809C5.83301 3.34879 5.83301 2.94414 6.00175 2.72108C6.14875 2.52675 6.37344 2.4065 6.61667 2.39198C6.89587 2.37531 7.23256 2.59977 7.90594 3.04869L16.6689 8.89067C17.2253 9.2616 17.5035 9.44707 17.6005 9.68084C17.6852 9.88522 17.6852 10.1149 17.6005 10.3193C17.5035 10.5531 17.2253 10.7385 16.6689 11.1095L7.90594 16.9514C7.23256 17.4004 6.89587 17.6248 6.61667 17.6082C6.37344 17.5936 6.14875 17.4734 6.00175 17.2791C5.83301 17.056 5.83301 16.6513 5.83301 15.842V4.15809Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </button>
                         </div>
@@ -62,17 +62,17 @@ const GameControls = ({ onSkip, isGameFinished, isSkipping, isPaused, onPause, o
                             `}
                             aria-label="Pauzeer trekking"
                         >
-                            <div className="flex items-center justify-center gap-2">
+                            <div className="flex gap-2 justify-center items-center">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 3H6V13H4V3Z" fill="white"/>
-                                    <path d="M10 3H12V13H10V3Z" fill="white"/>
+                                    <path d="M4 3H6V13H4V3Z" fill="white" />
+                                    <path d="M10 3H12V13H10V3Z" fill="white" />
                                 </svg>
                                 <span>Pauzeer</span>
                             </div>
                         </button>
                     </>
                 )}
-                
+
                 {/* Skip link - altijd zichtbaar */}
                 <button
                     onClick={onSkip}

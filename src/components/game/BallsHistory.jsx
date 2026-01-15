@@ -30,21 +30,12 @@ const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set(), ani
     const reversedBalls = [...drawnBalls].reverse();
 
     return (
-        <div
-            className="overflow-hidden w-full"
-            style={{
-                borderRadius: '8px',
-                border: '1px solid #F3F3F3',
-                background: '#FFF',
-                boxShadow: '0 2px 0 0 rgba(0, 0, 0, 0.05)',
-            }}
-        >
+        <div className="overflow-hidden w-full rounded-lg border border-[#F3F3F3] bg-white shadow-[0_2px_0_0_rgba(0,0,0,0.05)]">
             <div
                 ref={containerRef}
                 className="flex overflow-x-auto gap-0 px-0 py-0 scrollbar-hide"
                 style={{
                     WebkitOverflowScrolling: 'touch',
-                    scrollbarWidth: 'none',
                 }}
                 role="region"
                 aria-label="Geschiedenis van getrokken ballen"
@@ -58,19 +49,11 @@ const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set(), ani
                     return (
                         <div
                             key={`${ball}-${idx}`}
-                            className="flex flex-col items-center shrink-0 ball-history-item"
-                            style={{ width: '72px' }}
+                            className="flex flex-col items-center shrink-0 ball-history-item w-[72px]"
                         >
                             {/* Vakje met border + checkbox absolute */}
                             <div
-                                className={`flex relative justify-center pt-4 ${isFirst && animate ? 'ball-history-item-bg' : ''}`}
-                                style={{
-                                    width: '72px',
-                                    height: '88px',
-                                    borderRight: isLast ? '0px' : '1px solid #F3F3F3',
-                                    background: '#FFF',
-
-                                }}
+                                className={`flex relative justify-center items-center w-[72px] h-[96px] bg-white ${isFirst && animate ? 'ball-history-item-bg' : ''} ${isLast ? '' : 'border-r border-[#F3F3F3]'}`}
                             >
                                 <div className="absolute top-[4px] left-[4px]">
                                     {isCheckedByUser ? <CheckedIcon /> : <UncheckedIcon />}
@@ -78,11 +61,10 @@ const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set(), ani
 
                                 {/* Ball */}
                                 <div
-                                    className={`flex relative justify-center items-center w-12 h-12 rounded-full shadow-lg ${isFirst && animate ? 'ball-reveal-bounce' : ''}`}
+                                    className={`flex relative justify-center items-center w-12 h-12 rounded-full shadow-[0_4px_8px_rgba(0,0,0,0.18),inset_-2px_-2px_6px_rgba(0,0,0,0.18)] ${isFirst && animate ? 'ball-reveal-bounce' : ''}`}
                                     style={{
                                         backgroundColor: getBallColor(ball),
                                         backgroundImage: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.2) 100%)',
-                                        boxShadow: '0 4px 8px rgba(0,0,0,0.18), inset -2px -2px 6px rgba(0,0,0,0.18)'
                                     }}
                                 >
                                     <div className="w-8 h-8 bg-white rounded-[12px] flex flex-col items-center justify-center shadow-[inset_1px_2px_1px_rgba(0,0,0,0.05)]">

@@ -5,7 +5,6 @@ import confettiImage from '../assets/bingo-confetti-gold.png';
 import GameHeader from './game/GameHeader';
 import BingoCard from './game/BingoCard';
 import GameProgress from './game/GameProgress';
-import BallsHistory from './game/BallsHistory';
 import { useGoldConfetti } from '../lib/goldConfetti';
 
 // Upsell image
@@ -15,6 +14,8 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
   if (!prize) return null;
 
   const [showContent, setShowContent] = useState(false);
+  const [showProgress, setShowProgress] = useState(true);
+  const [showResultCard, setShowResultCard] = useState(false);
   const confettiCanvasRef = useRef(null);
 
   // Fade in content na delay
@@ -22,6 +23,24 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
     const timer = setTimeout(() => {
       setShowContent(true);
     }, 400); // Start fade na 400ms
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Show result card with delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowResultCard(true);
+    }, 600); // Start fade na 600ms
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Fade out progress bar
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowProgress(false);
+    }, 500); // Start fade out na 500ms
 
     return () => clearTimeout(timer);
   }, []);
@@ -36,26 +55,24 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
     return onBackToBingo();
   };
 
-  // Random kleur voor ballen
-  const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
-  const getBallColor = (ballNumber) => {
-    return panelColors[ballNumber % panelColors.length];
-  };
 
   return (
-    <div className="flex flex-col w-full h-full bg-white">
+    <div className="flex flex-col w-full h-full bg-white relative">
       {/* Gouden confetti canvas - fixed over hele screen */}
       <canvas
         ref={confettiCanvasRef}
-        className="fixed inset-0 z-30 pointer-events-none"
-        style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}
+        className="fixed inset-0 z-30 pointer-events-none w-full h-full"
       />
 
       {/* Header - Fixed */}
-      {showHeader && <GameHeader onClose={onBackToBingo} />}
+      {showHeader && (
+        <div className="fixed top-0 left-0 right-0 z-40">
+          <GameHeader onClose={onBackToBingo} />
+        </div>
+      )}
 
-      {/* Scrollable container - hele container scrollt inclusief hero */}
-      <div className="flex overflow-y-auto flex-col flex-1 bg-white">
+      {/* Scrollable container - alleen content scrollt, hero blijft zichtbaar */}
+      <div className={`flex overflow-y-auto flex-col flex-1 bg-white ${showHeader ? 'pt-[96px]' : ''}`}>
         {/* Hero sectie - auto hoogte gebaseerd op content + padding, met fixed progress bar */}
         <div className="flex overflow-hidden relative flex-col shrink-0 hero-bingo-container">
           {/* Achtergrond alleen in de hero (zacht infaden; geen harde overgang) */}
@@ -82,7 +99,7 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
 
           <div className="flex relative z-10 flex-col">
             {/* Bingo Card Container - verticaal gecentreerd */}
-            <div className="flex relative justify-center items-center pb-4 w-full hero-bingo-card-container" style={{ overflow: 'visible' }}>
+            <div className="flex relative justify-center items-center pb-4 w-full hero-bingo-card-container overflow-visible">
               {bingoCard.length > 0 && (
                 <div className="flex relative justify-center w-full">
                   <BingoCard
@@ -92,32 +109,26 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
                     wigglingNumber={null}
                     showHint={false}
                     onCardClick={() => { }}
-                    opacity={0.8}
+                    opacity={1}
                     className="mb-0"
                   />
                 </div>
               )}
             </div>
 
-            {/* GameProgress - fixed onderaan in hero */}
-            <div className="w-full shrink-0">
+            {/* GameProgress - fixed onderaan in hero, fade out */}
+            <div className={`w-full shrink-0 transition-opacity duration-500 ${showProgress ? 'opacity-100' : 'opacity-0'}`}>
               <GameProgress drawnBalls={drawnBalls} progress={progress} />
             </div>
           </div>
         </div>
-        {/* Horizontale Balls Strip - altijd tonen als er ballen zijn getrokken */}
-        {drawnBalls && drawnBalls.length > 0 && (
-          <div className="px-4 py-3 bg-white">
-            <BallsHistory drawnBalls={drawnBalls} getBallColor={getBallColor} checkedByUser={checkedNumbers} animate={false} />
-          </div>
-        )}
 
         {/* Content Section - fade in */}
         <ContentWrapper
           className={`flex flex-col items-center px-4 pt-4 gap-4 pb-6 bg-white transition-opacity duration-700 ${showContent ? 'opacity-100' : 'opacity-0'}`}
         >
           {/* Prize Card met geanimeerde gouden border */}
-          <div className="w-full rainbow min-h-20">
+          <div className={`w-full rainbow min-h-20 transition-opacity duration-700 ${showResultCard ? 'opacity-100' : 'opacity-0'}`}>
             <div className="flex items-stretch h-full min-h-20">
               {/* Info - Links (padding alleen op tekst, verticaal gecentreerd) */}
               <div className="flex flex-col flex-1 justify-center px-4 py-3 min-w-0">
@@ -157,13 +168,7 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
 
 
           {/* Upsell Section */}
-          <div
-            className="overflow-hidden w-full rounded-lg"
-            style={{
-              border: '2px solid #E5E6E6',
-              boxShadow: '0 1px 0 0 #E5E5E5'
-            }}
-          >
+          <div className="overflow-hidden w-full rounded-lg border-2 border-[#E5E6E6] shadow-[0_1px_0_0_#E5E5E5]">
             <div className="flex items-center">
 
               <div className="flex-1 p-4">

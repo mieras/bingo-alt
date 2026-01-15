@@ -109,7 +109,7 @@ const GameScreen = ({
                     {/* Hero sectie - auto hoogte gebaseerd op content + padding, met fixed progress bar */}
                     <div className="flex relative flex-col shrink-0 hero-bingo-container">
                         {/* Bingo Card Container - verticaal gecentreerd */}
-                        <div className="flex relative justify-center items-center pb-2 w-full hero-bingo-card-container" style={{ overflow: 'visible' }}>
+                        <div className="flex relative justify-center items-center pb-2 w-full hero-bingo-card-container overflow-visible">
                             <BingoCard
                                 bingoCard={bingoCard}
                                 checkedNumbers={checkedNumbers}
@@ -132,7 +132,7 @@ const GameScreen = ({
                     {/* Content sectie - flex-1, scrollbaar, met alle game content */}
                     <div
                         ref={historyRef}
-                        className="flex overflow-y-auto flex-col flex-1 bg-white"
+                        className={`flex overflow-y-auto flex-col flex-1 bg-white ${(isSkipping || isSkipEnding) ? 'min-h-0' : ''}`}
                         style={{
                             WebkitOverflowScrolling: 'touch',
                         }}
@@ -141,7 +141,7 @@ const GameScreen = ({
                     >
                         {/* BallsHistory - tijdens spel en tijdens skip animatie (maar niet tijdens skip ending) */}
                         {drawnBalls.length > 0 && !isSkipEnding && (
-                            <div className="px-4 py-3 bg-white">
+                            <div className="px-4 py-3 bg-white shrink-0">
                                 <BallsHistory
                                     drawnBalls={drawnBalls}
                                     getBallColor={getBallColor}
@@ -153,7 +153,7 @@ const GameScreen = ({
 
                         {/* Prize Card - tijdens spel */}
                         {!isSkipping && !isSkipEnding && drawnBalls.length > 0 && (
-                            <div className="px-4 pb-3 bg-white">
+                            <div className="px-4 pb-3 bg-white shrink-0">
                                 <PrizeCard
                                     currentBall={currentBall}
                                     ballIndex={drawnBalls.length}

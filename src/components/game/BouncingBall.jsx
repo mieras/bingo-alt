@@ -7,16 +7,13 @@ const BouncingBall = ({ ballNumber, ballColor }) => {
 
   return (
     <div className="flex flex-col justify-center items-center" role="img" aria-label={`Bal nummer ${number} wordt getrokken`}>
-      <div className="flex relative justify-center items-center" style={{ height: '7em' }}>
+      <div className="flex relative justify-center items-center h-[7em]">
         {/* Bouncing Ball */}
         <div
-          className="flex relative z-10 justify-center items-center rounded-full shadow-lg"
+          className="flex relative z-10 justify-center items-center w-[3.5em] h-[3.5em] rounded-full shadow-[0_4px_8px_rgba(0,0,0,0.2),inset_-2px_-2px_6px_rgba(0,0,0,0.2)]"
           style={{
-            width: '3.5em',
-            height: '3.5em',
             backgroundColor: color,
             backgroundImage: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.2) 100%)',
-            boxShadow: '0 4px 8px rgba(0,0,0,0.2), inset -2px -2px 6px rgba(0,0,0,0.2)',
             animation: 'bounce-ball 0.8s cubic-bezier(0, 0, 0.2, 1) alternate infinite',
           }}
         >
@@ -29,11 +26,9 @@ const BouncingBall = ({ ballNumber, ballColor }) => {
 
         {/* Shadow */}
         <div
-          className="absolute bottom-0"
+          className="absolute bottom-0 w-[5.25em] h-[1.75em]"
           style={{
             background: 'radial-gradient(50% 50%, rgba(0,0,0,0.3) 0%, transparent 100%)',
-            width: '5.25em',
-            height: '1.75em',
             animation: 'grow-shadow 0.8s cubic-bezier(0, 0, 0.2, 1) forwards infinite alternate',
           }}
         />

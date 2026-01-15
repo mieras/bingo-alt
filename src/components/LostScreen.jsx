@@ -7,13 +7,11 @@ import ContentWrapper from './ContentWrapper';
 import lostHeroImage from '../assets/bingo-lost.png';
 import GameHeader from './game/GameHeader';
 import BingoCard from './game/BingoCard';
-import GameProgress from './game/GameProgress';
 import winactiesImage from '../assets/vl-winacties.png';
 import vipcardImage from '../assets/vl-vipcard.png';
 import extraBingoImage from '../assets/vl-extra-bingo.png';
 
-const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false, bingoCard = [], checkedNumbers = new Set(), drawnBalls = [] }) => {
-  const [showProgress, setShowProgress] = React.useState(true);
+const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [], checkedNumbers = new Set(), drawnBalls = [] }) => {
   const [showResultCard, setShowResultCard] = React.useState(false);
 
   // Show result card with delay
@@ -21,15 +19,6 @@ const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false,
     const timer = setTimeout(() => {
       setShowResultCard(true);
     }, 600); // Start fade na 600ms
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Fade out progress bar
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowProgress(false);
-    }, 500); // Start fade out na 500ms
 
     return () => clearTimeout(timer);
   }, []);
@@ -62,7 +51,7 @@ const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false,
   };
 
   return (
-    <div className="flex flex-col w-full h-full bg-white relative">
+    <div className="flex flex-col w-full h-[100dvh] bg-white relative">
       {/* Header - Fixed */}
       {showHeader && (
         <div className="fixed top-0 left-0 right-0 z-40">
@@ -99,11 +88,6 @@ const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false,
                   opacity={1}
                 />
               )}
-            </div>
-
-            {/* GameProgress - fixed onderaan in hero, fade out */}
-            <div className={`w-full shrink-0 transition-opacity duration-500 ${showProgress ? 'opacity-100' : 'opacity-0'}`}>
-              <GameProgress drawnBalls={drawnBalls} progress={progress} />
             </div>
           </div>
         </div>

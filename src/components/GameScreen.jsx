@@ -92,7 +92,7 @@ const GameScreen = ({
 
     // Game content
     const gameContent = (
-        <div className="flex overflow-hidden relative flex-col w-full h-full transition-colors duration-500" style={{ backgroundColor: panelColor }}>
+        <div className="flex overflow-hidden relative flex-col w-full h-[100dvh] transition-colors duration-500" style={{ backgroundColor: panelColor }}>
             <GameHeader
                 onClose={handleHeaderClose}
             />
@@ -109,7 +109,7 @@ const GameScreen = ({
                     {/* Hero sectie - auto hoogte gebaseerd op content + padding, met fixed progress bar */}
                     <div className="flex relative flex-col shrink-0 hero-bingo-container">
                         {/* Bingo Card Container - verticaal gecentreerd */}
-                        <div className="flex relative justify-center items-center pb-2 w-full hero-bingo-card-container overflow-visible">
+                        <div className="flex overflow-visible relative justify-center items-center pb-2 w-full hero-bingo-card-container">
                             <BingoCard
                                 bingoCard={bingoCard}
                                 checkedNumbers={checkedNumbers}
@@ -202,7 +202,7 @@ const GameScreen = ({
                 {/* Modal Container */}
                 <div className="flex fixed inset-0 z-50 justify-center items-center p-4 pointer-events-none">
                     <div
-                        className="w-full max-w-[400px] h-full max-h-[90vh] bg-white rounded-lg shadow-2xl pointer-events-auto overflow-hidden"
+                        className="w-full  h-full max-h-[90vh] bg-white rounded-lg shadow-2xl pointer-events-auto overflow-hidden"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {gameContent}

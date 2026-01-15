@@ -8,17 +8,32 @@ import lostHeroImage from '../assets/bingo-lost.png';
 import GameHeader from './game/GameHeader';
 import BingoCard from './game/BingoCard';
 import GameProgress from './game/GameProgress';
-import BallsHistory from './game/BallsHistory';
 import winactiesImage from '../assets/vl-winacties.png';
 import vipcardImage from '../assets/vl-vipcard.png';
 import extraBingoImage from '../assets/vl-extra-bingo.png';
 
 const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false, bingoCard = [], checkedNumbers = new Set(), drawnBalls = [] }) => {
-  // Random kleur voor ballen
-  const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
-  const getBallColor = (ballNumber) => {
-    return panelColors[ballNumber % panelColors.length];
-  };
+  const [showProgress, setShowProgress] = React.useState(true);
+  const [showResultCard, setShowResultCard] = React.useState(false);
+
+  // Show result card with delay
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowResultCard(true);
+    }, 600); // Start fade na 600ms
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Fade out progress bar
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowProgress(false);
+    }, 500); // Start fade out na 500ms
+
+    return () => clearTimeout(timer);
+  }, []);
+
   // Carousel cards data voor verlies scherm
   const carouselCards = [
     {
@@ -47,12 +62,16 @@ const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false,
   };
 
   return (
-    <div className="flex flex-col w-full h-full bg-white">
+    <div className="flex flex-col w-full h-full bg-white relative">
       {/* Header - Fixed */}
-      {showHeader && <GameHeader onClose={onBackToBingo} />}
+      {showHeader && (
+        <div className="fixed top-0 left-0 right-0 z-40">
+          <GameHeader onClose={onBackToBingo} />
+        </div>
+      )}
 
-      {/* Scrollable container - hele container scrollt inclusief hero */}
-      <div className="flex overflow-y-auto flex-col flex-1 bg-white">
+      {/* Scrollable container - alleen content scrollt, hero blijft zichtbaar */}
+      <div className={`flex overflow-y-auto flex-col flex-1 bg-white ${showHeader ? 'pt-[96px]' : ''}`}>
         {/* Hero sectie - auto hoogte gebaseerd op content + padding, met fixed progress bar */}
         <div className="flex relative flex-col shrink-0 hero-bingo-container overflow-hidden">
           {/* Achtergrond alleen in hero (zacht infaden) */}
@@ -68,7 +87,7 @@ const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false,
 
           <div className="flex relative z-10 flex-col">
             {/* Bingo Card Container - verticaal gecentreerd */}
-            <div className="flex relative justify-center items-center pb-4 w-full hero-bingo-card-container" style={{ overflow: 'visible' }}>
+            <div className="flex relative justify-center items-center pb-4 w-full hero-bingo-card-container overflow-visible">
               {bingoCard.length > 0 && (
                 <BingoCard
                   bingoCard={bingoCard}
@@ -77,28 +96,22 @@ const LostScreen = ({ onBackToBingo, onReplay, progress = 0, showHeader = false,
                   wigglingNumber={null}
                   showHint={false}
                   onCardClick={() => { }}
-                  opacity={0.8}
+                  opacity={1}
                 />
               )}
             </div>
 
-            {/* GameProgress - fixed onderaan in hero */}
-            <div className="w-full shrink-0">
+            {/* GameProgress - fixed onderaan in hero, fade out */}
+            <div className={`w-full shrink-0 transition-opacity duration-500 ${showProgress ? 'opacity-100' : 'opacity-0'}`}>
               <GameProgress drawnBalls={drawnBalls} progress={progress} />
             </div>
           </div>
         </div>
-        {/* Horizontale Balls Strip - altijd tonen als er ballen zijn getrokken */}
-        {drawnBalls && drawnBalls.length > 0 && (
-          <div className="bg-white px-4 py-3">
-            <BallsHistory drawnBalls={drawnBalls} getBallColor={getBallColor} checkedByUser={checkedNumbers} animate={false} />
-          </div>
-        )}
 
         {/* Content Section */}
         <ContentWrapper className="flex flex-col px-4 pt-3 pb-4 bg-white">
           {/* Prijs kaartje (lost) */}
-          <div className="flex gap-3 items-center p-4 mb-4 w-full rounded-lg border border-gray-200 shadow-[0px_2px_8px_0px_rgba(0,0,0,0.08)] bg-white">
+          <div className={`flex gap-3 items-center p-4 mb-4 w-full rounded-lg border border-gray-200 shadow-[0px_2px_8px_0px_rgba(0,0,0,0.08)] bg-white transition-opacity duration-700 ${showResultCard ? 'opacity-100' : 'opacity-0'}`}>
             <div className="flex-1 min-w-0">
               <div className="text-xl font-black text-[#003884] mb-1">Helaas</div>
               <p className="text-base text-[#29313d] leading-relaxed">

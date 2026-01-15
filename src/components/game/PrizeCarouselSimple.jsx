@@ -45,7 +45,7 @@ const PrizeCarouselSimple = ({ autoPlay = true, interval = 1000 }) => {
                             <img
                                 src={getPrizeThumbnailByBalls(prize.balls)}
                                 alt={prize.prize}
-                                className="w-48 h-48 object-contain"
+                                className="w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain max-h-full"
                                 draggable="false"
                             />
                         </div>

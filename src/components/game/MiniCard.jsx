@@ -53,64 +53,39 @@ const MiniCard = ({ bingoCard, checkedNumbers, animateChecks = false, drawnBalls
 
     const rotation = noRotation ? '0deg' : '5deg';
     const containerStyle = useAbsolute ? {
-        position: 'absolute',
-        zIndex: 50,
-        bottom: '-1rem',
-        right: '1rem',
         transform: `rotate(${rotation}) translateX(${isVisible ? '0' : '10px'}) translateY(${isVisible ? '0' : '10px'})`,
         opacity: isVisible ? 1 : 0,
-        transition: 'all 200ms ease-out',
     } : {
         transform: `rotate(${rotation})`,
-        transition: 'all 200ms ease-out',
     };
 
     return (
         <div
-            className={useAbsolute ? '' : 'relative'}
+            className={`${useAbsolute ? 'absolute z-50 -bottom-4 right-4' : 'relative'} transition-all duration-200 ease-out`}
             style={containerStyle}
         >
             {/* Red card holder */}
             <div
-                className="flex flex-col justify-end items-center p-2 pt-1 pb-2 rounded"
+                className="flex flex-col justify-end items-center p-2 pt-1 pb-2 rounded w-[90px] h-[111px] shadow-[0px_67px_80px_0px_rgba(0,0,0,0.07),0px_28px_33px_0px_rgba(0,0,0,0.05),0px_15px_18px_0px_rgba(0,0,0,0.04),0px_8px_10px_0px_rgba(0,0,0,0.04),0px_4px_5px_0px_rgba(0,0,0,0.03),0px_2px_2px_0px_rgba(0,0,0,0.02)]"
                 style={{
-                    width: '90px',
-                    height: '111px',
                     backgroundColor: cardColor,
-                    boxShadow: '0px 67px 80px 0px rgba(0,0,0,0.07), 0px 28px 33px 0px rgba(0,0,0,0.05), 0px 15px 18px 0px rgba(0,0,0,0.04), 0px 8px 10px 0px rgba(0,0,0,0.04), 0px 4px 5px 0px rgba(0,0,0,0.03), 0px 2px 2px 0px rgba(0,0,0,0.02)',
                 }}
             >
                 {/* Logo header */}
-                <div
-                    className="absolute top-[5px] left-2 right-2 bg-white rounded-t-md flex items-center justify-center"
-                    style={{ height: '25px', padding: '2px 4px' }}
-                >
+                <div className="absolute top-[5px] left-2 right-2 bg-white rounded-t-md flex items-center justify-center h-[25px] p-[2px_4px]">
                     <img
                         src={vlbLogo}
                         alt="VriendenLoterij Bingo"
-                        className="object-contain w-full h-auto"
-                        style={{ maxHeight: '20px' }}
+                        className="object-contain w-full h-auto max-h-5"
                     />
                 </div>
 
                 {/* Mini Bingo Card */}
-                <div
-                    className="overflow-hidden bg-white"
-                    style={{
-                        width: '74px',
-                        borderBottomLeftRadius: '37px',
-                        borderBottomRightRadius: '37px',
-                        paddingTop: '8px',
-                        paddingBottom: '16px',
-                        paddingLeft: '4px',
-                        paddingRight: '4px',
-                    }}
-                >
+                <div className="overflow-hidden bg-white w-[74px] rounded-bl-[37px] rounded-br-[37px] pt-2 pb-4 px-1">
                     <div
-                        className="grid"
+                        className="grid gap-0"
                         style={{
                             gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
-                            gap: '0px',
                         }}
                     >
                         {bingoCard.map((num, idx) => {
@@ -120,14 +95,7 @@ const MiniCard = ({ bingoCard, checkedNumbers, animateChecks = false, drawnBalls
                             return (
                                 <div
                                     key={idx}
-                                    className="flex relative justify-center items-center border border-gray-50"
-                                    style={{
-                                        width: '16.5px',
-                                        height: '13.5px',
-                                        fontSize: '9px',
-                                        fontWeight: 600,
-                                        color: '#003884',
-                                    }}
+                                    className="flex relative justify-center items-center border border-gray-50 w-[16.5px] h-[13.5px] text-[9px] font-semibold text-[#003884]"
                                 >
                                     {isEmpty ? (
                                         <svg
@@ -146,15 +114,7 @@ const MiniCard = ({ bingoCard, checkedNumbers, animateChecks = false, drawnBalls
                                                 <div
                                                     className="flex absolute inset-0 z-0 justify-center items-center"
                                                 >
-                                                    <div
-                                                        className="rounded-full"
-                                                        style={{
-                                                            width: '14px',
-                                                            height: '14px',
-                                                            backgroundColor: '#B9E2E5',
-                                                            opacity: 0.8,
-                                                        }}
-                                                    />
+                                                    <div className="rounded-full w-[14px] h-[14px] bg-[#B9E2E5] opacity-80" />
                                                 </div>
                                             )}
                                         </>

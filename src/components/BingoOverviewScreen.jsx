@@ -59,15 +59,7 @@ const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bing
           <WeeklyResultsCard />
 
           {/* Huidige Bingokaart Weergave */}
-          <div
-            className="overflow-hidden mb-4 bg-white"
-            style={{
-              borderRadius: '8px',
-              border: '2px solid #E5E6E6',
-              background: '#FFF',
-              boxShadow: '0 1px 0 0 #E5E6E6'
-            }}
-          >
+          <div className="overflow-hidden mb-4 rounded-lg border-2 border-[#E5E6E6] bg-white shadow-[0_1px_0_0_#E5E6E6]">
             {/* Media Container met achtergrond */}
             <div className="flex justify-center items-center py-8" style={{ backgroundColor: '#E4F5F6' }}>
               {bingoCard.length > 0 ? (

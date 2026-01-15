@@ -18,6 +18,7 @@ function App() {
   const [hasPlayed, setHasPlayed] = useState(false); // Track if game has been played
   const [panelColor, setPanelColor] = useState('#AA167C'); // Panel color for current card
   const [loginRedirect, setLoginRedirect] = useState(null); // Waar naartoe na login: 'bingo' | 'account'
+  const [isModalOpen, setIsModalOpen] = useState(false); // Track modal animation state
   // Bewaar het laatste resultaat zodat het beschikbaar blijft na "speel opnieuw af"
   const [lastResult, setLastResult] = useState(null); // { prize, resultType, drawnBalls, checkedNumbers, progress }
 
@@ -77,6 +78,24 @@ function App() {
     navigateToLogin('bingo');
   };
 
+  const handleViewBingoCard = () => {
+    // Sluit de modal eerst
+    setIsModalOpen(false);
+    setTimeout(() => {
+      setShowGameOverlay(false);
+      // Ga naar bingo overview pagina
+      setCurrentPage('bingo');
+      // Open modal automatisch na korte delay zodat de pagina eerst laadt
+      setTimeout(() => {
+        setShowGameOverlay(true);
+        setIsModalOpen(false);
+        setTimeout(() => {
+          setIsModalOpen(true);
+        }, 10);
+      }, 50);
+    }, 300); // Wacht tot modal animatie klaar is
+  };
+
   const navigateToMail = () => {
     setCurrentPage('mail');
     setShowGameOverlay(false);
@@ -84,6 +103,8 @@ function App() {
 
   const openGameOverlay = () => {
     setShowGameOverlay(true);
+    // Trigger modal animation
+    setIsModalOpen(false);
     // Generate card and color only if they don't exist yet
     // Behoud dezelfde kaart en kleur als ze al bestaan
     if (bingoCard.length === 0) {
@@ -95,28 +116,37 @@ function App() {
       }
     }
     // Start game niet direct - laat StartScreen eerst tonen
+    // Trigger animation after a tiny delay to ensure DOM is ready
+    setTimeout(() => {
+      setIsModalOpen(true);
+    }, 10);
   };
 
   const closeGameOverlay = () => {
-    // Als het spel nog bezig is (PLAYING), reset het spel
-    if (gameState === 'PLAYING') {
-      resetGame();
-      setHasPlayed(false);
-    } else if (gameState === 'WON' || gameState === 'FINISHED') {
-      // Als het spel is afgerond, markeer als gespeeld en bewaar het resultaat
-      setHasPlayed(true);
-      // Bewaar het laatste resultaat zodat het beschikbaar blijft na "speel opnieuw af"
-      setLastResult({
-        prize: prize,
-        resultType: gameState === 'WON' ? 'won' : 'lost',
-        drawnBalls: [...drawnBalls],
-        checkedNumbers: new Set(checkedNumbers),
-        progress: progress
-      });
-    }
-    setShowGameOverlay(false);
-    setResultType(null);
-    // Blijf op bingo pagina (currentPage blijft 'bingo')
+    // Start close animation
+    setIsModalOpen(false);
+    // Wait for animation to complete before actually closing
+    setTimeout(() => {
+      // Als het spel nog bezig is (PLAYING), reset het spel
+      if (gameState === 'PLAYING') {
+        resetGame();
+        setHasPlayed(false);
+      } else if (gameState === 'WON' || gameState === 'FINISHED') {
+        // Als het spel is afgerond, markeer als gespeeld en bewaar het resultaat
+        setHasPlayed(true);
+        // Bewaar het laatste resultaat zodat het beschikbaar blijft na "speel opnieuw af"
+        setLastResult({
+          prize: prize,
+          resultType: gameState === 'WON' ? 'won' : 'lost',
+          drawnBalls: [...drawnBalls],
+          checkedNumbers: new Set(checkedNumbers),
+          progress: progress
+        });
+      }
+      setShowGameOverlay(false);
+      setResultType(null);
+      // Blijf op bingo pagina (currentPage blijft 'bingo')
+    }, 300); // Match animation duration
   };
 
   const handleStartGame = () => {
@@ -126,6 +156,8 @@ function App() {
   const openResultScreen = () => {
     // Open overlay en ga direct naar result screen
     setShowGameOverlay(true);
+    // Trigger modal animation
+    setIsModalOpen(false);
     // Gebruik het opgeslagen resultaat als het beschikbaar is, anders gebruik huidige gameState
     if (lastResult) {
       setResultType(lastResult.resultType);
@@ -134,6 +166,10 @@ function App() {
     } else if (gameState === 'FINISHED') {
       setResultType('lost');
     }
+    // Trigger animation after a tiny delay to ensure DOM is ready
+    setTimeout(() => {
+      setIsModalOpen(true);
+    }, 10);
   };
 
   const replayInOverlay = () => {
@@ -166,6 +202,18 @@ function App() {
       setResultType('lost');
     }
   }, [gameState, isTransitioning, showGameOverlay]);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (showGameOverlay) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showGameOverlay]);
 
   // Handle back from result screen
   const handleBackFromResult = () => {
@@ -220,14 +268,14 @@ function App() {
             <>
               {/* Backdrop */}
               <div
-                className="absolute inset-0 bg-black/50 backdrop-blur-sm z-40"
+                className={`absolute inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ${isModalOpen ? 'opacity-100' : 'opacity-0'}`}
                 onClick={closeGameOverlay}
                 aria-hidden="true"
               />
               {/* Overlay Container */}
               <div className="absolute inset-0 z-50 pointer-events-none">
                 <div
-                  className="w-full h-full bg-white pointer-events-auto overflow-hidden"
+                  className={`w-full h-full bg-white pointer-events-auto overflow-hidden transition-transform duration-300 ease-out ${isModalOpen ? 'translate-y-0' : 'translate-y-full'}`}
                   onClick={(e) => e.stopPropagation()}
                 >
                   {/* Intro Screen (StartScreen) - wanneer gameState === 'IDLE' */}

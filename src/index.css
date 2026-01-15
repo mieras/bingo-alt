@@ -185,39 +185,6 @@
   animation: ball-history-bg-fade 1.5s ease-out forwards;
 }
 
-/* Ball animations voor GameHistory */
-@keyframes reveal-bounce {
-  0% {
-    opacity: 0;
-    transform: scale(0.3) translateY(-20px);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1) translateY(0);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes bg-fade-item {
-  from {
-    background-color: #fff9e6;
-  }
-  to {
-    background-color: transparent;
-  }
-}
-
-.animate-reveal-bounce {
-  animation: reveal-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-.animate-bg-fade-item {
-  animation: bg-fade-item 1.5s ease-out forwards;
-}
-
 * {
   box-sizing: border-box;
 }

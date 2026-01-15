@@ -30,7 +30,7 @@ const StartScreen = ({ onStart, onSkipToResult, onClose, bingoCard = [], panelCo
     return () => clearInterval(interval);
   }, []);
   return (
-    <div className="bg-white overflow-clip relative rounded-tl-[12px] rounded-tr-[12px] size-full flex flex-col">
+    <div className="bg-white overflow-clip relative rounded-tl-[12px] rounded-tr-[12px] w-full h-[100dvh] flex flex-col">
       {/* Header Section - alleen tonen wanneer onClose beschikbaar is (in overlay) */}
       {onClose && <GameHeader onClose={onClose} />}
 

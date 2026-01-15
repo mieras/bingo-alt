@@ -4,17 +4,15 @@ import { getPrizeThumbnailByBalls } from '../utils/constants';
 import confettiImage from '../assets/bingo-confetti-gold.png';
 import GameHeader from './game/GameHeader';
 import BingoCard from './game/BingoCard';
-import GameProgress from './game/GameProgress';
 import { useGoldConfetti } from '../lib/goldConfetti';
 
 // Upsell image
 import upsellImage from '../assets/vl-extra-bingo.png';
 
-const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, showHeader = false, bingoCard = [], checkedNumbers = new Set() }) => {
+const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = false, bingoCard = [], checkedNumbers = new Set() }) => {
   if (!prize) return null;
 
   const [showContent, setShowContent] = useState(false);
-  const [showProgress, setShowProgress] = useState(true);
   const [showResultCard, setShowResultCard] = useState(false);
   const confettiCanvasRef = useRef(null);
 
@@ -36,15 +34,6 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
     return () => clearTimeout(timer);
   }, []);
 
-  // Fade out progress bar
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowProgress(false);
-    }, 500); // Start fade out na 500ms
-
-    return () => clearTimeout(timer);
-  }, []);
-
   // Gouden confetti effect bij won screen - stopt vanzelf wanneer alles buiten scherm is
   useGoldConfetti(confettiCanvasRef, true, false);
 
@@ -57,7 +46,7 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
 
 
   return (
-    <div className="flex flex-col w-full h-full bg-white relative">
+    <div className="flex flex-col w-full h-[100dvh] bg-white relative">
       {/* Gouden confetti canvas - fixed over hele screen */}
       <canvas
         ref={confettiCanvasRef}
@@ -114,11 +103,6 @@ const WonScreen = ({ prize, drawnBalls, progress = 0, onBackToBingo, onReplay, s
                   />
                 </div>
               )}
-            </div>
-
-            {/* GameProgress - fixed onderaan in hero, fade out */}
-            <div className={`w-full shrink-0 transition-opacity duration-500 ${showProgress ? 'opacity-100' : 'opacity-0'}`}>
-              <GameProgress drawnBalls={drawnBalls} progress={progress} />
             </div>
           </div>
         </div>

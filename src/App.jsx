@@ -275,7 +275,7 @@ function App() {
               {/* Overlay Container */}
               <div className="absolute inset-0 z-50 pointer-events-none">
                 <div
-                  className={`w-full h-full bg-white pointer-events-auto overflow-hidden transition-transform duration-300 ease-out ${isModalOpen ? 'translate-y-0' : 'translate-y-full'}`}
+                  className={`w-full h-[100dvh] bg-white pointer-events-auto overflow-hidden transition-transform duration-300 ease-out ${isModalOpen ? 'translate-y-0' : 'translate-y-full'}`}
                   onClick={(e) => e.stopPropagation()}
                 >
                   {/* Intro Screen (StartScreen) - wanneer gameState === 'IDLE' */}

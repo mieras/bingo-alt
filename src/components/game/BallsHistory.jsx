@@ -53,7 +53,7 @@ const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set(), ani
                         >
                             {/* Vakje met border + checkbox absolute */}
                             <div
-                                className={`flex relative justify-center items-center w-[72px] h-[96px] bg-white ${isFirst && animate ? 'ball-history-item-bg' : ''} ${isLast ? '' : 'border-r border-[#F3F3F3]'}`}
+                                className={`flex relative justify-center items-center w-[72px] h-[88px] bg-white ${isFirst && animate ? 'ball-history-item-bg' : ''} ${isLast ? '' : 'border-r border-[#F3F3F3]'}`}
                             >
                                 <div className="absolute top-[4px] left-[4px]">
                                     {isCheckedByUser ? <CheckedIcon /> : <UncheckedIcon />}
@@ -61,7 +61,7 @@ const BallsHistory = ({ drawnBalls, getBallColor, checkedByUser = new Set(), ani
 
                                 {/* Ball */}
                                 <div
-                                    className={`flex relative justify-center items-center w-12 h-12 rounded-full shadow-[0_4px_8px_rgba(0,0,0,0.18),inset_-2px_-2px_6px_rgba(0,0,0,0.18)] ${isFirst && animate ? 'ball-reveal-bounce' : ''}`}
+                                    className={`flex -mt-2 relative justify-center items-center w-12 h-12 rounded-full shadow-[0_4px_8px_rgba(0,0,0,0.18),inset_-2px_-2px_6px_rgba(0,0,0,0.18)] ${isFirst && animate ? 'ball-reveal-bounce' : ''}`}
                                     style={{
                                         backgroundColor: getBallColor(ball),
                                         backgroundImage: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.2) 100%)',

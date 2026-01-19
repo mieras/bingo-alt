@@ -26,37 +26,34 @@ const MailScreen = ({ onNavigateToAccount, onNavigateToBingo, onPlayNow }) => {
               lineHeight: 'clamp(32px, 5.5vw, 44px)',
             }}
           >
-            Uitslagen VriendenLoterij Eredivisie Bingo
+            Speel de Bingo van deze week
           </h1>
 
           {/* Body Text */}
           <p className="w-full px-4 text-left text-base leading-6 font-normal text-[#333333] md:px-11">
-            De VriendenLoterij Eredivisie Bingo uitslagen van maandag 29 december zijn bekend! Speel{' '}
-            <button
-              onClick={onNavigateToAccount}
-              className="text-[#003884] underline cursor-pointer hover:text-[#002a5f]"
-            >
-              Bingo
-            </button>{' '}
-            in je{' '}
-            <button
-              onClick={onNavigateToAccount}
-              className="text-[#003884] underline cursor-pointer hover:text-[#002a5f]"
-            >
-              mijn account
-            </button>{' '}
-            of in de VriendenLoterij app om te kijken of je gewonnen hebt.
-          </p>
+            De Bingo van <strong>8 mei</strong> staat klaar! Speel nu en vink je nummers af. Volle kaart? Je ziet direct je prijs.{' '}
 
+
+            Geen tijd? Eventuele prijzen kan je vinden onder {' '}
+            <button
+              onClick={onNavigateToAccount}
+              className="text-[#003884] underline cursor-pointer hover:text-[#002a5f]"
+            >
+              prijzen
+            </button>{' '}
+            in je mijn account.
+          </p>
           {/* CTA Button */}
-          <div className="w-full px-4 pt-4 md:px-11">
+          <div className="px-4 pt-4 w-full md:px-11">
             <button
               onClick={onNavigateToBingo}
               className="block mx-auto px-8 py-4 min-w-[210px] text-base leading-4 font-bold text-white bg-[#009640] rounded-lg border-b-4 border-[#087239] shadow-[0_1px_#0c7b3f] no-underline transition-all hover:opacity-90 active:scale-95"
             >
-              Ga naar de Bingo
+              Speel Bingo!
             </button>
+
           </div>
+
         </div>
       </div>
 

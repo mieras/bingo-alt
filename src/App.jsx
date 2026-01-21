@@ -18,7 +18,6 @@ function AppContent() {
   const [resultType, setResultType] = useState(null); // 'won' | 'lost' | null
   const [hasPlayed, setHasPlayed] = useState(false); // Track if game has been played
   const [panelColor, setPanelColor] = useState('#AA167C'); // Panel color for current card
-  const [loginRedirect, setLoginRedirect] = useState(null); // Waar naartoe na login: 'bingo' | 'account'
   const [isModalOpen, setIsModalOpen] = useState(false); // Track modal animation state
   // Bewaar het laatste resultaat zodat het beschikbaar blijft na "speel opnieuw af"
   const [lastResult, setLastResult] = useState(null); // { prize, resultType, drawnBalls, checkedNumbers, progress }
@@ -54,30 +53,24 @@ function AppContent() {
   // Random background kleur voor het panel - consistent per kaart
   const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
 
-  // Navigatie functies
-  const navigateToLogin = (redirectTo = '/bingo') => {
-    setLoginRedirect(redirectTo);
+  // Navigatie functies - allemaal direct benaderbaar
+  const navigateToLogin = () => {
     navigate('/login');
     setShowGameOverlay(false);
   };
 
   const handleLogin = () => {
-    // Na login, ga naar de opgeslagen redirect
-    const redirectPath = loginRedirect || '/bingo';
-    navigate(redirectPath);
-    setLoginRedirect(null);
+    // Na login, ga naar home
+    navigate('/home');
   };
 
   const navigateToAccount = () => {
-    navigateToLogin('/home');
+    navigate('/home');
   };
 
   const navigateToBingo = () => {
     navigate('/bingo');
-  };
-
-  const navigateToBingoViaLogin = () => {
-    navigateToLogin('/bingo');
+    setShowGameOverlay(false);
   };
 
   const handleViewBingoCard = () => {
@@ -231,8 +224,8 @@ function AppContent() {
           path="/" 
           element={
             <MailScreen
-              onNavigateToAccount={navigateToAccount}
-              onNavigateToBingo={navigateToBingoViaLogin}
+              onNavigateToAccount={navigateToLogin}
+              onNavigateToBingo={navigateToBingo}
               onPlayNow={openGameOverlay}
             />
           }
@@ -271,7 +264,7 @@ function AppContent() {
             <div className="w-full max-w-[400px] h-full mx-auto relative">
               <BingoOverviewScreen
                 onNavigateToMail={navigateToMail}
-                onNavigateToAccount={() => navigateToLogin('/home')}
+                onNavigateToAccount={navigateToAccount}
                 onPlayNow={openGameOverlay}
                 onViewPrize={openResultScreen}
                 bingoCard={bingoCard}

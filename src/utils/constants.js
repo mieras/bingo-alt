@@ -38,17 +38,17 @@ export const PRIZES = [
 
 export const TOTAL_NUMBERS = 45; // Total balls in the machine
 export const GRID_SIZE = 4;
-export const DRAW_INTERVAL = 5000; // Trekking interval (ms)
+export const DRAW_INTERVAL = 4000; // Trekking interval (ms)
 export const HIGHLIGHT_DURATION = 1500; // Last 2 seconds
 export const MAX_DRAWN_BALLS = 36; // Maximum balls drawn per game
 export const MANUAL_CHECK_SPEED_BOOST = 0.9; // Snelheidsverhoging bij handmatig afvinken (0.7 = 30% sneller)
 
 // Skip animation settings
-export const SKIP_BALL_INTERVAL = 320; // Base interval in ms per ball during skip
+export const SKIP_BALL_INTERVAL = 120; // Base interval in ms per ball during skip
 export const SKIP_USE_EASING = true; // Keep skip tempo consistent (not too fast)
 export const SKIP_EASING_TYPE = 'in'; // 'in' (slow to fast), 'out' (fast to slow), 'in-out' (slow-fast-slow)
-export const SKIP_EASING_FACTOR = 1; // Higher = more dramatic slowdown at end
-export const SKIP_RESULT_DELAY = 1000; // Delay in ms om de kaart te zien na skip animatie voordat result screen verschijnt
+export const SKIP_EASING_FACTOR = 0.2; // Higher = more dramatic slowdown at end
+export const SKIP_RESULT_DELAY = 500; // Delay in ms om de kaart te zien na skip animatie voordat result screen verschijnt
 
 // Prize thumbnail images mapped by number of balls
 export const PRIZE_THUMBNAILS_BY_BALLS = {

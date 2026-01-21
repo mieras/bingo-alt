@@ -1,8 +1,12 @@
 import React from 'react';
 import mailHeaderImage from '../assets/vl-bingo-mail-header.png';
 import appBannerImage from '../assets/vl-bingo-app-banner.png';
+import { getLastSunday, formatDateDayMonth } from '../lib/utils';
 
 const MailScreen = ({ onNavigateToAccount, onNavigateToBingo, onPlayNow }) => {
+  const lastSunday = getLastSunday();
+  const dateText = formatDateDayMonth(lastSunday);
+
   return (
     <div className="flex overflow-y-auto flex-col w-full h-full bg-white">
       {/* Hero Image Section - Desktop/Mobile responsive */}
@@ -31,7 +35,7 @@ const MailScreen = ({ onNavigateToAccount, onNavigateToBingo, onPlayNow }) => {
 
           {/* Body Text */}
           <p className="w-full px-4 text-left text-base leading-6 font-normal text-[#333333] md:px-11">
-            De Bingo van <strong>8 mei</strong> staat klaar! Speel nu en vink je nummers af. Volle kaart? Je ziet direct je prijs.{' '}
+            De Bingo van <strong>{dateText}</strong> staat klaar! Speel nu en vink je nummers af. Volle kaart? Je ziet direct je prijs.{' '}
 
 
             Geen tijd? Eventuele prijzen kan je vinden onder {' '}

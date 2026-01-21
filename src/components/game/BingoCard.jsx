@@ -39,8 +39,8 @@ const BingoCard = ({
                     let textClass = "relative z-10 ";
 
                     if (isWiggling) {
-                        buttonClass += "animate-wiggle-extreme bg-red-50";
-                        textClass += "text-[#014087]";
+                        buttonClass += "animate-wiggle-extreme bg-red-100 z-50";
+                        textClass += "text-red-600 font-extrabold";
                     } else if (isChecked) {
                         buttonClass += "transition-colors duration-200";
                         textClass += "text-[#014087]";
@@ -53,7 +53,7 @@ const BingoCard = ({
                     return (
                         <div
                             key={idx}
-                            className="relative bg-white"
+                            className={`relative bg-white ${isWiggling ? 'z-50' : ''}`}
                             style={{ aspectRatio: '5/4' }}
                             role="gridcell"
                         >

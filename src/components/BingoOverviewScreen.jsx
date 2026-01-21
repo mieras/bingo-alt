@@ -4,9 +4,11 @@ import MiniCard from './game/MiniCard';
 import WeeklyResultsCard from './WeeklyResultsCard';
 import navImage from '../assets/vl-account-nav.png';
 import vlbLogo from '../assets/vlb-logo.png';
+import { getLastSunday, formatDateLong, formatDateFull } from '../lib/utils';
 
 const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bingoCard = [], checkedNumbers = new Set(), hasPlayed = false, panelColor = '#AA167C' }) => {
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
+  const lastSunday = getLastSunday();
 
   const toggleFaq = (index) => {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
@@ -47,7 +49,7 @@ const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bing
           {/* Datum Selector */}
           <div className="flex gap-3 items-center p-4 mb-6 bg-white rounded-lg border border-gray-200">
 
-            <span className="flex-1 text-[#111] font-medium">Zondag 10 mei</span>
+            <span className="flex-1 text-[#111] font-medium">{formatDateLong(lastSunday)}</span>
             <div className="w-4 h-4 shrink-0">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4 6L8 10L12 6" stroke="#003884" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -109,7 +111,7 @@ const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bing
               {/* Meta informatie - Kaartnummer links, Datum rechts */}
               <div className="flex justify-between items-center mb-4">
                 <p className="font-bold text-[#29313D] text-base leading-5">45854-AB</p>
-                <p className="text-[#8F97A3] text-base font-medium leading-5">10 mei 2023</p>
+                <p className="text-[#8F97A3] text-base font-medium leading-5">{formatDateFull(lastSunday)}</p>
               </div>
 
               {/* Buttons */}

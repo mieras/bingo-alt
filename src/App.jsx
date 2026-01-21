@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useBingoGame } from './hooks/useBingoGame';
 import MailScreen from './components/MailScreen';
 import AccountHomeScreen from './components/AccountHomeScreen';
@@ -10,9 +11,9 @@ import LostScreen from './components/LostScreen';
 import LoadingTransition from './components/LoadingTransition';
 import LoginScreen from './components/LoginScreen';
 
-function App() {
-  // Routing state
-  const [currentPage, setCurrentPage] = useState('mail'); // 'mail' | 'login' | 'account' | 'bingo' | 'result'
+function AppContent() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [showGameOverlay, setShowGameOverlay] = useState(false);
   const [resultType, setResultType] = useState(null); // 'won' | 'lost' | null
   const [hasPlayed, setHasPlayed] = useState(false); // Track if game has been played
@@ -54,28 +55,29 @@ function App() {
   const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
 
   // Navigatie functies
-  const navigateToLogin = (redirectTo = 'bingo') => {
+  const navigateToLogin = (redirectTo = '/bingo') => {
     setLoginRedirect(redirectTo);
-    setCurrentPage('login');
+    navigate('/login');
     setShowGameOverlay(false);
   };
 
   const handleLogin = () => {
     // Na login, ga naar de opgeslagen redirect
-    if (loginRedirect === 'account') {
-      setCurrentPage('account');
-    } else {
-      setCurrentPage('bingo');
-    }
+    const redirectPath = loginRedirect || '/bingo';
+    navigate(redirectPath);
     setLoginRedirect(null);
   };
 
   const navigateToAccount = () => {
-    navigateToLogin('account');
+    navigateToLogin('/home');
   };
 
   const navigateToBingo = () => {
-    navigateToLogin('bingo');
+    navigate('/bingo');
+  };
+
+  const navigateToBingoViaLogin = () => {
+    navigateToLogin('/bingo');
   };
 
   const handleViewBingoCard = () => {
@@ -84,7 +86,7 @@ function App() {
     setTimeout(() => {
       setShowGameOverlay(false);
       // Ga naar bingo overview pagina
-      setCurrentPage('bingo');
+      navigate('/bingo');
       // Open modal automatisch na korte delay zodat de pagina eerst laadt
       setTimeout(() => {
         setShowGameOverlay(true);
@@ -97,7 +99,7 @@ function App() {
   };
 
   const navigateToMail = () => {
-    setCurrentPage('mail');
+    navigate('/');
     setShowGameOverlay(false);
   };
 
@@ -184,7 +186,7 @@ function App() {
 
   // Generate card when bingo page is loaded (if not already generated)
   useEffect(() => {
-    if (currentPage === 'bingo' && bingoCard.length === 0) {
+    if (location.pathname === '/bingo' && bingoCard.length === 0) {
       generateCard();
       // Generate a random color for this card (alleen als er nog geen kleur is gekozen)
       if (panelColor === '#AA167C') { // Default waarde betekent dat er nog geen kleur is gekozen
@@ -192,7 +194,7 @@ function App() {
         setPanelColor(randomColor);
       }
     }
-  }, [currentPage, bingoCard.length, generateCard, panelColor]);
+  }, [location.pathname, bingoCard.length, generateCard, panelColor]);
 
   // Handle game state changes - transition naar result scherm in overlay
   useEffect(() => {
@@ -218,53 +220,69 @@ function App() {
   // Handle back from result screen
   const handleBackFromResult = () => {
     setResultType(null);
-    setCurrentPage('bingo');
+    navigate('/bingo');
   };
 
   return (
     <div className="App h-full w-full flex items-center justify-center">
-      {/* Mail Screen - buiten wrapper voor volledige responsive gedrag */}
-      {currentPage === 'mail' && (
-        <MailScreen
-          onNavigateToAccount={navigateToAccount}
-          onNavigateToBingo={navigateToBingo}
-          onPlayNow={openGameOverlay}
-        />
-      )}
-
-      {/* Andere schermen - binnen wrapper */}
-      {currentPage !== 'mail' && (
-        <div className="w-full max-w-[400px] h-full mx-auto relative">
-          {currentPage === 'login' && (
-            <LoginScreen
-              onLogin={handleLogin}
-              onClose={() => navigateToMail()}
-            />
-          )}
-
-          {currentPage === 'account' && (
-            <AccountHomeScreen
-              onNavigateToMail={navigateToMail}
-              onNavigateToBingo={navigateToBingo}
-            />
-          )}
-
-          {currentPage === 'bingo' && (
-            <BingoOverviewScreen
-              onNavigateToMail={navigateToMail}
-              onNavigateToAccount={() => navigateToLogin('account')}
+      <Routes>
+        {/* Mail Screen - buiten wrapper voor volledige responsive gedrag */}
+        <Route 
+          path="/" 
+          element={
+            <MailScreen
+              onNavigateToAccount={navigateToAccount}
+              onNavigateToBingo={navigateToBingoViaLogin}
               onPlayNow={openGameOverlay}
-              onViewPrize={openResultScreen}
-              bingoCard={bingoCard}
-              checkedNumbers={checkedNumbers}
-              hasPlayed={hasPlayed}
-              prize={prize}
-              panelColor={panelColor}
             />
-          )}
+          }
+        />
 
-          {/* Game Overlay - binnen wrapper */}
-          {showGameOverlay && (
+        {/* Login Screen */}
+        <Route 
+          path="/login" 
+          element={
+            <div className="w-full max-w-[400px] h-full mx-auto relative">
+              <LoginScreen
+                onLogin={handleLogin}
+                onClose={() => navigateToMail()}
+              />
+            </div>
+          }
+        />
+
+        {/* Account Home Screen */}
+        <Route 
+          path="/home" 
+          element={
+            <div className="w-full max-w-[400px] h-full mx-auto relative">
+              <AccountHomeScreen
+                onNavigateToMail={navigateToMail}
+                onNavigateToBingo={navigateToBingo}
+              />
+            </div>
+          }
+        />
+
+        {/* Bingo Overview Screen */}
+        <Route 
+          path="/bingo" 
+          element={
+            <div className="w-full max-w-[400px] h-full mx-auto relative">
+              <BingoOverviewScreen
+                onNavigateToMail={navigateToMail}
+                onNavigateToAccount={() => navigateToLogin('/home')}
+                onPlayNow={openGameOverlay}
+                onViewPrize={openResultScreen}
+                bingoCard={bingoCard}
+                checkedNumbers={checkedNumbers}
+                hasPlayed={hasPlayed}
+                prize={prize}
+                panelColor={panelColor}
+              />
+              
+              {/* Game Overlay - binnen bingo route */}
+              {showGameOverlay && (
             <>
               {/* Backdrop */}
               <div
@@ -363,9 +381,19 @@ function App() {
               </div>
             </>
           )}
-        </div>
-      )}
+            </div>
+          }
+        />
+      </Routes>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter basename="/bingo-alt">
+      <AppContent />
+    </BrowserRouter>
   );
 }
 

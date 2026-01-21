@@ -71,15 +71,57 @@ export const useBingoGame = () => {
             cardNumbers = [...presentNums, ...missingNums];
         }
 
-        // Step 4: Create the 4x4 grid with empty slot at index 10
+        // Step 4: Sort card numbers from low to high
+        const sortedCardNumbers = [...cardNumbers].sort((a, b) => a - b);
+        
+        // Step 5: Create the 4x4 grid with empty slot at index 10
+        // First distribute numbers row by row (row 0 gets lowest, row 3 gets highest)
+        // Then sort each column from top to bottom
+        // Row 0: indices 0-3, Row 1: indices 4-7, Row 2: indices 8-11 (10 is empty), Row 3: indices 12-15
         const emptyIndex = 10;
-        const grid = [];
+        const grid = new Array(16).fill(null);
+        
+        // Distribute numbers row by row first
+        // Row 0: 4 numbers (indices 0-3)
+        // Row 1: 4 numbers (indices 4-7)
+        // Row 2: 3 numbers (indices 8, 9, 11 - skip 10)
+        // Row 3: 4 numbers (indices 12-15)
         let numIdx = 0;
-        for (let i = 0; i < 16; i++) {
-            if (i === emptyIndex) {
-                grid.push(null);
-            } else {
-                grid.push(cardNumbers[numIdx++]);
+        const rowDistribution = [
+            [0, 1, 2, 3],      // Row 0: 4 numbers
+            [4, 5, 6, 7],      // Row 1: 4 numbers
+            [8, 9, 11],        // Row 2: 3 numbers (skip 10)
+            [12, 13, 14, 15]   // Row 3: 4 numbers
+        ];
+        
+        for (let row = 0; row < 4; row++) {
+            const rowIndices = rowDistribution[row];
+            for (let i = 0; i < rowIndices.length; i++) {
+                grid[rowIndices[i]] = sortedCardNumbers[numIdx++];
+            }
+        }
+        grid[emptyIndex] = null; // Ensure empty slot is null
+        
+        // Now sort each column from top to bottom
+        for (let col = 0; col < 4; col++) {
+            const colNumbers = [];
+            // Collect numbers from this column
+            for (let row = 0; row < 4; row++) {
+                const index = row * 4 + col;
+                if (index !== emptyIndex && grid[index] !== null) {
+                    colNumbers.push(grid[index]);
+                }
+            }
+            // Sort column numbers ascending
+            colNumbers.sort((a, b) => a - b);
+            
+            // Place sorted numbers back in column from top to bottom
+            let colNumIdx = 0;
+            for (let row = 0; row < 4; row++) {
+                const index = row * 4 + col;
+                if (index !== emptyIndex) {
+                    grid[index] = colNumbers[colNumIdx++];
+                }
             }
         }
         

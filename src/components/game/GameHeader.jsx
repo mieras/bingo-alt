@@ -1,8 +1,10 @@
 import React from 'react';
 import logoImg from '../../assets/vlb-logo.png';
+import { getLastSunday, formatDateShort } from '../../lib/utils';
 
 const GameHeader = ({ onClose }) => {
-    const today = new Date().toLocaleDateString('nl-NL', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    const lastSunday = getLastSunday();
+    const today = formatDateShort(lastSunday);
 
     return (
         <>

@@ -27,20 +27,20 @@ const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [
   const carouselCards = [
     {
       id: 'winacties',
-      title: 'Winacties',
-      content: 'U kunt als deelnemer bij de VriendenLoterij gratis meedoen aan winacties. Maak kans op extra prijzen en profiteer van exclusieve aanbiedingen.',
+      title: 'Doe mee met winacties',
+      content: 'Maak kans op extra prijzen en profiteer van leuke aanbiedingen met onze winacties! Als deelnemer kunt u gratis meedoen.',
       thumbnail: winactiesImage,
     },
     {
       id: 'vip',
-      title: 'VIP kaart',
-      content: 'U kunt gratis naar ruim 180 musea, u krijgt tot wel 50% korting bij theaters, bioscopen, dierenparken en kastelen in heel Nederland én kans om exclusieve evenementen te bezoeken.',
+      title: 'Op pad met uw VIP-KAART',
+      content: 'Gratis naar ruim 180 musea én tot wel 50% korting op theatervoorstellingen, films en een dagje tussen de dieren: uw VIP-KAART geeft u overal voordeel.',
       thumbnail: vipcardImage,
     },
     {
       id: 'upsell',
-      title: 'Meer kans maken?',
-      content: 'Koop een extra bingo kaart en verdubbel je kansen. Meer kaarten betekent meer mogelijkheden om te winnen.',
+      title: 'Meer kans op Bingo?',
+      content: 'Koop een extra Bingokaart en maak extra kans om te winnen. Op naar een volle kaart!',
       thumbnail: extraBingoImage,
       isUpsell: true,
     },
@@ -97,15 +97,15 @@ const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [
           {/* Prijs kaartje (lost) */}
           <div className={`flex gap-3 items-center p-4 mb-4 w-full rounded-lg border border-gray-200 shadow-[0px_2px_8px_0px_rgba(0,0,0,0.08)] bg-white transition-opacity duration-700 ${showResultCard ? 'opacity-100' : 'opacity-0'}`}>
             <div className="flex-1 min-w-0">
-              <div className="text-xl font-black text-[#003884] mb-1">Helaas</div>
+              <div className="text-xl font-black text-[#003884] mb-1">Geen Bingo</div>
               <p className="text-base text-[#29313d] leading-relaxed">
-                Trekking is voorbij! Geen Bingo, volgende week nieuwe ronde, nieuwe kansen!
+                De Bingo is voorbij, u heeft geen prijs gewonnen. Volgende week kunt u weer meespelen!
               </p>
             </div>
             <div className="overflow-hidden w-20 h-16 rounded-lg shrink-0 bg-[#F2D064] flex items-center justify-center">
               <img
                 src={lostHeroImage}
-                alt="Helaas"
+                alt="Geen Bingo"
                 className="w-full h-full object-contain p-2"
               />
             </div>
@@ -114,7 +114,7 @@ const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [
           {/* Carousel Section */}
           <div className="mb-2 w-full">
             <h3 className="text-xl font-bold text-[#003884] mb-2 mt-2 text-center">
-              Haal alles uit je ticket
+              Haal alles uit uw deelname
             </h3>
             <Swiper
               modules={[Autoplay, Pagination, Parallax]}
@@ -169,7 +169,7 @@ const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [
                           data-swiper-parallax="-300"
                           aria-label={`Extra kaart kopen voor ${card.title}`}
                         >
-                          Extra kaart kopen
+                          Extra Bingokaart kopen
                         </button>
                       )}
                     </div>

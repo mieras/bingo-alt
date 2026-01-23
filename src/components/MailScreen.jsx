@@ -30,22 +30,12 @@ const MailScreen = ({ onNavigateToAccount, onNavigateToBingo, onPlayNow }) => {
               lineHeight: 'clamp(32px, 5.5vw, 44px)',
             }}
           >
-            Speel de Bingo van deze week
+            Tijd voor Bingo!
           </h1>
 
           {/* Body Text */}
           <p className="w-full px-4 text-left text-base leading-6 font-normal text-[#333333] md:px-11">
-            De Bingo van <strong>{dateText}</strong> staat klaar! Speel nu en vink je nummers af. Volle kaart? Je ziet direct je prijs.{' '}
-
-
-            Geen tijd? Eventuele prijzen kan je vinden onder {' '}
-            <button
-              onClick={onNavigateToAccount}
-              className="text-[#003884] underline cursor-pointer hover:text-[#002a5f]"
-            >
-              prijzen
-            </button>{' '}
-            in je mijn account.
+            De Bingo van <strong>{dateText}</strong> staat klaar. Speel nu en vink alle nummers af. Volle kaart? U ziet direct uw prijs! Ook als u niet speelt kunt u via uw eigen account zien of u prijzen heeft gewonnen. Veel plezier!
           </p>
           {/* CTA Button */}
           <div className="px-4 pt-4 w-full md:px-11">
@@ -53,7 +43,7 @@ const MailScreen = ({ onNavigateToAccount, onNavigateToBingo, onPlayNow }) => {
               onClick={onNavigateToBingo}
               className="block mx-auto px-8 py-4 min-w-[210px] text-base leading-4 font-bold text-white bg-[#009640] rounded-lg border-b-4 border-[#087239] shadow-[0_1px_#0c7b3f] no-underline transition-all hover:opacity-90 active:scale-95"
             >
-              Speel Bingo!
+              Speel Bingo
             </button>
 
           </div>

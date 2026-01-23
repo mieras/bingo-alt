@@ -43,7 +43,7 @@ const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bing
         <ContentWrapper className="flex flex-col px-4 pt-6 pb-8">
           {/* Titel Sectie */}
           <h1 className="text-4xl font-bold text-[#003884] mb-4">
-            Bingokaart
+            Mijn Bingokaart
           </h1>
 
           {/* Datum Selector */}
@@ -128,7 +128,7 @@ const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bing
                     onClick={onPlayNow}
                     className="w-full btn-primary text-sm"
                   >
-                    Open je Bingokaart
+                    Naar uw Bingokaart
                   </button>
                   <button
                     className="flex items-center justify-center gap-2 text-[#003884] font-semibold hover:text-[#002a5f] transition-colors bg-transparent border-none cursor-pointer p-0"

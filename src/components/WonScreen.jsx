@@ -120,7 +120,10 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = fa
                   Bingo!
                 </h3>
                 <div className="text-sm leading-snug text-gray-700">
-                  U wint {prize.prize}
+                  U wint {prize.prize}.
+                </div>
+                <div className="text-sm leading-snug text-gray-700">
+                  Wat een verrassing!
                 </div>
               </div>
 
@@ -145,7 +148,7 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = fa
               Gefeliciteerd!
             </h2>
             <p className="text-xs leading-relaxed text-gray-700">
-              Je ontvangt automatisch binnen 4 weken na bekendmaking berichtgeving over uw prijs per mail en post.
+              Binnen 4 weken ontvangt u per mail of per post meer informatie over uw prijs.
             </p>
           </div>
 

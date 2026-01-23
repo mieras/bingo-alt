@@ -26,7 +26,7 @@ const WeeklyResultsCard = () => {
                 <path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <span className="text-sm text-white">Elke zondag staat de Bingo klaar</span>
+            <span className="text-sm text-white">Elke zondag staat uw Bingokaart klaar</span>
           </li>
           <li className="flex gap-2 items-start">
             <div className="w-5 h-5 shrink-0 mt-0.5">
@@ -39,7 +39,7 @@ const WeeklyResultsCard = () => {
         </ul>
 
         <p className="text-sm leading-relaxed text-white">
-          Elke week maak je kans op geweldige prijzen. Speel nu en zie direct je prijs. Of download je Bingokaart en controleer de uitslag handmatig.
+          Elke week opnieuw maakt u met onze Bingo kans op geweldige prijzen. Speel nu en ontdek direct of u in de prijzen valt! Ook handig: u kunt uw Bingokaart downloaden en de uitslag zelf controleren.
         </p>
       </div>
     </div>

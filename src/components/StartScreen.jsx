@@ -66,16 +66,16 @@ const StartScreen = ({ onStart, onSkipToResult, onClose, bingoCard = [], panelCo
           {/* How it works section */}
           <div className="flex flex-col gap-2 items-start w-full">
             <h2 className="font-bold leading-6 text-[#111] text-lg w-full">
-              Hoe werkt het?
+              Zo werkt het
             </h2>
 
             {/* Instructions List - correcte teksten volgens Figma */}
             <div className="flex flex-col gap-1 items-start w-full">
               {[
-                { text: 'De nummers verschijnen ', bold: 'één voor één', rest: '.' },
-                { text: 'Nummer op uw Bingokaart? Vink em af.' },
-                { text: '', bold: 'Volle kaart?', rest: ' Dan heb je Bingo!' },
-                { text: 'Nummer gemist? Geen probleem, wij vinken het automatisch voor je af.' }
+                { text: 'Eén voor één verschijnen de nummers' },
+                { text: 'Staat een nummer op uw Bingokaart? Afstrepen maar!' },
+                { text: '', bold: 'Volle kaart?', rest: ' Bingo: een prijs!' },
+                { text: 'Nummer gemist? Geen probleem, wij vinken het automatisch voor u af.' }
               ].map((item, idx) => (
                 <div key={idx} className="flex gap-2 items-start w-full">
                   {/* Check icon */}
@@ -107,7 +107,7 @@ const StartScreen = ({ onStart, onSkipToResult, onClose, bingoCard = [], panelCo
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5.83301 4.15809C5.83301 3.34879 5.83301 2.94414 6.00175 2.72108C6.14875 2.52675 6.37344 2.4065 6.61667 2.39198C6.89587 2.37531 7.23256 2.59977 7.90594 3.04869L16.6689 8.89067C17.2253 9.2616 17.5035 9.44707 17.6005 9.68084C17.6852 9.88522 17.6852 10.1149 17.6005 10.3193C17.5035 10.5531 17.2253 10.7385 16.6689 11.1095L7.90594 16.9514C7.23256 17.4004 6.89587 17.6248 6.61667 17.6082C6.37344 17.5936 6.14875 17.4734 6.00175 17.2791C5.83301 17.056 5.83301 16.6513 5.83301 15.842V4.15809Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              <span>Bekijk de trekking</span>
+              <span>Start de Bingo</span>
             </button>
 
             {/* Direct to result text */}

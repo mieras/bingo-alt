@@ -1,11 +1,11 @@
 import React from 'react';
 import mailHeaderImage from '../assets/vl-bingo-mail-header.png';
 import appBannerImage from '../assets/vl-bingo-app-banner.png';
-import { getLastSunday, formatDateDayMonth } from '../lib/utils';
+import { getLastSunday, formatDateLong } from '../lib/utils';
 
 const MailScreen = ({ onNavigateToAccount, onNavigateToBingo, onPlayNow }) => {
   const lastSunday = getLastSunday();
-  const dateText = formatDateDayMonth(lastSunday);
+  const dateText = formatDateLong(lastSunday);
 
   return (
     <div className="flex overflow-y-auto flex-col w-full h-full bg-white">

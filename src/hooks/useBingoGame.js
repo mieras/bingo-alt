@@ -25,6 +25,22 @@ export const useBingoGame = () => {
     const skipResultTimeoutRef = useRef(null);
     const scheduleNextBallRef = useRef(null);
     const lastBallTimerStartedRef = useRef(false);
+    const resultOverrideRef = useRef(null);
+
+    const parseResultOverride = () => {
+        if (typeof window === 'undefined') return null;
+        const params = new URLSearchParams(window.location.search);
+        const result = params.get('result');
+        if (!result) return null;
+        const normalized = result.toLowerCase();
+        if (normalized === 'win') return 'win';
+        if (normalized === 'loss') return 'loss';
+        return null;
+    };
+
+    useEffect(() => {
+        resultOverrideRef.current = parseResultOverride();
+    }, []);
 
     // Generate unique random numbers
     const generateNumbers = (count, max, min = 1) => {
@@ -38,10 +54,11 @@ export const useBingoGame = () => {
     const [maxBalls, setMaxBalls] = useState(MAX_DRAWN_BALLS);
 
     // Generate card without starting the game
-    const generateCard = useCallback(() => {
-        // 50% chance to win
-        const isWinner = Math.random() < 0.5;
-        console.log('🎲 Generating card - isWinner:', isWinner);
+    const generateCard = useCallback((forcedResult = null) => {
+        // 50% chance to win unless forced via URL (?result=win|loss)
+        const override = forcedResult || resultOverrideRef.current;
+        const isWinner = override ? override === 'win' : Math.random() < 0.5;
+        console.log('🎲 Generating card - isWinner:', isWinner, 'override:', override);
 
         // Step 1: Generate a completely random deck of all 45 balls
         const allNumbers = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);

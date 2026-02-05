@@ -60,8 +60,9 @@ function AppContent() {
   };
 
   const handleLogin = () => {
-    // Na login, ga naar home
-    navigate('/home');
+    // Na login, ga naar bingo overzicht
+    navigate('/bingo');
+    setShowGameOverlay(false);
   };
 
   const navigateToAccount = () => {
@@ -220,20 +221,20 @@ function AppContent() {
     <div className="App h-full w-full flex items-center justify-center">
       <Routes>
         {/* Mail Screen - buiten wrapper voor volledige responsive gedrag */}
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
             <MailScreen
               onNavigateToAccount={navigateToLogin}
-              onNavigateToBingo={navigateToBingo}
+              onNavigateToBingo={navigateToLogin}
               onPlayNow={openGameOverlay}
             />
           }
         />
 
         {/* Login Screen */}
-        <Route 
-          path="/login" 
+        <Route
+          path="/login"
           element={
             <div className="w-full max-w-[400px] h-full mx-auto relative">
               <LoginScreen
@@ -245,8 +246,8 @@ function AppContent() {
         />
 
         {/* Account Home Screen */}
-        <Route 
-          path="/home" 
+        <Route
+          path="/home"
           element={
             <div className="w-full max-w-[400px] h-full mx-auto relative">
               <AccountHomeScreen
@@ -258,8 +259,8 @@ function AppContent() {
         />
 
         {/* Bingo Overview Screen */}
-        <Route 
-          path="/bingo" 
+        <Route
+          path="/bingo"
           element={
             <div className="w-full max-w-[400px] h-full mx-auto relative">
               <BingoOverviewScreen
@@ -271,109 +272,111 @@ function AppContent() {
                 checkedNumbers={checkedNumbers}
                 hasPlayed={hasPlayed}
                 prize={prize}
+                lastResult={lastResult}
                 panelColor={panelColor}
               />
-              
+
               {/* Game Overlay - binnen bingo route */}
               {showGameOverlay && (
-            <>
-              {/* Backdrop */}
-              <div
-                className={`absolute inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ${isModalOpen ? 'opacity-100' : 'opacity-0'}`}
-                onClick={closeGameOverlay}
-                aria-hidden="true"
-              />
-              {/* Overlay Container */}
-              <div className="absolute inset-0 z-50 pointer-events-none">
-                <div
-                  className={`w-full h-[100dvh] bg-white pointer-events-auto overflow-hidden transition-transform duration-300 ease-out ${isModalOpen ? 'translate-y-0' : 'translate-y-full'}`}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {/* Intro Screen (StartScreen) - wanneer gameState === 'IDLE' */}
-                  {gameState === 'IDLE' && !isTransitioning && (
-                    <StartScreen
-                      onStart={handleStartGame}
-                      onSkipToResult={() => {
-                        skipToResult();
-                        // Result wordt automatisch getoond via useEffect
-                      }}
-                      onClose={closeGameOverlay}
-                      bingoCard={bingoCard}
-                      panelColor={panelColor}
-                    />
-                  )}
+                <>
+                  {/* Backdrop */}
+                  <div
+                    className={`absolute inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ${isModalOpen ? 'opacity-100' : 'opacity-0'}`}
+                    onClick={closeGameOverlay}
+                    aria-hidden="true"
+                  />
+                  {/* Overlay Container */}
+                  <div className="absolute inset-0 z-50 pointer-events-none">
+                    <div
+                      className={`w-full h-[100dvh] bg-white pointer-events-auto overflow-hidden transition-transform duration-300 ease-out ${isModalOpen ? 'translate-y-0' : 'translate-y-full'}`}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {/* Intro Screen (StartScreen) - wanneer gameState === 'IDLE' */}
+                      {gameState === 'IDLE' && !isTransitioning && (
+                        <StartScreen
+                          onStart={handleStartGame}
+                          onSkipToResult={() => {
+                            skipToResult();
+                            // Result wordt automatisch getoond via useEffect
+                          }}
+                          onClose={closeGameOverlay}
+                          bingoCard={bingoCard}
+                          panelColor={panelColor}
+                        />
+                      )}
 
-                  {/* Game Screen - wanneer gameState === 'PLAYING' */}
-                  {gameState === 'PLAYING' && (
-                    <GameScreen
-                      bingoCard={bingoCard}
-                      currentBall={currentBall}
-                      checkedNumbers={checkedNumbers}
-                      history={history}
-                      drawnBalls={drawnBalls}
-                      wigglingNumber={wigglingNumber}
-                      onCardClick={handleCardClick}
-                      onSkip={finishGame}
-                      isSkipping={isSkipping}
-                      skipOutcome={skipOutcome}
-                      progress={progress}
-                      panelColor={panelColor}
-                      gameState={gameState}
-                      prize={prize}
-                      isOverlay={false}
-                      onClose={closeGameOverlay}
-                      isTransitioning={isTransitioning}
-                      isCelebrating={isCelebrating}
-                      isSkipEnding={isSkipEnding}
-                      isPaused={isPaused}
-                      onPause={pauseGame}
-                      onResume={resumeGame}
-                      onNextBall={drawNextBallManually}
-                    />
-                  )}
+                      {/* Game Screen - wanneer gameState === 'PLAYING' */}
+                      {gameState === 'PLAYING' && (
+                        <GameScreen
+                          bingoCard={bingoCard}
+                          currentBall={currentBall}
+                          checkedNumbers={checkedNumbers}
+                          history={history}
+                          drawnBalls={drawnBalls}
+                          wigglingNumber={wigglingNumber}
+                          onCardClick={handleCardClick}
+                          onSkip={finishGame}
+                          isSkipping={isSkipping}
+                          skipOutcome={skipOutcome}
+                          progress={progress}
+                          panelColor={panelColor}
+                          gameState={gameState}
+                          prize={prize}
+                          isOverlay={false}
+                          onClose={closeGameOverlay}
+                          isTransitioning={isTransitioning}
+                          isCelebrating={isCelebrating}
+                          isSkipEnding={isSkipEnding}
+                          isPaused={isPaused}
+                          onPause={pauseGame}
+                          onResume={resumeGame}
+                          onNextBall={drawNextBallManually}
+                        />
+                      )}
 
-                  {/* Loading Transition - tijdens transition */}
-                  {isTransitioning && (
-                    <LoadingTransition />
-                  )}
+                      {/* Loading Transition - tijdens transition */}
+                      {isTransitioning && (
+                        <LoadingTransition />
+                      )}
 
-                  {/* Result Screens in overlay - toon resultaat van huidige gameState of opgeslagen resultaat */}
-                  {!isTransitioning && resultType === 'won' && (
-                    // Gebruik opgeslagen resultaat als beschikbaar, anders huidige state
-                    (lastResult && lastResult.resultType === 'won' && lastResult.prize) || 
-                    (gameState === 'WON' && prize) ? (
-                      <WonScreen
-                        prize={lastResult?.prize || prize}
-                        drawnBalls={lastResult?.drawnBalls || drawnBalls}
-                        progress={lastResult?.progress || progress}
-                        onBackToBingo={closeGameOverlay}
-                        onReplay={replayInOverlay}
-                        showHeader={true}
-                        bingoCard={bingoCard}
-                        checkedNumbers={lastResult?.checkedNumbers || checkedNumbers}
-                      />
-                    ) : null
-                  )}
+                      {/* Result Screens in overlay - toon resultaat van huidige gameState of opgeslagen resultaat */}
+                      {!isTransitioning && resultType === 'won' && (
+                        // Gebruik opgeslagen resultaat als beschikbaar, anders huidige state
+                        (lastResult && lastResult.resultType === 'won' && lastResult.prize) ||
+                          (gameState === 'WON' && prize) ? (
+                          <WonScreen
+                            prize={lastResult?.prize || prize}
+                            drawnBalls={lastResult?.drawnBalls || drawnBalls}
+                            progress={lastResult?.progress || progress}
+                            onBackToBingo={closeGameOverlay}
+                            onReplay={replayInOverlay}
+                            showHeader={true}
+                            bingoCard={bingoCard}
+                            checkedNumbers={lastResult?.checkedNumbers || checkedNumbers}
+                          />
+                        ) : null
+                      )}
 
-                  {!isTransitioning && resultType === 'lost' && (
-                    // Gebruik opgeslagen resultaat als beschikbaar, anders huidige state
-                    (lastResult && lastResult.resultType === 'lost') || 
-                    (gameState === 'FINISHED') ? (
-                      <LostScreen
-                        onBackToBingo={closeGameOverlay}
-                        onReplay={replayInOverlay}
-                        progress={lastResult?.progress || progress}
-                        showHeader={true}
-                        bingoCard={bingoCard}
-                        checkedNumbers={lastResult?.checkedNumbers || checkedNumbers}
-                        drawnBalls={lastResult?.drawnBalls || drawnBalls}
-                      />
-                    ) : null
-                  )}
-                </div>
-              </div>
-            </>
-          )}
+                      {!isTransitioning && resultType === 'lost' && (
+                        // Gebruik opgeslagen resultaat als beschikbaar, anders huidige state
+                        (lastResult && lastResult.resultType === 'lost') ||
+                          (gameState === 'FINISHED') ? (
+                          <LostScreen
+                            onBackToBingo={closeGameOverlay}
+                            onReplay={replayInOverlay}
+                            progress={lastResult?.progress || progress}
+                            showHeader={true}
+                            bingoCard={bingoCard}
+                            checkedNumbers={lastResult?.checkedNumbers || checkedNumbers}
+                            drawnBalls={lastResult?.drawnBalls || drawnBalls}
+                            panelColor={panelColor}
+                          />
+                        ) : null
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           }
         />

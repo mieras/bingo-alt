@@ -1,4 +1,3 @@
-import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Parallax } from 'swiper/modules';
 import 'swiper/css';
@@ -10,18 +9,11 @@ import BingoCard from './game/BingoCard';
 import winactiesImage from '../assets/vl-winacties.png';
 import vipcardImage from '../assets/vl-vipcard.png';
 import extraBingoImage from '../assets/vl-extra-bingo.png';
+import { getLastSunday, formatDateLong } from '../lib/utils';
 
-const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [], checkedNumbers = new Set(), drawnBalls = [] }) => {
-  const [showResultCard, setShowResultCard] = React.useState(false);
-
-  // Show result card with delay
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowResultCard(true);
-    }, 600); // Start fade na 600ms
-
-    return () => clearTimeout(timer);
-  }, []);
+const LostScreen = ({ onBackToBingo, showHeader = false, bingoCard = [], checkedNumbers = new Set(), drawnBalls = [], panelColor = '#AA167C' }) => {
+  const lastSunday = getLastSunday();
+  const dateText = formatDateLong(lastSunday);
 
   // Carousel cards data voor verlies scherm
   const carouselCards = [
@@ -45,16 +37,13 @@ const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [
       isUpsell: true,
     },
   ];
-  const handleReplay = () => {
-    if (onReplay) return onReplay();
-    return onBackToBingo();
-  };
+  const handleBackToOverview = () => onBackToBingo();
 
   return (
-    <div className="flex flex-col w-full h-[100dvh] bg-white relative">
+    <div className="flex relative flex-col w-full bg-white h-dvh">
       {/* Header - Fixed */}
       {showHeader && (
-        <div className="fixed top-0 left-0 right-0 z-40">
+        <div className="fixed top-0 right-0 left-0 z-40">
           <GameHeader onClose={onBackToBingo} />
         </div>
       )}
@@ -62,21 +51,17 @@ const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [
       {/* Scrollable container - alleen content scrollt, hero blijft zichtbaar */}
       <div className={`flex overflow-y-auto flex-col flex-1 bg-white ${showHeader ? 'pt-[96px]' : ''}`}>
         {/* Hero sectie - auto hoogte gebaseerd op content + padding, met fixed progress bar */}
-        <div className="flex relative flex-col shrink-0 hero-bingo-container overflow-hidden">
-          {/* Achtergrond alleen in hero (zacht infaden) */}
+        <div className="flex overflow-hidden relative flex-col shrink-0 hero-bingo-container">
+          {/* Achtergrond: dezelfde kleur als de Bingokaart */}
           <div
-            className="absolute inset-0 opacity-0 animate-fade-in"
-            style={{
-              background: 'linear-gradient(180deg, #F6E9E7 0%, #EAC7C7 100%)',
-              animationDuration: '450ms',
-              animationFillMode: 'forwards'
-            }}
+            className="absolute inset-0"
+            style={{ backgroundColor: panelColor }}
             aria-hidden="true"
           />
 
           <div className="flex relative z-10 flex-col">
             {/* Bingo Card Container - verticaal gecentreerd */}
-            <div className="flex relative justify-center items-center pb-4 w-full hero-bingo-card-container overflow-visible">
+            <div className="flex overflow-visible relative justify-center items-center pb-4 w-full hero-bingo-card-container">
               {bingoCard.length > 0 && (
                 <BingoCard
                   bingoCard={bingoCard}
@@ -95,24 +80,28 @@ const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [
         {/* Content Section */}
         <ContentWrapper className="flex flex-col px-4 pt-3 pb-4 bg-white">
           {/* Prijs kaartje (lost) */}
-          <div className={`flex gap-3 items-center p-4 mb-4 w-full rounded-lg border border-gray-200 shadow-[0px_2px_8px_0px_rgba(0,0,0,0.08)] bg-white transition-opacity duration-700 ${showResultCard ? 'opacity-100' : 'opacity-0'}`}>
+          <div
+            className="flex gap-2 items-start mb-4 w-full opacity-0 animate-fade-in"
+            style={{ animationDelay: '200ms' }}
+          >
             <div className="flex-1 min-w-0">
-              <div className="text-xl font-black text-[#003884] mb-1">Geen Bingo</div>
+              <div className="text-xl font-black text-[#003884] mb-1 mt-4">Geen Bingo</div>
               <p className="text-base text-[#29313d] leading-relaxed">
-                De Bingo is voorbij, u heeft geen prijs gewonnen. Volgende week kunt u weer meespelen!
+                De Bingo is voorbij, u heeft geen prijs gewonnen. Volgende week <strong className="lowercase">{dateText}</strong> kunt u weer meespelen!
               </p>
             </div>
-            <div className="overflow-hidden w-20 h-16 rounded-lg shrink-0 bg-[#F2D064] flex items-center justify-center">
-              <img
-                src={lostHeroImage}
-                alt="Geen Bingo"
-                className="w-full h-full object-contain p-2"
-              />
-            </div>
+            <img
+              src={lostHeroImage}
+              alt="Geen Bingo"
+              className="object-cover w-32 h-32 shrink-0"
+            />
           </div>
 
           {/* Carousel Section */}
-          <div className="mb-2 w-full">
+          <div
+            className="mb-2 w-full opacity-0 animate-fade-in"
+            style={{ animationDelay: '350ms' }}
+          >
             <h3 className="text-xl font-bold text-[#003884] mb-2 mt-2 text-center">
               Haal alles uit uw deelname
             </h3>
@@ -165,7 +154,7 @@ const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [
                       </p>
                       {card.isUpsell && (
                         <button
-                          className="mt-2 px-6 py-3 btn-primary text-sm"
+                          className="px-6 py-3 mt-2 text-sm btn-primary"
                           data-swiper-parallax="-300"
                           aria-label={`Extra kaart kopen voor ${card.title}`}
                         >
@@ -179,16 +168,14 @@ const LostScreen = ({ onBackToBingo, onReplay, showHeader = false, bingoCard = [
             </Swiper>
           </div>
 
-          {/* Speel opnieuw af Button */}
+          {/* Terug naar overzicht Button - sluit modal, terug naar bingo overview met gespeelde kaart */}
           <button
-            onClick={handleReplay}
-            className="w-full btn-secondary mt-2 flex items-center justify-center gap-2"
-            aria-label="Speel opnieuw af"
+            onClick={handleBackToOverview}
+            className="flex justify-center items-center mt-2 w-full btn-secondary opacity-0 animate-fade-in"
+            style={{ animationDelay: '500ms' }}
+            aria-label="Terug naar overzicht"
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1.66699 8.33333C1.66699 8.33333 3.33781 6.05685 4.69519 4.69854C6.05257 3.34022 7.92832 2.5 10.0003 2.5C14.1425 2.5 17.5003 5.85786 17.5003 10C17.5003 14.1421 14.1425 17.5 10.0003 17.5C6.58108 17.5 3.69625 15.2119 2.79346 12.0833M1.66699 8.33333V3.33333M1.66699 8.33333H6.66699" stroke="#003884" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <span>Speel opnieuw af</span>
+            Terug naar overzicht
           </button>
         </ContentWrapper>
       </div>

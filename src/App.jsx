@@ -60,8 +60,9 @@ function AppContent() {
   };
 
   const handleLogin = () => {
-    // Na login, ga naar home
-    navigate('/home');
+    // Na login, ga naar bingo overzicht
+    navigate('/bingo');
+    setShowGameOverlay(false);
   };
 
   const navigateToAccount = () => {
@@ -225,7 +226,7 @@ function AppContent() {
           element={
             <MailScreen
               onNavigateToAccount={navigateToLogin}
-              onNavigateToBingo={navigateToBingo}
+              onNavigateToBingo={navigateToLogin}
               onPlayNow={openGameOverlay}
             />
           }

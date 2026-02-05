@@ -130,7 +130,9 @@ const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bing
                   >
                     Naar uw Bingokaart
                   </button>
-                  <button
+                  <a
+                    href="/assets/vl-bingokaart-voorbeeld.pdf"
+                    download
                     className="flex items-center justify-center gap-2 text-[#003884] font-semibold hover:text-[#002a5f] transition-colors bg-transparent border-none cursor-pointer p-0"
                     title="Download Bingokaart"
                   >
@@ -138,7 +140,7 @@ const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bing
                       <path d="M14 10V10.8C14 11.9201 14 12.4802 13.782 12.908C13.5903 13.2843 13.2843 13.5903 12.908 13.782C12.4802 14 11.9201 14 10.8 14H5.2C4.07989 14 3.51984 14 3.09202 13.782C2.71569 13.5903 2.40973 13.2843 2.21799 12.908C2 12.4802 2 11.9201 2 10.8V10M11.3333 6.66667L8 10M8 10L4.66667 6.66667M8 10V2" stroke="#003884" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                     <span className="text-sm">Download Bingokaart</span>
-                  </button>
+                  </a>
                 </div>
               )}
             </div>

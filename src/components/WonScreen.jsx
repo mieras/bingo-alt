@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useRef } from 'react';
 import ContentWrapper from './ContentWrapper';
 import { getPrizeThumbnailByBalls } from '../utils/constants';
 import confettiImage from '../assets/bingo-confetti-gold.png';
@@ -9,40 +9,17 @@ import { useGoldConfetti } from '../lib/goldConfetti';
 // Upsell image
 import upsellImage from '../assets/vl-extra-bingo.png';
 
-const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = false, bingoCard = [], checkedNumbers = new Set() }) => {
+const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingoCard = [], checkedNumbers = new Set() }) => {
   if (!prize) return null;
 
-  const [showContent, setShowContent] = useState(false);
-  const [showResultCard, setShowResultCard] = useState(false);
   const confettiCanvasRef = useRef(null);
-
-  // Fade in content na delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowContent(true);
-    }, 400); // Start fade na 400ms
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Show result card with delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowResultCard(true);
-    }, 600); // Start fade na 600ms
-
-    return () => clearTimeout(timer);
-  }, []);
 
   // Gouden confetti effect bij won screen - stopt vanzelf wanneer alles buiten scherm is
   useGoldConfetti(confettiCanvasRef, true, false);
 
   const prizeThumbnail = getPrizeThumbnailByBalls(prize.balls);
   const winningBallIndex = drawnBalls.length;
-  const handleReplay = () => {
-    if (onReplay) return onReplay();
-    return onBackToBingo();
-  };
+  const handleBackToOverview = () => onBackToBingo();
 
 
   return (
@@ -107,13 +84,15 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = fa
           </div>
         </div>
 
-        {/* Content Section - fade in */}
-        <ContentWrapper
-          className={`flex flex-col items-center px-4 pt-4 gap-4 pb-6 bg-white transition-opacity duration-700 ${showContent ? 'opacity-100' : 'opacity-0'}`}
-        >
+        {/* Content Section */}
+        <ContentWrapper className="flex flex-col items-center px-4 pt-4 gap-4 pb-6 bg-white">
           {/* Prize Card met geanimeerde gouden border */}
-          <div className={`w-full rainbow min-h-20 transition-opacity duration-700 ${showResultCard ? 'opacity-100' : 'opacity-0'}`}>
-            <div className="flex items-stretch h-full min-h-20">
+          <div
+            className="w-full opacity-0 animate-fade-in"
+            style={{ animationDelay: '200ms' }}
+          >
+            <div className="w-full rainbow min-h-20">
+              <div className="flex items-stretch h-full min-h-20">
               {/* Info - Links (padding alleen op tekst, verticaal gecentreerd) */}
               <div className="flex flex-col flex-1 justify-center px-4 py-3 min-w-0">
                 <h3 className="text-lg font-bold text-gray-800">
@@ -140,10 +119,14 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = fa
                 />
               </div>
             </div>
+            </div>
           </div>
 
           {/* Gefeliciteerd */}
-          <div className="w-full">
+          <div
+            className="w-full opacity-0 animate-fade-in"
+            style={{ animationDelay: '350ms' }}
+          >
             <h2 className="text-lg font-bold text-gray-800">
               Gefeliciteerd!
             </h2>
@@ -155,7 +138,10 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = fa
 
 
           {/* Upsell Section */}
-          <div className="overflow-hidden w-full rounded-lg border-2 border-[#E5E6E6] shadow-[0_1px_0_0_#E5E5E5]">
+          <div
+            className="overflow-hidden w-full rounded-lg border-2 border-[#E5E6E6] shadow-[0_1px_0_0_#E5E5E5] opacity-0 animate-fade-in"
+            style={{ animationDelay: '500ms' }}
+          >
             <div className="flex items-center">
 
               <div className="flex-1 p-4">
@@ -176,15 +162,14 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, onReplay, showHeader = fa
             </div>
           </div>
 
-          {/* Speel opnieuw af Button (secondary outline + rewind icoon) */}
+          {/* Terug naar overzicht Button - sluit modal, terug naar bingo overview met gespeelde kaart */}
           <button
-            onClick={handleReplay}
-            className="w-full btn-secondary mb-4 flex items-center justify-center gap-2"
+            onClick={handleBackToOverview}
+            className="w-full btn-secondary mb-4 flex items-center justify-center opacity-0 animate-fade-in"
+            style={{ animationDelay: '650ms' }}
+            aria-label="Terug naar overzicht"
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1.66699 8.33333C1.66699 8.33333 3.33781 6.05685 4.69519 4.69854C6.05257 3.34022 7.92832 2.5 10.0003 2.5C14.1425 2.5 17.5003 5.85786 17.5003 10C17.5003 14.1421 14.1425 17.5 10.0003 17.5C6.58108 17.5 3.69625 15.2119 2.79346 12.0833M1.66699 8.33333V3.33333M1.66699 8.33333H6.66699" stroke="#003884" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <span>Speel opnieuw af</span>
+            Terug naar overzicht
           </button>
         </ContentWrapper>
       </div>

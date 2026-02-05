@@ -6,9 +6,10 @@ import navImage from '../assets/vl-account-nav.png';
 import vlbLogo from '../assets/vlb-logo.png';
 import { getLastSunday, formatDateLong, formatDateFull } from '../lib/utils';
 
-const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bingoCard = [], checkedNumbers = new Set(), hasPlayed = false, panelColor = '#AA167C' }) => {
+const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bingoCard = [], checkedNumbers = new Set(), hasPlayed = false, panelColor = '#AA167C', lastResult = null, prize = null }) => {
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const lastSunday = getLastSunday();
+  const hasWon = lastResult?.resultType === 'won' || Boolean(prize);
 
   const toggleFaq = (index) => {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
@@ -120,7 +121,7 @@ const BingoOverviewScreen = ({ onPlayNow, onViewPrize, onNavigateToAccount, bing
                   onClick={onViewPrize}
                   className="w-full btn-primary text-sm"
                 >
-                  Bekijk je prijs
+                  {hasWon ? 'Bekijk je prijs' : 'Bekijk uitslag'}
                 </button>
               ) : (
                 <div className="flex flex-col gap-3">

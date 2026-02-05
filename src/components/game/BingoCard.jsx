@@ -9,7 +9,8 @@ const BingoCard = ({
     showHint,
     onCardClick,
     opacity = 1,
-    className = ''
+    className = '',
+    animateIntro = false
 }) => {
     return (
         <div
@@ -49,6 +50,8 @@ const BingoCard = ({
                         buttonClass += "transition-colors duration-200 hover:bg-gray-50 text-[#014087]";
                         textClass += "text-[#014087]";
                     }
+
+                    const introDelay = `${idx * 60}ms`;
 
                     return (
                         <div
@@ -100,7 +103,12 @@ const BingoCard = ({
                                     }
                                     aria-pressed={isChecked}
                                 >
-                                    <span className={textClass}>{num}</span>
+                                    <span
+                                        className={`${textClass}${animateIntro ? ' intro-bingo-number' : ''}`}
+                                        style={animateIntro ? { animationDelay: introDelay } : undefined}
+                                    >
+                                        {num}
+                                    </span>
                                     {showMatchHint && (
                                         <div className="absolute inset-0 z-0 bg-[#DDF5F7] animate-hint-pulse" />
                                     )}

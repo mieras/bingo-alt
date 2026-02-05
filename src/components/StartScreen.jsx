@@ -47,6 +47,7 @@ const StartScreen = ({ onStart, onSkipToResult, onClose, bingoCard = [], panelCo
               wigglingNumber={null}
               showHint={false}
               onCardClick={() => { }}
+              animateIntro
             />
           </div>
         </div>
@@ -77,7 +78,11 @@ const StartScreen = ({ onStart, onSkipToResult, onClose, bingoCard = [], panelCo
                 { text: '', bold: 'Volle kaart?', rest: ' Bingo: een prijs!' },
                 { text: 'Nummer gemist? Geen probleem, wij vinken het automatisch voor u af.' }
               ].map((item, idx) => (
-                <div key={idx} className="flex gap-2 items-start w-full">
+                <div
+                  key={idx}
+                  className="flex gap-2 items-start w-full intro-list-item"
+                  style={{ animationDelay: `${idx * 160}ms` }}
+                >
                   {/* Check icon */}
                   <div className="w-5 h-5 shrink-0 mt-0.5">
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -116,7 +121,7 @@ const StartScreen = ({ onStart, onSkipToResult, onClose, bingoCard = [], panelCo
                 <p>
                   <button
                     onClick={onSkipToResult}
-                    className="text-[#003884] underline hover:text-[#002a5f] transition-colors bg-transparent border-none cursor-pointer p-0"
+                    className="inline-flex items-center justify-center py-1.5 text-[#003884] underline hover:text-[#002a5f] transition-colors bg-transparent border-none cursor-pointer"
                   >
                     Direct naar de uitslag
                   </button>

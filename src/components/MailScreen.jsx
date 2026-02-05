@@ -1,5 +1,6 @@
 import React from 'react';
 import mailHeaderImage from '../assets/vl-bingo-mail-header.png';
+import mailHeaderImageMob from '../assets/vl-bingo-mail-header-mob.png';
 import appBannerImage from '../assets/vl-bingo-app-banner.png';
 import { getLastSunday, formatDateLong } from '../lib/utils';
 
@@ -9,12 +10,17 @@ const MailScreen = ({ onNavigateToAccount, onNavigateToBingo, onPlayNow }) => {
 
   return (
     <div className="flex overflow-y-auto flex-col w-full h-full bg-white">
-      {/* Hero Image Section - Desktop/Mobile responsive */}
+      {/* Hero Image Section - Mobile (-mob) vs Desktop responsive */}
       <div className="flex relative justify-center w-full shrink-0">
+        <img
+          src={mailHeaderImageMob}
+          alt="Bekijk de uitslagen"
+          className="h-auto w-full max-w-[480px] border-0 rounded-none md:hidden"
+        />
         <img
           src={mailHeaderImage}
           alt="Bekijk de uitslagen"
-          className="h-auto w-full max-w-[480px] border-0 rounded-none md:max-w-[765px] md:rounded-lg"
+          className="hidden h-auto w-full max-w-[765px] border-0 rounded-none md:block md:rounded-lg"
         />
       </div>
 
@@ -24,7 +30,7 @@ const MailScreen = ({ onNavigateToAccount, onNavigateToBingo, onPlayNow }) => {
         <div className="mx-auto w-full max-w-[600px]">
           {/* Title */}
           <h1
-            className="w-full text-left px-4 pb-3 font-extrabold text-[#003884] md:px-11"
+            className="w-full text-left px-4 pb-3 mt-4 font-extrabold text-[#003884] md:px-11"
             style={{
               fontSize: 'clamp(28px, 5vw, 40px)',
               lineHeight: 'clamp(32px, 5.5vw, 44px)',
@@ -35,13 +41,13 @@ const MailScreen = ({ onNavigateToAccount, onNavigateToBingo, onPlayNow }) => {
 
           {/* Body Text */}
           <p className="w-full px-4 text-left text-base leading-6 font-normal text-[#333333] md:px-11">
-            De Bingo van <strong>{dateText}</strong> staat klaar. Speel nu en vink alle nummers af. Volle kaart? U ziet direct uw prijs! Ook als u niet speelt kunt u via uw eigen account zien of u prijzen heeft gewonnen. Veel plezier!
+            De Bingo van <strong className="lowercase">{dateText}</strong> staat klaar. Speel nu en vink alle nummers af. Volle kaart? U ziet direct uw prijs! Ook als u niet speelt kunt u via uw eigen account zien of u prijzen heeft gewonnen. Veel plezier!
           </p>
           {/* CTA Button */}
           <div className="px-4 pt-4 w-full md:px-11">
             <button
               onClick={onNavigateToBingo}
-              className="block mx-auto px-8 py-4 min-w-[210px] text-base leading-4 font-bold text-white bg-[#009640] rounded-lg border-b-4 border-[#087239] shadow-[0_1px_#0c7b3f] no-underline transition-all hover:opacity-90 active:scale-95"
+              className="block mx-auto md:mx-0 px-8 py-4 md:min-w-[210px] md:w-auto text-base w-full leading-4 font-bold text-white bg-[#009640] rounded-lg border-b-4 border-[#087239] shadow-[0_1px_#0c7b3f] no-underline transition-all hover:opacity-90 active:scale-95"
             >
               Speel Bingo
             </button>

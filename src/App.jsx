@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useBingoGame } from './hooks/useBingoGame';
 import MailScreen from './components/MailScreen';
@@ -49,6 +49,15 @@ function AppContent() {
   } = useBingoGame();
 
   const progress = (drawnBalls.length / 36) * 100;
+  const runViewTransition = useCallback((update) => {
+    if (typeof document !== 'undefined' && 'startViewTransition' in document) {
+      document.startViewTransition(() => {
+        update();
+      });
+      return;
+    }
+    update();
+  }, []);
 
   // Random background kleur voor het panel - consistent per kaart
   const panelColors = ['#AA167C', '#F39200', '#E73358', '#94C11F', '#009CBE'];
@@ -156,11 +165,11 @@ function AppContent() {
     setIsModalOpen(false);
     // Gebruik het opgeslagen resultaat als het beschikbaar is, anders gebruik huidige gameState
     if (lastResult) {
-      setResultType(lastResult.resultType);
+      runViewTransition(() => setResultType(lastResult.resultType));
     } else if (gameState === 'WON') {
-      setResultType('won');
+      runViewTransition(() => setResultType('won'));
     } else if (gameState === 'FINISHED') {
-      setResultType('lost');
+      runViewTransition(() => setResultType('lost'));
     }
     // Trigger animation after a tiny delay to ensure DOM is ready
     setTimeout(() => {
@@ -173,7 +182,7 @@ function AppContent() {
     resetGame();
     // Behoud hasPlayed zodat gebruiker nog steeds naar resultaat kan gaan vanuit overview
     // setHasPlayed(false); // NIET resetten - behoud "Bekijk je prijs" functionaliteit
-    setResultType(null);
+    runViewTransition(() => setResultType(null));
     // Behoud dezelfde kaart en kleur - geen nieuwe genereren
     // De kaart en kleur blijven behouden omdat we alleen resetGame() aanroepen
   };
@@ -193,11 +202,11 @@ function AppContent() {
   // Handle game state changes - transition naar result scherm in overlay
   useEffect(() => {
     if (gameState === 'WON' && !isTransitioning && showGameOverlay) {
-      setResultType('won');
+      runViewTransition(() => setResultType('won'));
     } else if (gameState === 'FINISHED' && !isTransitioning && showGameOverlay) {
-      setResultType('lost');
+      runViewTransition(() => setResultType('lost'));
     }
-  }, [gameState, isTransitioning, showGameOverlay]);
+  }, [gameState, isTransitioning, showGameOverlay, runViewTransition]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -288,7 +297,7 @@ function AppContent() {
                   {/* Overlay Container */}
                   <div className="absolute inset-0 z-50 pointer-events-none">
                     <div
-                      className={`w-full h-[100dvh] bg-white pointer-events-auto overflow-hidden transition-transform duration-300 ease-out ${isModalOpen ? 'translate-y-0' : 'translate-y-full'}`}
+                      className={`game-overlay-panel w-full h-[100dvh] bg-white pointer-events-auto overflow-hidden transition-transform duration-300 ease-out ${isModalOpen ? 'translate-y-0' : 'translate-y-full'}`}
                       onClick={(e) => e.stopPropagation()}
                     >
                       {/* Intro Screen (StartScreen) - wanneer gameState === 'IDLE' */}

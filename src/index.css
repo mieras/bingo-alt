@@ -196,6 +196,50 @@
   animation: draw-mask 2s ease-out forwards;
 }
 
+/* View Transitions: game -> result */
+.game-overlay-panel {
+  view-transition-name: bingo-overlay;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+@keyframes bingo-overlay-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.98);
+  }
+}
+
+@keyframes bingo-overlay-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+::view-transition-old(bingo-overlay) {
+  animation: bingo-overlay-out 320ms ease forwards;
+}
+
+::view-transition-new(bingo-overlay) {
+  animation: bingo-overlay-in 360ms ease forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(bingo-overlay),
+  ::view-transition-new(bingo-overlay) {
+    animation: none;
+  }
+}
+
 /* Ball animations voor BallsHistory */
 @keyframes ball-reveal-bounce {
   0% {

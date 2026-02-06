@@ -1,10 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ContentWrapper from './ContentWrapper';
 import vlLogo from '../assets/vl_logo.png';
 
 const LoginScreen = ({ onLogin, onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const typingTimersRef = useRef({ email: null, password: null });
+  const typingIndexRef = useRef({ email: 0, password: 0 });
+
+  const dummyEmail = 'naam@domein.nl';
+  const dummyPassword = 'dummyPass1234';
+
+  const stopTyping = (field) => {
+    const timer = typingTimersRef.current[field];
+    if (timer) {
+      clearInterval(timer);
+      typingTimersRef.current[field] = null;
+      typingIndexRef.current[field] = 0;
+    }
+  };
+
+  const startTyping = (field, value, setter) => {
+    if (typingTimersRef.current[field]) return;
+    typingIndexRef.current[field] = 0;
+    typingTimersRef.current[field] = setInterval(() => {
+      typingIndexRef.current[field] += 1;
+      const next = value.slice(0, typingIndexRef.current[field]);
+      setter(next);
+      if (typingIndexRef.current[field] >= value.length) {
+        stopTyping(field);
+      }
+    }, 40);
+  };
+
+  useEffect(() => {
+    return () => {
+      stopTyping('email');
+      stopTyping('password');
+    };
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -41,6 +75,12 @@ const LoginScreen = ({ onLogin, onClose }) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => {
+                  if (!email) {
+                    startTyping('email', dummyEmail, setEmail);
+                  }
+                }}
+                onInput={() => stopTyping('email')}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003884]"
                 placeholder="E-mailadres*"
               />
@@ -55,6 +95,12 @@ const LoginScreen = ({ onLogin, onClose }) => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onFocus={() => {
+                    if (!password) {
+                      startTyping('password', dummyPassword, setPassword);
+                    }
+                  }}
+                  onInput={() => stopTyping('password')}
                   className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#003884]"
                   placeholder="Wachtwoord*"
                 />

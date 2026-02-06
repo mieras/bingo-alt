@@ -23,7 +23,7 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingo
 
 
   return (
-    <div className="flex flex-col w-full h-[100dvh] bg-white relative">
+    <div className="flex flex-col w-full h-dvh bg-white relative">
       {/* Gouden confetti canvas - fixed over hele screen */}
       <canvas
         ref={confettiCanvasRef}
@@ -93,32 +93,32 @@ const WonScreen = ({ prize, drawnBalls, onBackToBingo, showHeader = false, bingo
           >
             <div className="w-full rainbow min-h-20">
               <div className="flex items-stretch h-full min-h-20">
-              {/* Info - Links (padding alleen op tekst, verticaal gecentreerd) */}
-              <div className="flex flex-col flex-1 justify-center px-4 py-3 min-w-0">
-                <h3 className="text-lg font-bold text-gray-800">
-                  Bingo!
-                </h3>
-                <div className="text-sm leading-snug text-gray-700">
-                  U wint {prize.prize}.
+                {/* Info - Links (padding alleen op tekst, verticaal gecentreerd) */}
+                <div className="flex flex-col flex-1 justify-center px-4 py-3 min-w-0">
+                  <h3 className="text-lg font-bold text-gray-800">
+                    Bingo!
+                  </h3>
+                  <div className="text-sm leading-snug text-gray-700">
+                    U wint {prize.prize}.
+                  </div>
+                  <div className="text-sm leading-snug text-gray-700">
+                    Wat een verrassing!
+                  </div>
                 </div>
-                <div className="text-sm leading-snug text-gray-700">
-                  Wat een verrassing!
-                </div>
-              </div>
 
-              {/* Prize Image - flush tegen rand, volledige hoogte */}
-              <div
-                className="flex justify-center items-center w-24 h-24 shrink-0"
-                style={{ backgroundColor: '#F2D064' }}
-              >
-                <img
-                  src={prizeThumbnail}
-                  alt={prize.prize}
-                  className="object-cover w-full h-full"
-                  draggable="false"
-                />
+                {/* Prize Image - flush tegen rand, volledige hoogte */}
+                <div
+                  className="flex justify-center items-center w-24 h-24 shrink-0"
+                  style={{ backgroundColor: '#F2D064' }}
+                >
+                  <img
+                    src={prizeThumbnail}
+                    alt={prize.prize}
+                    className="object-cover w-full h-full"
+                    draggable="false"
+                  />
+                </div>
               </div>
-            </div>
             </div>
           </div>
 

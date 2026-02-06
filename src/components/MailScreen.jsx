@@ -143,7 +143,7 @@ const MailScreen = ({ onNavigateToAccount, onNavigateToBingo, onPlayNow }) => {
         <div className="mx-auto w-full max-w-[600px] p-10">
           <div className="flex flex-col items-center w-full">
             {/* Feedback Section */}
-            <p className="pb-2 text-center text-base leading-6 font-semibold text-[#515151] pb-2">
+            <p className="pb-2 text-center text-base leading-6 font-semibold text-[#515151]">
               Wat vindt u van deze e-mail?
             </p>
             <div className="flex gap-2 pb-8">
@@ -168,7 +168,7 @@ const MailScreen = ({ onNavigateToAccount, onNavigateToBingo, onPlayNow }) => {
             </div>
 
             {/* Social Media */}
-            <p className="pb-2 text-center text-base leading-6 font-semibold text-[#515151] pb-2">
+            <p className="pb-2 text-center text-base leading-6 font-semibold text-[#515151]">
               Volg ons:
             </p>
             <div className="flex gap-4 pb-10">
